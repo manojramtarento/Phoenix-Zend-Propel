@@ -1,0 +1,3 @@
+-- Add new invoices due date options
+INSERT INTO r_facture_options_echeances (fact_opt_echeance_id,fact_opt_echeance_libelle,actif,fact_opt_echeance_libelle_en) VALUES (7,'à 45 jours fin de mois',1,'within 45 days end of month');
+INSERT INTO r_facture_options_echeances (fact_opt_echeance_id,fact_opt_echeance_libelle,actif,fact_opt_echeance_libelle_en) VALUES (8,'60 jours nets à compter de sa réception',1,'60 days net from receipt');

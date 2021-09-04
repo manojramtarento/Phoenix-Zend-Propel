@@ -1,0 +1,109 @@
+<div id="id_div_ajout_prestation">
+    <form id="id_form_recherche_prestation">
+        <div class="section">
+            <div class="section-hd">
+                <h2 class="section-title"><?php echo $this->translate('Rechercher une prestation'); ?></h2>
+            </div>
+
+            <div class="section-bd">
+                <div class="line form-line">
+                    <label class="form-label unit size1of5" for="id_find_r_prestation_id"><?php echo $this->translate('ID prestation'); ?> :</label>
+                    <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_r_prestation_id', 'type' => 'text', 'class' => 'form-input unit lastUnit size1of5')) ?>
+                </div>
+
+                <div class="line form-line">
+                    <label class="form-label unit size1of5" for="id_find_r_p_libelle"><?php echo $this->translate('Nom prestation'); ?> :</label>
+                    <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_r_p_libelle', 'type' => 'text', 'class' => 'form-input unit lastUnit size1of5')) ?>
+                </div>
+
+                <div class="form-line">
+                    <?php echo Phoenix_View_Helper_Html::input(array('name' => 'recherche', 'value' => 'Recherche', 'type' => 'submit', 'class' => 'btn push1of5')) ?>
+                    <?php echo Phoenix_View_Helper_Html::input(array('name' => 'findbyfields', 'value' => '1', 'type' => 'hidden')) ?>
+                    <?php echo Phoenix_View_Helper_Html::input(array('name' => 'cl_id', 'value' => $this->cl_id, 'type' => 'hidden')) ?>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <?php if (count($this->prestations) > 0) { ?>
+        <form method="post" id="id_form_ajout_prestation">
+            <?php echo Phoenix_View_Helper_Html::input(array('name' => 'cl_id', 'value' => $this->cl_id, 'type' => 'hidden')) ?>
+
+            <div class="section">
+                <div class="section-hd">
+                    <h2 class="section-title"><?php echo $this->translate('Résultat de votre recherche'); ?></h2>
+                </div>
+
+                <div class="section-bd" style="height:220px;overflow:auto;">
+                    <table class="list list-main">
+                        <thead>
+                            <tr>
+                                <th width="40" class="check-column"><input id="check_all_presta" type="checkbox" value="1"></th>
+                                <th width="40"><span class="notsortable"><?php echo $this->translate('ID'); ?></span></th>
+                                <th width="500"><span class="notsortable"><?php echo $this->translate('Libellé Prestation'); ?></span></th>
+                                <th width="50"><span class="notsortable"><?php echo $this->translate('Prix de vente'); ?></span></th>
+                                <th width="50"><span class="notsortable"><?php echo $this->translate('Prix négocié'); ?></span></th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <?php foreach ($this->prestations as $prestation) { ?>
+                                <tr class="tr-check <?php echo $this->cycle(array('', 'alt'))->next() ?>">
+                                    <td class="check-column">
+                                        <input class="checkbox_presta" type="checkbox" id="checkbox<?php echo $prestation['r_prestation_id']; ?>" name="r_prestation_id[]" value="<?php echo $prestation['r_prestation_id']; ?>" onclick="updateFields(<?php echo $prestation['r_prestation_id']; ?>)">
+                                    </td>
+                                    <td align="left"><?php echo $prestation['r_prestation_id']; ?></td>
+                                    <td><span id="libelle<?php echo $prestation['r_prestation_id']; ?>"><?php echo $prestation['r_p_libelle']; ?></span>
+                                        <input style="display:none;" size="50" type="text" id="r_p_libelle<?php echo $prestation['r_prestation_id']; ?>" name="r_p_libelle[<?php echo $prestation['r_prestation_id']; ?>]" value="<?php echo $prestation['r_p_libelle'] ?>">
+                                    </td>
+                                    <td align="right" class="column-secondary"><?php echo number_format($prestation['r_p_prix_vente'], 2, ',', ' '); ?>&euro;</td>
+                                    <td align="right" class="column-secondary">
+                                        <input style="display:none;" type="text" size="6" id="r_p_prix_vente<?php echo $prestation['r_prestation_id']; ?>" name="r_p_prix_vente[<?php echo $prestation['r_prestation_id']; ?>]" value="<?php echo $prestation['r_p_prix_vente'] ?>">
+                                    </td>
+                                </tr>
+                            <?php } ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="text-center">
+                <input type="hidden" name="submit_ajouter_prestation" value="1" >
+                <input type="submit" class="btn btn-orange btn-big" value="<?php echo $this->translate('Ajouter'); ?>">
+            </div>
+        </form>
+    <?php } else { ?>
+        <?php echo $this->translate('Aucun résultat'); ?>
+    <?php } ?>
+</div>
+<script language="javascript">
+    $(document).ready(function() {
+        $('#id_form_recherche_prestation').submit(function() {
+            AjaxComponent.ajaxDiv('<?php echo $this->baseUrl() ?>/client/prestation/ajoutprestation', $(this).serialize(), 'id_div_ajout_prestation');
+            return false;
+        });
+
+        $('#check_all_presta').change(function() {
+            status = $(this).is(':checked');
+            Component.updateAllCheckboxs('checkbox_presta', status);
+        });
+
+        //soumission du formulaire d'ajout de prestations
+        AjaxComponent.ajaxForm('<?php echo $this->baseUrl() ?>/client/prestation/ajoutprestation',
+                'id_form_ajout_prestation',
+                '',
+                function() {
+                    $('#id_dialog_ajout_prestation').dialog('close');
+                    Component.refreshPage();
+                }
+        );
+
+    });
+
+    // Rendre un champs modifiable
+    function updateFields(iPrestationId) {
+        $('#r_p_prix_vente' + iPrestationId).toggle();
+        $('#libelle' + iPrestationId).toggle();
+        $('#r_p_libelle' + iPrestationId).toggle();
+    }
+</script>

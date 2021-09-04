@@ -1,0 +1,23 @@
+<div class="block-graph participation-distribution-block  noborder-block">
+    <div class="title-bloc title-bloc-full-width"><?php echo $this->sKpiTitle; ?></div>
+    <div class="content-bloc">
+        <div class="participation-distribution-graph-container" id="participation-distribution-chart">
+        </div>
+    </div>
+</div>
+
+<?php
+$aPieChartData = $this->aPieChartData['C3'];
+$aPieChartData['bindto'] = '#participation-distribution-chart';
+$aPieChartData['legend']['show'] = true;
+$aPieChartData['legend']['position'] = 'right';
+
+foreach ($aPieChartData['data']['columns'] as $iKey => $aValues) {
+    $aPieChartData['data']['columns'][$iKey][0] = $aValues[1] . ' ' . $aValues[0];
+}
+?>
+<script language="javascript">
+    var chart = c3.generate(<?php echo json_encode($aPieChartData); ?>);
+    var firstLegend = d3.select('.c3-legend-item');
+    var legendCon = d3.select(firstLegend.node().parentNode).attr('transform', 'translate(480, -110)');
+</script>

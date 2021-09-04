@@ -1,0 +1,30 @@
+<table class="list">
+    <thead>
+        <tr>
+            <th width="26" class="column-noborder"></th>
+            <th><span class="notsortable"><?php echo $this->translate('Prime'); ?></span></th>
+            <th width="15%"><span class="notsortable"><?php echo $this->translate('Code Prime'); ?></span></th>
+            <th width="35%"><span class="notsortable"><?php echo $this->translate('label_reward_type'); ?></span></th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php
+        foreach ($this->primes as $oReward) {
+            $iRewardId = $oReward->getOstTplPrimeId()
+            ?>
+            <tr class="class_form_primes" action="<?php echo $this->url(array('module' => 'administration', 'controller' => 'rtypesdevis', 'action' => 'updateprime')) ?>" model_name="ROperationTypeSubTplPrime" primary_value="<?php echo $oReward->getOstTplPrimeId() ?>">
+                <td><a href="javascript:void(0)" onclick="deletePrime(<?php echo $iRewardId ?>)"  class="class_btn_delete_prime icon-list icon-delete" title="<?php echo $this->translate('Supprimer la prime'); ?>"><?php echo $this->translate('Supprimer la prime'); ?></a></td>
+                <td><?php echo Phoenix_View_Helper_Html::input(array('id' => 'id_ost_tpl_prime_libelle_' . $iRewardId, 'name' => 'ost_tpl_prime_libelle', 'type' => 'text', 'class' => 'form-input input-editable size1of1', 'value' => $oReward->getOstTplPrimeLibelle())); ?></td>
+                <td align="center" class="column-secondary"><?php echo $oReward->getOstTplPrimeNumero() ?></td>
+                <td align="left" class="column-secondary"><?php echo Phoenix_View_Helper_Html::selectFromTable('r_reward_types', array('id' => 'ost_tpl_reward_type_' . $iRewardId, 'name' => 'ost_tpl_reward_type', 'value' => $oReward->getOstTplRewardType(), 'class' => 'form-select size4of5'), array('value' => 'r_reward_type_id', 'name' => 'r_reward_type_label'), array('clause_where' => 'r_reward_type_actif = 1', 'default_label' => $this->translate('choisir') . '...')); ?></td>
+            </tr>
+        <?php } ?>
+    </tbody>
+</table>
+
+<script language="javascript">
+    $(document).ready(function() {
+        //maj des champs de scénario
+        $('.class_form_primes').formUpdate();
+    })
+</script>

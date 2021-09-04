@@ -1,0 +1,409 @@
+<?php
+$this->title = $this->translate('Plan de facturation de l\'opération');
+$this->headTitle($this->title);
+$bRequestForFundsIsAllowed = Phoenix_Auth_User::getInstance()->isAllowed(AclFonctionnalites::REQUEST_FOR_FUNDS);
+$bStatusOfTheCostsIsAllowed = Phoenix_Auth_User::getInstance()->isAllowed(AclFonctionnalites::STATUS_OF_THE_COSTS);
+?>
+<?php
+echo (empty($this->flashMessenger)) ? '' : $this->partial('partials/flasherror.phtml', array('flashMessenger' => $this->flashMessenger));
+echo $this->partial('partials/actionsbar.phtml', array('operation' => $this->operation));
+?>
+<input type="hidden" id="id_input_op_id" value="<?php echo $this->operation->getOpId() ?>" />
+<div id="site-content">
+    <?php echo $this->partial('partials/menu.phtml'); ?>
+    <div id="content-bd">
+        <div class="line">
+            <div class="unit <?php echo $bRequestForFundsIsAllowed || $bStatusOfTheCostsIsAllowed ? 'size1of2' : 'size1of1 lastUnit' ?>">
+                <div class="box">
+                    <div class="line box-hd">
+                        <h2 class="box-title"><?php echo $this->translate('Paramètres de facturation'); ?></h2>
+                    </div>
+                    <div class="box-bd">
+                        <?php
+                        $bValidated = ($this->plan_facturation_params->getPlanFactId() != null);
+                        ?>
+                        <form id="fact_param_form" action="<?php echo $this->url(array('module' => 'operation', 'controller' => 'facturation', 'action' => 'saveparams')) ?>">
+                            <div class="line form-line">
+                                <label class="form-label unit size1of4" for="id_plan_fact_date_prem_fact"><?php echo $this->translate('Première facture'); ?> :</label>
+                                <div class="unit size1of2 date">
+                                    <?php echo Phoenix_View_Helper_Html::input(array('name' => 'plan_fact_date_prem_fact', 'value' => Phoenix_Data_Convert::formatdateFromSqlServer($this->plan_facturation_params->getPlanFactDatePremFact()), 'class' => 'date-input', 'placeholder' => $this->translate('JJ/MM/AAAA'), 'maxlenght' => '10', 'disabled' => $this->bDisableInvoiceSettingModification)); ?>
+                                </div>
+                            </div>
+
+                            <div class="line form-line">
+                                <label class="form-label unit size1of4" for="id_plan_fact_date_der_fact"><?php echo $this->translate('Dernière facture'); ?> :</label>
+                                <div class="unit size1of2 date">
+                                    <?php echo Phoenix_View_Helper_Html::input(array('name' => 'plan_fact_date_der_fact', 'value' => Phoenix_Data_Convert::formatdateFromSqlServer($this->plan_facturation_params->getPlanFactDateDerFact()), 'class' => 'date-input', 'placeholder' => $this->translate('JJ/MM/AAAA'), 'maxlenght' => '10', 'disabled' => $this->bDisableInvoiceSettingModification)); ?>
+                                </div>
+                            </div>
+
+                            <div class="line form-line">
+                                <label class="form-label unit size1of4" for="id_plan_fact_periode_id"><?php echo $this->translate('Périodicité'); ?> :</label>
+                                <?php echo Phoenix_View_Helper_Html::selectFromTable('r_plan_fact_periodes', array('name' => 'plan_fact_periode_id', 'value' => $bValidated ? $this->plan_facturation_params->getPlanFactPeriodeId() : $this->operation->getClientFactureOptions()->getPlanFactPeriodeId(), 'class' => 'form-select unit size1of2 lastUnit', 'disabled' => $this->bDisableInvoiceSettingModification), array('name' => 'r_plan_fact_periode_libelle', 'value' => 'r_plan_fact_periode_id'), array('default_label' => $this->translate('Choisir') . '...')); ?>
+                            </div>
+
+                            <div class="line form-line">
+                                <label class="form-label unit size1of4" for="id_plan_fact_periode_type_id"><?php echo $this->translate('Type'); ?> :</label>
+                                <?php echo Phoenix_View_Helper_Html::selectFromTable('r_plan_fact_periodes_type', array('name' => 'plan_fact_periode_type_id', 'value' => $bValidated ? $this->plan_facturation_params->getPlanFactPeriodeTypeId() : $this->operation->getClientFactureOptions()->getPlanFactPeriodeTypeId(), 'class' => 'form-select unit size1of2 lastUnit', 'disabled' => $this->bDisableInvoiceSettingModification), array('name' => 'r_pfpt_libelle', 'value' => 'r_pfpt_id'), array('default_label' => $this->translate('Choisir') . '...')); ?>
+                            </div>
+
+                            <div class="line form-line">
+                                <label class="form-label unit size1of4" for="id_plan_fact_lib_facture"><?php echo $this->translate('Libellé facture'); ?> :</label>
+                                <?php
+                                $lib_facture = $this->plan_facturation_params->getPlanFactLibFacture();
+                                if (empty($lib_facture)) {
+                                    $lib_facture = $this->translate('facture');
+                                }
+                                echo Phoenix_View_Helper_Html::input(array('name' => 'plan_fact_lib_facture', 'value' => $lib_facture, 'class' => 'form-input unit size1of2 lastUnit', 'disabled' => $this->bDisableInvoiceSettingModification));
+                                ?>
+                            </div>
+
+                            <div class="line form-line">
+                                <label class="form-label unit size1of4" for="id_plan_fact_lib_avoir"><?php echo $this->translate('Libellé avoir'); ?> :</label>
+                                <?php
+                                $lib_avoir = $this->plan_facturation_params->getPlanFactLibAvoir();
+                                if (empty($lib_avoir)) {
+                                    $lib_avoir = $this->translate('avoir');
+                                }
+                                echo Phoenix_View_Helper_Html::input(array('name' => 'plan_fact_lib_avoir', 'value' => $lib_avoir, 'class' => 'form-input unit size1of2 lastUnit', 'disabled' => $this->bDisableInvoiceSettingModification));
+                                ?>
+                            </div>
+                            <div class="line form-line">
+                                <?php echo Phoenix_View_Helper_Html::checkbox(array('name' => 'plan_facturation_params_auto_display_vat', 'value' => 1, 'default_value' => $this->plan_facturation_params->getPlanFacturationParamsAutoDisplayVat(), 'class' => 'form-checkbox')) ?>
+                                <label for="id_plan_facturation_params_auto_display_vat" class="form-label unit size1of4"><?php echo $this->translate('Afficher le montant HT et TVA sur débours (TVA 20% France)'); ?></label>
+                            </div>
+                            <div class="line form-line">
+                                <label class="form-label unit size1of4" for="id_plan_fact_info"><?php echo $this->translate('Informations diverses'); ?> :</label>
+                                <?php echo Phoenix_View_Helper_Html::textarea(array('name' => 'plan_fact_info', 'value' => $this->plan_facturation_params->getPlanFactInfo(), 'class' => 'unit size3of4 form-textarea lastUnit ' . ($bValidated ? 'class_fact_params' : ''), 'disabled' => $this->bDisableInvoiceSettingModification, 'rows' => '3', 'cols' => '60', 'model_name' => 'PlanFacturationParams', 'primary_value' => $this->plan_facturation_params->getPlanFactId())) ?>
+                            </div>
+
+                            <div class="line form-line">
+                                <label class="form-label unit size1of4" for="id_plan_fact_note_interne"><?php echo $this->translate('Notes internes'); ?> :</label>
+                                <?php echo Phoenix_View_Helper_Html::textarea(array('name' => 'plan_fact_note_interne', 'value' => $this->plan_facturation_params->getPlanFactNoteInterne(), 'class' => 'unit size3of4 form-textarea lastUnit ' . ($bValidated ? 'class_fact_params' : ''), 'disabled' => $this->bDisableInvoiceSettingModification, 'rows' => '3', 'cols' => '60', 'model_name' => 'PlanFacturationParams', 'primary_value' => $this->plan_facturation_params->getPlanFactId())) ?>
+                            </div>
+                            <?php if (in_array($this->operation->getOpStatusId(), array(Operations::STATUS_EN_COURS, Operations::STATUS_ACCEPTE, Operations::STATUS_SOLDE))) { ?>
+                                <div class="line form-line">
+                                    <input type="submit" value="<?php echo $this->translate('Valider'); ?>" <?php echo ($this->bDisableInvoiceSettingModification) ? 'disabled' : '' ?> class="btn btn-orange push1of4"/>
+                                </div>
+                            <?php } ?>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <?php if($bRequestForFundsIsAllowed || $bStatusOfTheCostsIsAllowed) { ?>
+            <div class="unit size1of2 lastUnit">
+                <?php if($bRequestForFundsIsAllowed) { ?>
+                <div class="box">
+                    <div class="line box-hd">
+                        <h2 class="box-title"><?php echo $this->translate('Appel de fond'); ?></h2>
+                    </div>
+                    <div class="box-bd">
+                        <div class="form-section">
+                            <table class="list">
+                                <tr class="alt noborder">
+                                    <td width="25%"><?php echo $this->translate('Montant estimé'); ?> :</td>
+                                    <td ><?php echo Phoenix_Data_Convert::formatMoney($this->iEstimatedAdf) ?></td>
+                                    <td colspan="2"></td>
+                                </tr>
+                                <tr>
+                                    <td><?php echo $this->translate('Montant facturé'); ?> :</td>
+                                    <td ><?php echo Phoenix_Data_Convert::formatMoney($this->iInvoicedAdf) ?></td>
+                                    <td colspan="2"></td>
+                                </tr>
+                                <tr class="alt noborder">
+                                    <td><?php echo $this->translate('Montant encaissé'); ?> :</td>
+                                    <td width="20%"><?php echo Phoenix_Data_Convert::formatMoney($this->iChashedAdf) ?></td>
+                                    <td width="10%"></td>
+                                    <td class="text-ok"><?php echo Phoenix_Data_Convert::formatMoney($this->iInvoicedAdf) ?></td>
+                                </tr>
+                                <tr>
+                                    <td><?php echo $this->translate('Montant utilisé'); ?> :</td>
+                                    <td><?php echo Phoenix_Data_Convert::formatMoney($this->iUsedAdf) ?></td>
+                                    <td></td>
+                                    <td><?php echo Phoenix_Data_Convert::formatNumber($this->iUsedAdfPourcentage) ?> %</td>
+                                </tr>
+                                <tr class="alt noborder">
+                                    <td><?php echo $this->translate('Montant disponible'); ?> :</td>
+                                    <td class="text-ko"><?php echo Phoenix_Data_Convert::formatMoney($this->iAvailable) ?></td>
+                                    <td colspan="2"></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="section">
+                            <div class="section-hd">
+                                <h2 class="section-title"><?php echo $this->translate('Autorisation de découvert'); ?></h2>
+                            </div>
+                            <div class="section-bd">
+                                <div class="form-line line">
+                                    <span class="form-label unit size1of4"><?php echo $this->translate('Limite de découvert'); ?> :</span>
+                                    <span class="form-text unit size3of4"><?php echo $this->operation->getMontantsDecouvert('Dec_Montant_Accord'); ?> </span>
+                                </div>
+                                <div class="line form-section">
+                                    <input type="button" value="<?php echo $this->translate('Demander'); ?>" class="btn btn-orange" id="btn_decouvert"/>
+                                </div>
+                                <div id="id_div_decouverts">
+                                    <?php echo $this->partial('/facturation/decouverts.phtml', array('decouverts' => $this->operation->getOperationDecouvertss())) ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <?php } if ($bStatusOfTheCostsIsAllowed) { ?>
+
+                <div class="box">
+                    <div class="line box-hd">
+                        <h2 class="box-title"><?php echo $this->translate('Statut des coûts'); ?></h2>
+                    </div>
+                    <div class="box-bd">
+                        <div class="form-section">
+                            <?php
+                            $coutEstimesSaisis = $this->operation->hasCoutsEstimValides();
+                            $coutReelsSaisis = $this->operation->hasCoutsReelsValides();
+                            ?>
+                            <div class="line form-line">
+                                <label class="form-label unit size1of5"><?php echo $this->translate('Coûts estimés'); ?> :</label>
+                                <span class="form-text unit size2of5 <?php echo $coutEstimesSaisis ? "" : "text-waiting"; ?>">
+                                    <?php echo $coutEstimesSaisis ? $this->translate('Renseignés') : $this->translate('En attente'); ?>
+                                </span>
+
+                                <label class="form-label unit size1of5"><?php echo $this->translate('Coûts réels'); ?> :</label>
+                                <span class="form-text unit size1of5 <?php echo $coutReelsSaisis ? "" : "text-waiting"; ?>">
+                                    <?php echo $coutReelsSaisis ? $this->translate('Renseignés') : $this->translate('En attente'); ?>
+                                </span>
+                            </div>
+
+                            <div class="line form-line">
+                                <?php if (!$coutReelsSaisis && $this->operation->isRelanceCoutsPossible()) { ?>
+                                    <input id="btn_relance_couts" type="button" value="<?php echo $this->translate('Relancer'); ?>" class="btn btn-orange"/>
+                                <?php } ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                 <?php } ?>
+            </div>
+            <?php } ?>
+        </div>
+        <div class="line">
+            <div class="unit size1of1 lastUnit">
+                <div class="box box-blue">
+                    <div class="line box-hd">
+                        <h2 class="box-title"><?php echo $this->translate('Plan de facturation'); ?></h2>
+                    </div>
+                    <div class="box-bd">
+                        <div class="list-actions">
+                            <div class="unit col">
+                                <a class="icon icon-32 icon-excel" href="<?php echo $this->url(array('action' => 'planfacturationdetails', 'controller' => 'facturation', 'module' => 'operation', 'format' => 'csv'), null, false) . '?' . $_SERVER['QUERY_STRING'] ?>" title="<?php echo $this->translate('Exporter au format Excel'); ?>"><?php echo $this->translate('Exporter au format Excel'); ?></a>
+                            </div>
+                            <div class="unit col">
+                                <input type="button" <?php echo $this->bDisableInvoiceSettingModification ? 'disabled' : ''; ?> value="<?php echo $this->translate('Nouvelle facture'); ?>" class="btn btn-big btn-orange" id="btn_new_factu" />
+                            </div>
+                        </div>
+                        <div id="id_div_plan_facturation_details">
+                            <?php echo $this->partial('/facturation/planfacturationdetails.phtml', array('plan_facturation_details' => $this->plan_facturation_details)) ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="line">
+            <div class="unit size1of1 lastUnit">
+                <div class="box box-blue">
+                    <div class="line box-hd">
+                        <h2 class="box-title"><?php echo $this->translate('Factures'); ?></h2>
+                    </div>
+                    <div class="box-bd">
+                        <div class="list-actions">
+                            <div class="unit col">
+                                <a class="icon icon-32 icon-excel" href="<?php echo $this->url(array('action' => 'rubriquesfactures', 'controller' => 'facturation', 'module' => 'operation', 'format' => 'csv'), null, false) ?>" title="<?php echo $this->translate('Exporter au format Excel'); ?>"><?php echo $this->translate('Exporter au format Excel'); ?></a>
+                            </div>
+                            <div class="unit">
+                                <h2 class="list-title"><?php echo $this->translate('Valeurs facturées par rubriques'); ?></h2>
+                            </div>
+                            <div class="unit rightUnit">
+                                <table class="list-total">
+                                    <tbody>
+                                        <tr>
+                                            <td><?php echo $this->translate('Total'); ?> :</td>
+                                            <td width="110" align="center"><?php echo Phoenix_Data_Convert::formatMoney($this->operation->getInvoiceAmountExcludingVat()) ?></td>
+                                            <td width="110" align="center" class="column-total"><?php echo Phoenix_Data_Convert::formatMoney($this->operation->getInvoiceAmountIncludingVat()) ?></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <table class="list">
+                            <thead>
+                                <tr>
+                                    <th><span class="notsortable"><?php echo $this->translate('Rubriques'); ?></span></th>
+                                    <th width="120"><span class="notsortable"><?php echo $this->translate('Type de frais'); ?></span></th>
+                                    <th width="120"><span class="notsortable"><?php echo $this->translate('TVA'); ?></span></th>
+                                    <th width="120"><span class="notsortable"><?php echo $this->translate('Montant HT'); ?></span></th>
+                                    <th width="120"><span class="notsortable"><?php echo $this->translate('Montant TTC'); ?></span></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($this->operation->getMontantFactureByRubrique() as $row) { ?>
+                                    <tr class="<?php echo $this->cycle(array('', 'alt'), 'factu_rubriques')->next() ?>">
+                                        <td><?php echo $row['fact_rub_libelle'] ?></td>
+                                        <td><?php echo $row['rubrique_type_libelle'] ?></td>
+                                        <td><?php echo $row['r_tva_libelle'] ?></td>
+                                        <td><?php echo Phoenix_Data_Convert::formatMoney($row['fact_rub_montant_ht']) ?></td>
+                                        <td><?php echo Phoenix_Data_Convert::formatMoney($row['fact_rub_montant_ttc']) ?></td>
+                                    </tr>
+                                <?php } ?>
+                            </tbody>
+                        </table>
+                        <div class="list-actions">
+                            <div class="unit col">
+                                <a class="icon icon-32 icon-excel" href="<?php echo $this->url(array('action' => 'factures', 'format' => 'csv'), null, false) . '?' . $_SERVER['QUERY_STRING'] ?>" title="<?php echo $this->translate('Exporter au format Excel'); ?>"><?php echo $this->translate('Exporter au format Excel'); ?></a>
+                            </div>
+                            <div class="unit col">
+                                <a href="javascript:void(0)" onclick="javascript:genFactures()" type="button"  class="btn btn-big btn-orange" ><?php echo $this->translate('Générer / Regénérer'); ?></a>
+                            </div>
+                        </div>
+                        <div id="id_div_factures">
+                            <?php echo $this->partial('/facturation/factures.phtml', array('factures' => $this->factures, 'bDisplaySpe' => $this->bDisplaySpe)) ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<script language="javascript">
+
+    $(document).ready(function () {
+        /**
+         * DIALOG / DEMANDE DE DECOUVERT
+         */
+        $('#btn_decouvert').click(function (e) {
+            AjaxComponent.ajaxDialog(
+                    '/operation/facturation/popupdecouvert',
+                    {op_id: $('#id_input_op_id').val()},
+            {
+                width: 400,
+                modal: true,
+                resizable: false,
+                title: '<?php echo $this->translate('Demande de découvert'); ?>',
+                id: 'id_popup_add_decouvert'
+            });
+        });
+
+        /**
+         * DIALOG / NOUVELLE FACTURE
+         */
+        $('#btn_new_factu').click(function (e) {
+            AjaxComponent.ajaxDialog(
+                    '/operation/facturation/popupplanfacturation',
+                    {op_id: $('#id_input_op_id').val()},
+            {
+                width: 400,
+                modal: true,
+                resizable: false,
+                title: '<?php echo $this->translate('Ajouter une facture'); ?>',
+                id: 'id_popup_add_plan_factu'
+            });
+        });
+
+        $('#btn_relance_couts').click(function (e) {
+            AjaxComponent.ajaxDialog(
+                    '/operation/facturation/popuprelancecouts',
+                    {op_id: $('#id_input_op_id').val()},
+            {
+                width: 400,
+                modal: true,
+                resizable: false,
+                title: '<?php echo $this->translate('Relancer la validation des coûts'); ?>',
+                id: 'id_popup_relance_couts'
+            });
+        });
+
+
+        $('.class_fact_num_cmd').updateField('/operation/facturation/updatenocmd');
+
+
+        $('.class_fact_params').updateField('/operation/facturation/updatenote');
+
+    });
+
+    function refreshPlanfacturation() {
+        AjaxComponent.ajaxDiv('/operation/facturation/planfacturationdetails', {op_id: $('#id_input_op_id').val()}, 'id_div_plan_facturation_details');
+    }
+
+    function refreshDecouverts() {
+        AjaxComponent.ajaxDiv('/operation/facturation/decouverts', {op_id: $('#id_input_op_id').val()}, 'id_div_decouverts');
+    }
+
+    function refreshFactures() {
+        AjaxComponent.ajaxDiv('/operation/facturation/factures', {op_id: $('#id_input_op_id').val()}, 'id_div_factures');
+    }
+
+    function validateFacture(factureId) {
+        Component.confirm('<?php echo $this->translate('Êtes-vous sûre de vouloir valider la facture'); ?> ?',
+                function () {
+                    AjaxComponent.ajaxQuery('/operation/facturation/validatefacture', {fieldId: '', fieldName: 'fact_validated', fieldValue: 1, modelName: 'Factures', primaryValue: factureId})
+                            .success(function () {
+                                refreshFactures();
+                            });
+                });
+    }
+
+    function unvalidateFacture(factureId) {
+        Component.confirm('<?php echo $this->translate('Êtes-vous sûre de vouloir dévalider la facture'); ?> ?',
+                function () {
+                    AjaxComponent.ajaxQuery('/operation/facturation/unvalidatefacture', {fieldId: '', fieldName: 'fact_validated', fieldValue: 1, modelName: 'Factures', primaryValue: factureId})
+                            .success(function () {
+                                refreshFactures();
+                            });
+                });
+    }
+
+    function deletePlanfactuDetail(pfdId) {
+        Component.confirm('<?php echo $this->translate('Êtes-vous sûre de vouloir supprimer cette échenance de facturation'); ?> ?',
+                function () {
+                    AjaxComponent.ajaxDiv('/operation/facturation/deleteplanfactudetail', {pfd_id: pfdId}, 'id_div_plan_facturation_details');
+                });
+    }
+
+    function genFactures() {
+        Component.confirm('<?php echo $this->translate('Voulez-vous générer les factures'); ?>?',
+                function () {
+                    AjaxComponent.ajaxDiv('/operation/facturation/genfactures', {op_id: $('#id_input_op_id').val()}, 'id_div_factures');
+                });
+    }
+
+    function editPlanfactuDetail(pfdId) {
+        AjaxComponent.ajaxDialog(
+                '/operation/facturation/popupplanfacturation',
+                {pfd_id: pfdId},
+        {
+            width: 400,
+            modal: true,
+            resizable: false,
+            title: '<?php echo $this->translate('Modifier une facture'); ?>',
+            id: 'id_popup_add_plan_factu'
+        });
+    }
+
+    function deleteFacture(factId) {
+        Component.confirm('<?php echo $this->translate('Voulez-vous supprimer cette facture'); ?>?',
+                function () {
+                    AjaxComponent.ajaxQuery('/operation/facturation/deletefacture', {fact_id: factId})
+                            .success(function (data) {
+                                if (data.action != 1) {
+                                    refreshFactures();
+                                }
+                            });
+                });
+    }
+
+
+
+
+
+</script>

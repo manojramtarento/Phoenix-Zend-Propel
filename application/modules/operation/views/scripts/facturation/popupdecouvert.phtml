@@ -1,0 +1,41 @@
+<form method="post" id="id_form_add_decouvert" action="<?php echo $this->url(array('controller' => 'facturation', 'module' => 'operation', 'action' => 'adddecouvert')) ?>">
+	<div class="line form-line">
+		<label class="form-label unit size2of5"><?php echo $this->translate('Client');?> :</label>
+		<span class="form-text unit size3of5"><?php echo $this->operation->getClients()->getClLibelle() ?></span>
+	</div>
+	<div class="line form-line">
+		<label class="form-label unit size2of5"><?php echo $this->translate('N° OP');?> :</label>
+		<span class="form-text unit size3of5"><?php echo $this->operation->getOpNumber() ?></span>
+	</div>
+	<div class="line form-line">
+		<label class="form-label unit size2of5" for="id_op_dec_mont_demande"><?php echo $this->translate('Montant du découvert');?> :</label>
+		<div class="unit size2of5 gutter10">
+			<?php echo Phoenix_View_Helper_Html::input(array('name' => 'op_dec_mont_demande', 'class' => 'form-input size1of1 text-right')); ?>
+		</div>
+		<span class="form-text unit size1of5">€</span>
+	</div>
+	<div class="line form-line">
+		<label class="form-label" for="id_op_dec_motif_demande"><?php echo $this->translate('Motif de la demande');?> :</label>
+	</div>
+	<div class="line form-section">
+		<?php echo Phoenix_View_Helper_Html::textarea(array('name'=>'op_dec_motif_demande','rows'=>4,'cols'=>60,'class'=>'form-textarea size1of1')) ?>
+	</div>
+	<div class="text-center">
+		<input type="hidden" name="op_id" value="<?php echo $this->operation->getOpId() ?>" />
+		<input type="submit" value="<?php echo $this->translate('Envoyer la demande'); ?>" class="btn btn-orange" />
+	</div>
+</form>
+
+
+<script language="javascript">
+	
+	AjaxComponent.ajaxForm(
+		'/operation/facturation/adddecouvert', 
+		'id_form_add_decouvert', 
+		'id_popup_add_decouvert',
+		function(){
+			refreshDecouverts();
+		}
+	);
+		
+</script>

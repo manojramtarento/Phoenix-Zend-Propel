@@ -1,0 +1,373 @@
+<?php
+$bConsumeringDatesAreAllowed = Phoenix_Auth_User::getInstance()->isAllowed(AclFonctionnalites::CONSUMERING_DATES);
+$bEndDateIsAllowed = Phoenix_Auth_User::getInstance()->isAllowed(AclFonctionnalites::END_DATE);
+$bCreateTasksIsAllowed = Phoenix_Auth_User::mvcActionIsAllowed('operation', 'description', 'createtasks');
+$bInitGedelogIsAllowed = Phoenix_Auth_User::mvcActionIsAllowed('operation', 'description', 'initgedelog');
+?>
+<div id="id_dialog_search" title="<?php echo $this->translate('Recherche avancée'); ?>" style="display:none;">
+    <form action="/operation/listing/index" method="get" style="border:1px black">
+        <div class="line">
+            <div class="unit size1of2">
+                <div class="section col">
+                    <div class="section-hd">
+                        <h2 class="section-title"><?php echo $this->translate('Références d\'opération'); ?></h2>
+                    </div>
+                    <div class="section-bd">
+                        <div class="line form-line">
+                            <label class="unit size1of2 form-label" for="id_autocomplete_op_cl_id"><?php echo $this->translate('Nom du client'); ?> :</label>
+                            <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_op_cl_id', 'type' => 'hidden')); ?>
+                            <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'autocomplete_op_cl_id', 'class' => 'unit size1of2 form-input input-autocomplete lastUnit')) ?>
+                        </div>
+
+						<div class="line form-line">
+                            <label class="unit size1of2 form-label" for="id_autocomplete_op_cl_type_id"><?php echo $this->translate('Catégorie'); ?> :</label>
+                            <?php echo Phoenix_View_Helper_Html::selectFromTable('View_Rclient_Types_Listing', array('name' => 'find_cl_type_id', 'value' => $this->cl_type_id, 'class' => 'form-select unit size1of2 lastUnit'), array('name' => 'cl_type_libelle', 'value' => 'cl_type_id'), array('default_label' => $this->translate('choisir') . '...', 'clause_order' => 'ordre asc')) ?>
+                        </div>
+
+						<div class="line form-line">
+                            <label class="unit size1of2 form-label" for="id_autocomplete_op_cl_activity_id"><?php echo $this->translate('Secteur d\'activité'); ?> :</label>
+                            <?php echo Phoenix_View_Helper_Html::selectFromTable('View_Rclient_Activites_Listing', array('name' => 'find_cl_activity_id', 'value' => $this->cl_activity_id, 'class' => 'form-select unit size1of2 lastUnit'), array('name' => 'cl_activity_libelle', 'value' => 'cl_activity_id'), array('default_label' => $this->translate('choisir') . '...', 'clause_order' => array('cl_type_id desc', 'parent_cl_activity_id asc', 'ordre asc'))) ?>
+                        </div>
+
+
+                        <div class="line form-line">
+                            <label class="unit size1of2 form-label" for="id_autocomplete_op_id"><?php echo $this->translate('Numéro d\'opération'); ?> :</label>
+                            <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_op_id', 'type' => 'hidden')); ?>
+                            <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'autocomplete_op_id', 'class' => 'unit size1of2 form-input input-autocomplete lastUnit')) ?>
+                        </div>
+
+                        <div class="line form-line">
+                            <label class="unit size1of2 form-label" for="findword"><?php echo $this->translate('Mots clefs'); ?> :</label>
+                            <input class="unit size1of2 form-input lastUnit" type="text" id="findword" name="findword" value="<?php echo $this->getParam('findword') ?>" />
+                        </div>
+
+                        <div class="line form-line">
+                            <label class="unit size1of2 form-label" for='id_find_actif'><?php echo $this->translate('Actif'); ?> :</label>
+                            <?php echo Phoenix_View_Helper_Html::checkbox(array('name' => 'find_actif', 'class' => 'unit size2of2 form-input', 'value' => 1)) ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="unit size1of2 lastUnit">
+                <div class="section">
+                    <div class="section-hd">
+                        <h2 class="section-title"><?php echo $this->translate('Responsables'); ?></h2>
+                    </div>
+                    <div class="section-bd">
+                        <div class="line form-line">
+                            <label class="form-label unit size1of2" for="id_find_op_dc_id"><?php echo $this->translate('Directeur de clientèle'); ?> :</label>
+                            <?php echo Phoenix_View_Helper_Html_Select::selectUsersByuserType(RUserTypes::KEY_ACCOUNT_MANAGER_USER_TYPE, array('name' => 'find_op_dc_id', 'class' => 'form-select unit size1of2 lastUnit'), array('default_label' => $this->translate('Choisir') . '...'), $this->oldDcUsers); ?>
+                        </div>
+
+                        <div class="line form-line">
+                            <label class="form-label unit size1of2" for="id_find_op_cp_id"><?php echo $this->translate('Gestionnaire Projets Clients'); ?> :</label>
+                            <?php
+                            echo Phoenix_View_Helper_Html_Select::selectUsersByuserType(RUserTypes::PROJECT_MANAGER_USER_TYPE, array('name' => 'find_op_cp_id', 'class' => 'form-select unit size1of2 lastUnit'), array('default_label' => $this->translate('Choisir') . '...'), $this->oldCpUsers);
+                            ?>
+                        </div>
+                        <?php if (Phoenix_Auth_User::getInstance()->isAllowed(AclFonctionnalites::PROJECT_MANAGER)) { ?>
+                        <div class="line form-line">
+                            <label class="form-label unit size1of2" for="id_find_op_cdp_id"><?php echo $this->translate('label_project_manager'); ?> :</label>
+                            <?php
+                            echo Phoenix_View_Helper_Html_Select::selectUsersByuserType(RUserTypes::PROJECT_MANAGER_USER_TYPE, array('name' => 'find_op_cdp_id', 'class' => 'form-select unit size1of2 lastUnit'), array('default_label' => $this->translate('Choisir') . '...'), $this->oldCdpUsers);
+                            ?>
+                        </div>
+                        <?php 
+                    } ?>
+                        <div class="line form-line">
+                            <label class="unit size1of2 form-label" for="id_find_sales_team"><?php echo $this->translate('Équipe de vente'); ?> :</label>
+                            <?php echo My_View_Helper_Html::selectFromTable('r_operation_sales_teams', array('name' => 'find_sales_team', 'class' => 'unit size1of2 form-select'), array('value' => 'r_ope_sales_team_id', 'name' => 'r_ope_sales_team_libelle'), array('default_label' => $this->translate('Toutes équipes'))) ?>
+                        </div>
+
+                        <div class="line form-line">
+                            <div class="unit size1of1" id="id_block_sales_team_members" style="overflow:auto;max-height:140px;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="line">
+            <div class="unit size1of2">
+                <div class="section col">
+                    <div class="section-hd">
+                        <h2 class="section-title"><?php echo $this->translate('Dates'); ?></h2>
+                    </div>
+                    <div class="section-bd">
+                        <div class="line form-line">
+                            <label class="unit size1of2 form-label" for="find_op_stamp_start"><?php echo $this->translate('Début de gestion'); ?> :</label>
+                            <div class="unit size1of2">
+                                <div class="unit size1of4">
+                                    <?php echo Phoenix_View_Helper_Html_Select::selectComparateur(array('name' => 'find_op_stamp_start_comp', 'class' => 'form-select')) ?>
+                                </div>
+                                <div class="unit size3of4 date">
+                                    <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_op_stamp_start', 'value' => $this->getParam('find_op_stamp_start'), 'class' => 'date-input', 'placeholder' => $this->translate('JJ/MM/AAAA'), 'maxlenght' => '10')); ?>
+                                </div>
+                            </div>
+                        </div>
+                        <?php if ($bEndDateIsAllowed) { ?>
+                        <div class="line form-line">
+                            <label class="unit size1of2 form-label" for="find_op_stamp_end_comp"><?php echo $this->translate('Fin de gestion'); ?> :</label>
+                            <div class="unit size1of2">
+                                <div class="unit size1of4">
+                                    <?php echo Phoenix_View_Helper_Html_Select::selectComparateur(array('name' => 'find_op_stamp_end_comp', 'class' => 'form-select')) ?>
+                                </div>
+                                <div class="unit size3of4 date">
+                                    <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_op_stamp_end', 'value' => $this->getParam('find_op_stamp_end'), 'class' => 'date-input', 'placeholder' => $this->translate('JJ/MM/AAAA'), 'maxlenght' => '10')); ?>
+                                </div>
+                            </div>
+                        </div>                        
+                        <?php 
+                    }
+                    if ($bConsumeringDatesAreAllowed) {
+                        ?>
+                        <div class="line form-line">
+                            <label class="unit size1of2 form-label" for="find_op_dateConso_start_comp"><?php echo $this->translate('Début de conso'); ?> :</label>
+                            <div class="unit size1of2">
+                                <div class="unit size1of4">
+                                    <?php echo Phoenix_View_Helper_Html_Select::selectComparateur(array('name' => 'find_op_dateConso_start_comp', 'class' => 'form-select')) ?>
+                                </div>
+                                <div class="unit size3of4 date">
+                                    <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_op_dateConso_start', 'value' => $this->getParam('find_op_dateConso_start'), 'class' => 'date-input', 'placeholder' => $this->translate('JJ/MM/AAAA'), 'maxlenght' => '10')); ?>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="line form-line">
+                            <label class="unit size1of2 form-label" for="find_op_dateConso_end_comp"><?php echo $this->translate('Fin de conso'); ?> :</label>
+                            <div class="unit size1of2">
+                                <div class="unit size1of4">
+                                    <?php echo Phoenix_View_Helper_Html_Select::selectComparateur(array('name' => 'find_op_dateConso_end_comp', 'class' => 'form-select')) ?>
+                                </div>
+                                <div class="unit size3of4 date">
+                                    <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_op_dateConso_end', 'value' => $this->getParam('find_op_dateConso_end'), 'class' => 'date-input', 'placeholder' => $this->translate('JJ/MM/AAAA'), 'maxlenght' => '10')); ?>
+                                </div>
+                            </div>
+                        </div>
+                    <?php 
+                }
+                if (Phoenix_Auth_User::getInstance()->isAllowed(AclFonctionnalites::END_POSTE_DATE)) { ?>
+                        <div class="line form-line">
+                            <label class="unit size1of2 form-label" for="find_op_datePoste_end_comp"><?php echo $this->translate('Fin de gestion postale'); ?>:</label>
+                            <div class="unit size1of2">
+                                <div class="unit size1of4">
+                                    <?php echo Phoenix_View_Helper_Html_Select::selectComparateur(array('name' => 'find_op_datePoste_end_comp', 'class' => 'form-select')) ?>
+                                </div>
+                                <div class="unit size3of4 date">
+                                    <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_op_datePoste_end', 'value' => $this->getParam('find_op_datePoste_end'), 'class' => 'date-input', 'placeholder' => $this->translate('JJ/MM/AAAA'), 'maxlenght' => '10')); ?>
+                                </div>
+                            </div>
+                        </div>
+                        <?php 
+                    } ?>                      
+                    </div>
+                </div>
+            </div>
+            <div class="unit size1of2 lastUnit">
+                <div class="section">
+                    <div class="section-hd">
+                        <h2 class="section-title"><?php echo $this->translate('Statut'); ?></h2>
+                    </div>
+                    <div class="section-bd">
+                        <div class="line form-line">
+                            <?php echo My_View_Helper_Html::selectFromTable('r_operation_status', array('name' => 'find_op_status_id', 'class' => 'unit size1of1 form-select'), array('value' => 'os_id', 'name' => 'os_libelle'), array('default_label' => $this->translate('lable_all_status'))) ?>
+                        </div>
+                        <div class="line form-line">
+                            <div class="unit size1of2 date">
+                                <?php echo $this->translate('Date min'); ?>. :
+                            </div>
+                            <div class="unit size1of2 date">
+                                <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_op_date_status_min', 'value' => $this->getParam('find_op_date_status_min'), 'class' => 'date-input', 'placeholder' => $this->translate('JJ/MM/AAAA'), 'maxlenght' => '10')); ?>
+                            </div>
+                        </div>
+                        <div class="line form-line">
+                            <div class="unit size1of2 date">
+                                <?php echo $this->translate('Date max'); ?>. :
+                            </div>
+                            <div class="unit  date">
+                                <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_op_date_status_max', 'value' => $this->getParam('find_op_date_status_max'), 'class' => 'date-input', 'placeholder' => $this->translate('JJ/MM/AAAA'), 'maxlenght' => '10')); ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="line">
+            <div class="unit size1of2">
+                <div class="section">
+                    <div class="section-hd">
+                        <h2 class="section-title"><?php echo $this->translate('Date de création de l\'opération'); ?></h2>
+                    </div>
+                    <div class="section-bd">
+                        <div class="line form-line">
+                            <div class="unit size1of2 date">
+                                <?php echo $this->translate('Date min'); ?>. :
+                            </div>
+                            <div class="unit size1of2 date">
+                                <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_date_create_min', 'value' => $this->getParam('find_date_create_min'), 'class' => 'date-input', 'placeholder' => $this->translate('JJ/MM/AAAA'), 'maxlenght' => '10')); ?>
+                            </div>
+                        </div>
+                        <div class="line form-line">
+                            <div class="unit size1of2 date">
+                                <?php echo $this->translate('Date max'); ?>. :
+                            </div>
+                            <div class="unit  date">
+                                <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_date_create_max', 'value' => $this->getParam('find_date_create_max'), 'class' => 'date-input', 'placeholder' => $this->translate('JJ/MM/AAAA'), 'maxlenght' => '10')); ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <?php if ($bCreateTasksIsAllowed || $bInitGedelogIsAllowed) { ?>
+                <div class="section">
+                    <div class="section-hd">
+                        <h2 class="section-title"><?php echo $this->translate('Traitements'); ?></h2>
+                    </div>
+                    <div class="section-bd">
+                        <?php if ($bInitGedelogIsAllowed) { ?>
+                        <div class="line form-line">
+                            <label class="unit size1of2 form-label"><?php echo $this->translate('Poussée dans Gedelog'); ?></label>
+                            <?php echo My_View_Helper_Html::select(array('name' => 'find_has_opt_sync_gedelog_user_id', 'class' => 'unit size1of2 form-select'), array($this->translate('Tous') => array('value' => null), $this->translate('Oui') => array('value' => 'notnull'), $this->translate('Non') => array('value' => 'null'))) ?>
+                        </div>
+                        <?php 
+                    }
+                    if ($bCreateTasksIsAllowed) { ?>
+                        <div class="line form-line">
+                            <label class="unit size1of2 form-label"><?php echo $this->translate('Tâches crées'); ?></label>
+                            <?php echo My_View_Helper_Html::select(array('name' => 'find_has_opt_sync_task_user_id', 'class' => 'unit size1of2 form-select'), array($this->translate('Tous') => array('value' => null), $this->translate('Oui') => array('value' => 'notnull'), $this->translate('Non') => array('value' => 'null'))) ?>
+                        </div>
+                        <?php 
+                    } ?>
+                    </div>
+                </div>
+                <?php 
+            } ?>
+            </div>
+            <div class="unit size1of2 lastUnit">
+                <div class="section">
+                    <div class="section-hd">
+                        <h2 class="section-title"><?php echo $this->translate('Filtres'); ?></h2>
+                    </div>
+                    <div class="section-bd">
+                        <div class="line form-line">
+                            <label class="unit size1of2 form-label" for="id_find_op_act_id"><?php echo $this->translate('operation_business_label'); ?> :</label>
+                            <?php echo My_View_Helper_Html::selectFromTable('r_custom_activites', array('name' => 'find_op_act_id', 'class' => 'unit size1of2 form-select'), array('value' => 'act_id', 'name' => 'act_libelle'), array('default_label' => $this->translate('label_all_businesses'), 'clause_order' => 'ord ASC')) ?>
+                        </div>
+                        <div class="line form-line">
+                            <label class="unit size1of2 form-label" for="id_find_op_type_id"><?php echo $this->translate('operation_category_label'); ?> :</label>
+                            <?php echo My_View_Helper_Html::selectFromTable('r_operation_type', array('name' => 'find_op_type_id', 'class' => 'unit size1of2 form-select'), array('value' => 'ot_id', 'name' => 'ot_libelle', 'class' => 'act_id'), array('default_label' => $this->translate('label_all_catagories'), 'clause_order' => 'ord ASC')) ?>
+                        </div>
+                        <div class="line form-line">
+                            <label class="unit size1of2 form-label" for="id_find_op_subtype_id"><?php echo $this->translate('operation_mecanic_label'); ?> :</label>
+                            <?php echo My_View_Helper_Html::selectFromTable('r_operation_type_sub', array('name' => 'find_op_subtype_id', 'class' => 'unit size1of2 form-select'), array('value' => 'ost_id', 'name' => 'ost_libelle', 'class' => 'ost_ot_id'), array('default_label' => $this->translate('label_all_mecanics'), 'clause_order' => 'ord ASC')) ?>
+                        </div>
+                        <div class="line form-line">
+                            <div class="unit size1of2">
+                                <?php echo $this->translate('label_universe'); ?> :
+                            </div>
+                            <div class="unit size1of2 lastUnit">
+                                <?php echo Phoenix_View_Helper_Html::checkbox(array('name' => 'select_all_universes', 'class' => 'select_all_options', 'related_multiple_select_list_id' => 'id_find_r_operation_universe_id', 'title' => $this->translate('select_all_deselect_all_label'), 'value' => 1)) ?>
+                                <br/>
+                                <?php echo My_View_Helper_Html::selectFromTable('r_operation_universes', array('id' => 'id_find_r_operation_universe_id', 'name' => 'find_r_operation_universe_id[]', 'class' => 'unit size1of1 multiple-select-list-binded-to-checkbox', 'related-checkbox-id' => 'id_select_all_universes', 'multiple' => 'multiple', 'size' => 7), array('value' => 'r_operation_universe_id', 'name' => 'r_operation_universe_label'), array('clause_where' => 'r_operation_universe_actif = 1')) ?>
+                            </div>
+                        </div>
+                        <div class="line form-line">
+                            <div class="unit size1of2">
+                                <?php echo $this->translate('label_participation_media'); ?> :
+                            </div>
+                            <div class="unit size1of2 lastUnit">
+                                <?php echo Phoenix_View_Helper_Html::checkbox(array('name' => 'select_all_medias', 'class' => 'select_all_options', 'related_multiple_select_list_id' => 'id_find_r_operation_media_id', 'title' => $this->translate('select_all_deselect_all_label'), 'value' => 1)) ?>
+                                <br/>
+                                <?php echo My_View_Helper_Html::selectFromTable('r_operation_medias', array('id' => 'id_find_r_operation_media_id', 'name' => 'find_r_operation_media_id[]', 'class' => 'unit size1of1 multiple-select-list-binded-to-checkbox', 'related-checkbox-id' => 'id_select_all_medias', 'multiple' => 'multiple', 'size' => 7), array('value' => 'r_operation_media_id', 'name' => 'r_operation_media_label'), array('clause_where' => 'r_operation_media_actif = 1')) ?>
+                            </div>
+                        </div>
+                        <div class="line form-line">
+                            <label class="unit size1of2 form-label" for="id_op_project_type_id"><?php echo $this->translate('operation_project_complexity'); ?> :</label>
+                            <?php echo My_View_Helper_Html::selectFromTable('r_project_type', array('name' => 'find_op_project_type_id', 'class' => 'unit size1of2 form-select'), array('value' => 'r_project_type_id', 'name' => 'r_project_type_libelle'), array('default_label' => $this->translate('all_project_complexities'))) ?>
+                        </div>
+                        <div class="line form-line">
+                                <label class="form-label unit size1of2" for="id_op_classification_id"><?php echo $this->translate('Classification'); ?> :</label>
+                                <?php echo My_View_Helper_Html::selectFromTable('r_operation_classifications', array('name' => 'find_op_classification_id', 'class' => 'unit size1of2 form-select'), array('value' => 'r_operation_classification_id', 'name' => 'r_operation_classification_label'), array('default_label' => $this->translate('Toute classification'))) ?>
+                        </div>
+                        <br/>
+                        <div class="line form-line">
+                            <div class="unit col">
+                                <?php echo My_View_Helper_Html::checkbox(array('name' => 'find_actif', 'value' => 0)); ?>
+                                <label class="form-label" for="id_find_actif"> <?php echo $this->translate('Opération inactive'); ?></label>
+                            </div>
+                           
+                            <div class="unit col">
+                                <?php echo My_View_Helper_Html::checkbox(array('name' => 'find_nb_contrats', 'value' => 1)); ?>
+                                <label  class="form-label" for="id_find_nb_contrats"><?php echo $this->translate('Sous contrat'); ?> </label>
+                            </div>
+                            <?php if (Phoenix_Auth_User::mvcActionIsAllowed('operation', 'description', 'statistiques')) { ?>
+                            <div class="unit">
+                                <?php echo My_View_Helper_Html::checkbox(array('name' => 'find_op_freq_stat_mail_id', 'value' => 1)); ?>
+                                <label class="form-label"  for=""><?php echo $this->translate('Statistiques'); ?></label>
+                            </div>
+                            <?php 
+                        } ?>
+                        </div>     
+                        <div class="line form-line">
+                            <label class="unit size1of2 form-label" for="id_op_devis_lang"><?php echo $this->translate('Langue Docs'); ?> :</label>
+                            <?php echo My_View_Helper_Html::selectFromTable('r_languages', array('name' => 'find_op_devis_lang', 'class' => 'unit size1of2 form-select'), array('name' => 'r_lang_libelle', 'value' => 'r_lang_code'), array('default_label' => $this->translate('Tous'), 'clause_where' => 'r_lang_has_traduction_devis = 1')) ?>
+                        </div>
+                        <div class="line form-line">
+                            <div class="unit size1of2">
+                                <?php echo $this->translate('Pays concernés'); ?> :
+                            </div>
+                            <div class="unit size1of2 lastUnit">
+                                <?php echo Phoenix_View_Helper_Html::checkbox(array('name' => 'select_all_countries', 'class' => 'select_all_options', 'related_multiple_select_list_id' => 'id_find_r_country_id', 'title' => $this->translate('select_all_deselect_all_label'), 'value' => 1)) ?>
+                                <br/>
+                                <?php echo My_View_Helper_Html::selectFromTable('r_countries', array('id' => 'id_find_r_country_id', 'name' => 'find_r_country_id[]', 'class' => 'unit size1of1 multiple-select-list-binded-to-checkbox', 'related-checkbox-id' => 'id_select_all_countries', 'multiple' => 'multiple ', 'size' => 10), array(' value' => 'r_country_id', 'name' => 'r_country_name')) ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="line">
+            <div class="unit size2of2 lastUnit">
+                <div class="section-hd">
+                    <h2 class="section-title"><?php echo $this->translate('Options'); ?></h2>
+                </div>
+            </div>
+        </div>
+<?php
+$iKey = 0;
+foreach ($this->searchActivitiesOptions as $iKey => $aActivityOptions) {
+    $iModulus = $iKey % 2;
+    $sActivityLabel = $aActivityOptions['label'];
+    $sOptionsListId = $aActivityOptions['options_list_id'];
+    $aActivityKpiOptions = $aActivityOptions['options'];
+    $iSelectListSize = count($aActivityKpiOptions);
+    $iSelectListSize = $iSelectListSize > 10 ? 10 : $iSelectListSize;
+    $iSelectListSize = $iSelectListSize === 0 ? 2 : $iSelectListSize;
+
+        // Start a new line
+    if (!$iModulus) {
+        echo '<div class="line"><div class="unit size1of2">';
+    }
+        // Last element of the line
+    else {
+        echo '<div class="unit size1of2 lastUnit">';
+    }
+    ?>
+        <div class="section col">
+            <a href="javascript:void(0)" onclick="javascript:Component.resetSelect('<?php echo $sOptionsListId ?>')" ><img src="/img/icon_delete.png" title="<?php echo $this->translate('tout désélectionner'); ?>"></a><b><?php echo $sActivityLabel; ?> :</b>
+            <br />
+            <?php echo My_View_Helper_Html::select(array('name' => 'option_list[]', 'id' => $sOptionsListId, 'class' => 'unit col size1of1', 'multiple' => 'multiple', 'size' => $iSelectListSize), $aActivityKpiOptions) ?>
+        </div>
+<?php
+        // End of the element
+echo '</div>';
+
+        // End of the line
+if ($iModulus === 1) {
+    echo '</div>';
+}
+}
+?>
+        <div class="text-center">
+            <input type="submit" name="findbyfields" value="<?php echo $this->translate('Rechercher '); ?>" class="btn btn-orange">
+        </div>
+    </form>
+</div>

@@ -1,0 +1,94 @@
+<?php
+$oRRubrique = RRubriquesQuery::create()->findOneByRRubId($this->rubrique->getRRubriqueId());
+$sRubLibelle = $oRRubrique->getRRubLibelle();
+?>
+
+<div class="line box-hd class_form_rubrique_update_<?php echo $this->rubrique->getRRubriqueId() ?>" >
+    <span class="unit col box-handle" title="<?php echo $this->translate('Déplacer la rubrique'); ?>"></span>
+    <a href="javascript:void(0)" onclick="javascript:deleteRubrique(<?php echo $this->rubrique->getOstTplRubriqueId() ?>)" ost_tpl_rubrique_id="<?php $this->rubrique->getOstTplRubriqueId() ?>" class="unit col icon-list icon-delete" title="<?php echo $this->translate('Supprimer la rubrique'); ?>"><?php echo $this->translate('Supprimer la rubrique'); ?></a>
+    <h2 class="unit size1of3 col box-title"><?php echo $sRubLibelle; ?></h2>
+    <div class="unit rightUnit">
+        <a href="javascript:void(0)" class="unit icon-list btn-hide-show icon-minus" onclick="javascript:hideBox(this)" title="<?php echo $this->translate('Réduire la rubrique'); ?>"><?php echo $this->translate('Réduire la rubrique'); ?></a>
+    </div>
+</div>
+
+<div class="box-bd">
+    <table class="list list-sortable list-simple" id="list-prestation-sortable-<?php echo $this->rubrique->getOstTplRubriqueId() ?>">
+        <thead>
+            <tr>
+                <th width="15" class="column-noborder"></th>
+                <th width="15" class="column-noborder"></th>
+                <th width="15" class="column-noborder"></th>
+                <th class="column-noborder"><span class="notsortable"><?php echo $this->translate('Prestation'); ?></span></th>
+                <th width="20%"><span class="notsortable"><?php echo $this->translate('Scénario'); ?></span></th>
+                <th width="4%"><span class="notsortable"><?php echo $this->translate('Prime'); ?></span></th>
+                <th width="4%"><span class="notsortable"><?php echo $this->translate('Obligatoire'); ?></span></th>
+                <th width="4%"><span class="notsortable"><?php echo $this->translate('NPA'); ?></span></th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php
+            $oServices = $this->rubrique->getROperationTypeSubTplPrestations();
+
+            foreach ($oServices as $oService) {
+                $oRPrestation = RPrestationsQuery::create()->findOneByRPrestationId($oService->getRPrestationId());
+                ?>
+                <tr data-pos="<?php echo $oService->getOstTplPrestationOrder() ?>" class="class_form_prestation_<?php echo $this->rubrique->getOstTplRubriqueId() ?>" id="id_form_prestation_<?php echo $oService->getRPrestationId() ?>" action="<?php echo $this->url(array('module' => 'administration', 'controller' => 'rtypesdevis', 'action' => 'updateprestation')) ?>" model_name="ROperationTypeSubTplPrestation" primary_value="<?php echo $oService->getOstTplPrestationId() ?>">
+                    <td class="column-handle" title="<?php echo $this->translate('Déplacer le scénario'); ?>"></td>
+                    <td>
+                        <a href="javascript:void(0)" onclick="javascript:deletePrestation(<?php echo $this->rubrique->getOstTplRubriqueId() ?>, <?php echo $oService->getOstTplPrestationId() ?>)"  class="icon-list icon-delete" title="<?php echo $this->translate('Supprimer la prestation'); ?>"><?php echo $this->translate('Supprimer la prestation'); ?></a>
+                    </td>
+                    <td><?php echo $oRPrestation->getRPrestationId(); ?></td>
+                    <td><?php echo $oRPrestation->getRPLibelle(); ?></td>
+                    <td>
+                        <?php
+                        $aScenarios = array();
+                        foreach ($this->scenarii as $oScenario) {
+                            $aScenarios[] = array('value' => $oScenario->getRScenarioNumero(), 'label' => $oScenario->getRScenarioNumero() . ' - ' . $oScenario->getRScenarios()->getRScenarioLibelle());
+                        }
+                        echo Phoenix_View_Helper_Html::select(array('name' => 'r_scenario_numero', 'value' => $oService->getRScenarioNumero(), 'class' => 'form-select size1of1 input-editable class_select_scenario', 'id' => 'id_tpl_scenario_id_' . $oService->getOstTplPrestationId()), $aScenarios, array('default_label' => ' - '));
+                        ?>
+                    </td>
+                    <td>
+                        <?php
+                        $sAdditionalCondition = 'ost_tpl_id=' . $oService->getOstTplId();
+                        // if a scenario is choosen, we display only the related reward (or nothing if no reward is associated)
+                        if ($oService->getRScenarioNumero() > 0) {
+                            $TplScenario = ROperationTypeSubTplScenarioQuery::create()->filterByOstTplId($oService->getOstTplId())->findOneByRScenarioNumero($oService->getRScenarioNumero());
+                            if ($TplScenario instanceof ROperationTypeSubTplScenario) {
+                                $sAdditionalCondition .= ' AND ost_tpl_prime_numero = "' . $TplScenario->getRPrimeNumero() . '"';
+                            }
+                        }
+
+                        echo Phoenix_View_Helper_Html::selectFromTable('r_operation_type_sub_tpl_prime', array('name' => 'r_prime_numero', 'id' => 'id_tpl_prime_id_' . $oService->getRPrestationId(), 'value' => $oService->getRPrimeNumero(), 'class' => 'form-select size1of1 input-editable class_select_prime'), array('name' => 'ost_tpl_prime_numero', 'value' => 'ost_tpl_prime_numero'), array('clause_where' => $sAdditionalCondition, 'default_label' => '-'));
+                        ?>
+                    </td>
+                    <td>
+                        <?php echo Phoenix_View_Helper_Html::checkbox(array('name' => 'ost_tpl_prestation_is_mandatory', 'id' => 'id_tpl_mandatory_id_' . $oService->getRPrestationId(), 'value' => 1, 'default_value' => $oService->getOstTplPrestationIsMandatory(), 'class' => 'form-select size1of1 input-editable')); ?>
+                    </td>
+                    <td>
+                        <?php echo Phoenix_View_Helper_Html::checkbox(array('name' => 'ost_tpl_prestation_is_hidden', 'id' => 'id_tpl_hidden_id_' . $oService->getRPrestationId(), 'value' => 1, 'default_value' => $oService->getOstTplPrestationIsHidden(), 'class' => 'form-select size1of1 input-editable')); ?>
+                    </td>
+                </tr>
+            <?php } ?>
+        </tbody>
+    </table>
+    <a href="javascript:void(0)" class="link-add class_btn_ajout_prestation" onclick="javascript:addPrestation(<?php echo $this->rubrique->getOstTplRubriqueId() ?>,<?php echo $this->rubrique->getOstTplId() ?>)"  ><?php echo $this->translate('Ajouter des prestations'); ?></a>
+</div>
+
+<script language="javascript">
+
+    $('document').ready(function() {
+        // Updating scenario fileds
+        $('.class_form_prestation_<?php echo $this->rubrique->getOstTplRubriqueId() ?>').formUpdate({
+            callback: function() {
+                refreshRubrique(<?php echo $this->rubrique->getOstTplRubriqueId() ?>);
+            }
+        }
+        );
+    });
+
+    // sortable services
+    oUiManager.prestationSortable(<?php echo $this->rubrique->getOstTplRubriqueId() ?>);
+
+</script>

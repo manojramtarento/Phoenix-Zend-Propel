@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!ELEMENT root (data, graphs, bilan_financier, stocks)>
+    <!ELEMENT data (first_page, last_page)>
+        <!ELEMENT first_page (contact_dc, contact_cp, nom_offre, num_operation, date_stats, duree_operation,
+date_fin_postale, date_fin_gestion, tx_remontee, nb_participations, nb_demandes)>
+			<!ELEMENT contact_dc (nom_contact, email_contact, tel_contact, fax_contact)>
+			<!ELEMENT contact_cp (nom_contact, email_contact, tel_contact, fax_contact)>
+				<!ELEMENT nom_contact (#PCDATA) >
+				<!ELEMENT email_contact (#PCDATA) >
+				<!ELEMENT tel_contact (#PCDATA) >
+				<!ELEMENT fax_contact (#PCDATA) >
+            <!ELEMENT nom_offre (#PCDATA) >
+            <!ELEMENT num_operation (#PCDATA) >
+            <!ELEMENT date_stats (#PCDATA) >
+            <!ELEMENT duree_operation (#PCDATA) >
+            <!ELEMENT date_fin_postale (#PCDATA) >
+            <!ELEMENT date_fin_gestion (#PCDATA) >
+            <!ELEMENT tx_remontee (#PCDATA) >
+            <!ELEMENT nb_participations (#PCDATA) >
+            <!ELEMENT nb_demandes (#PCDATA) >
+
+        <!ELEMENT last_page (#PCDATA) >
+
+    <!ELEMENT graphs (graph*)>
+        <!ELEMENT graph (plot*)>
+			<!ATTLIST graph title CDATA #REQUIRED>
+			<!ATTLIST graph type CDATA #REQUIRED>
+			<!ATTLIST graph size CDATA #REQUIRED>
+
+            <!ELEMENT plot (#PCDATA) >
+				<!ATTLIST plot x CDATA #REQUIRED>
+				<!ATTLIST plot y CDATA #REQUIRED>
+
+    <!ELEMENT bilan_financier (bline*)>
+        <!ELEMENT bline (libelle, qte_estimee, qte_realisee, pourcentage_realisation, montant_estime,
+montant_realise, montant_encaisse, montant_disponible)>
+            <!ELEMENT libelle (#PCDATA) >
+            <!ELEMENT qte_estimee (#PCDATA) >
+            <!ELEMENT qte_realisee (#PCDATA) >
+            <!ELEMENT pourcentage_realisation (#PCDATA) >
+            <!ELEMENT montant_estime (#PCDATA) >
+            <!ELEMENT montant_realise (#PCDATA) >
+            <!ELEMENT montant_encaisse (#PCDATA) >
+            <!ELEMENT montant_disponible (#PCDATA) >
+
+    <!ELEMENT stocks (sline*)>
+        <!ELEMENT sline (libelle, qte_estimee, qte_affectee, qte_entree, qte_stock)>
+            <!ELEMENT qte_affectee (#PCDATA) >
+            <!ELEMENT qte_entree (#PCDATA) >
+            <!ELEMENT qte_stock (#PCDATA) >

@@ -1,0 +1,9 @@
+<div class="simple-data-block">
+<div class="simple-data-block-title">
+    <span><?php echo $this->sKpiTitle ?></span>
+</div>
+    <div class="simple-data-block-content">
+        <div class="content-block-number"><?php echo Phoenix_Data_Convert::formatNumber($this->sData, false, false); ?></div>
+    </div>
+    <div class="content-block-legend"><?php echo $this->sKpiLegend; ?></div>
+</div>

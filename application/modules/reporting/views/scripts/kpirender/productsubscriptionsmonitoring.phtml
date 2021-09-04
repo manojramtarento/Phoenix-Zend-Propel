@@ -1,0 +1,43 @@
+<table class="list list-kpis">
+    <?php if (count($this->tableKpiProducts)) { ?>
+        <thead>
+            <tr>
+                <th width="25%"><?php echo $this->translate('Suivi abonnements produits'); ?></th>
+                <th width="25%" title="<?php echo $this->translate('Charge vendue mois en cours (Delta charge vendue mois en cours année n-1)'); ?>"><?php echo $this->translate('Charge vendue mois en cours (Delta charge vendue mois en cours année n-1)'); ?></th>
+                <th width="25%"></th>
+                <th width="25%" title="<?php echo $this->translate('Cumul charge vendue (delta année n-1)'); ?>"><?php echo $this->translate('Cumul charge vendue (delta année n-1)'); ?></th>
+            </tr>
+        </thead>
+    <?php } ?>
+
+    <?php foreach ($this->tableKpiProducts as $aKpiProduct => $aKpiProductData) { ?>
+        <tr>
+            <td><?php echo $aKpiProduct; ?></td>
+            <td>
+                <?php
+                $fCACurrentMonth = isset($aKpiProductData['CACurrentMonth']) ? $aKpiProductData['CACurrentMonth'] : 0;
+                $fCAPastMonth = isset($aKpiProductData['CAPastMonth']) ? $aKpiProductData['CAPastMonth'] : 0;
+                $fDeltaCAMonth = $fCACurrentMonth - $fCAPastMonth;
+                echo number_format($fCACurrentMonth, 0, '', ' ') . '(' . number_format($fDeltaCAMonth, 0, '', ' ') . ')';
+                ?>
+            </td>
+            <td>
+                <?php if ($fDeltaCAMonth > 0) { ?>
+                    <span style="color:green;font-size:20px;font-weight:bold;">↑</span>
+                <?php } elseif ($fDeltaCAMonth < 0) { ?>
+                    <span style="color:red;font-size:20px;font-weight:bold;">↓</span>
+                <?php } else { ?>
+                    <span style="color:orange;font-size:20px;font-weight:bold;">→</span>
+                <?php } ?>
+            </td>
+            <td>
+                <?php
+                $fCACurrentYear = isset($aKpiProductData['CACurrentYear']) ? $aKpiProductData['CACurrentYear'] : 0;
+                $fCAPastYear = isset($aKpiProductData['CAPastYear']) ? $aKpiProductData['CAPastYear'] : 0;
+                echo number_format($fCACurrentYear, 0, '', ' ') . '(' . number_format($fCACurrentYear - $fCAPastYear, 0, '', ' ') . ')';
+                ?>
+            </td>
+        </tr>
+    <?php } ?>
+</table>
+

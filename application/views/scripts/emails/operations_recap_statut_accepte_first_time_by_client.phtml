@@ -1,0 +1,18 @@
+<h2>Liste des opérations passées en accepté sur des clients pour la première fois de <?php echo $this->date_debut . ' au ' . $this->date_fin; ?> :</h2>
+<table width="100%" cellpadding=5 border=1 style="border:1px solid black;">
+    <thead>
+    <th align="left">N° de l'opération</th>
+    <th align="left">Nom client</th>
+    <th align="left">Nom Directeur de clientèle </th>
+    <th align="left">date du passage en accepté</th>
+</thead>
+<?php foreach ($this->operations as $aOperation) { ?>
+    <tr>
+        <td><?php echo $aOperation['op_number']; ?></td>
+        <td><?php echo $aOperation['cl_libelle']; ?></td>
+        <td><?php echo $aOperation['dc_prenom'] . ' ' . $aOperation['dc_nom']; ?></td>
+        <td><?php echo $aOperation['date_accepte']; ?></td>
+
+    </tr>
+<?php } ?>
+</table>

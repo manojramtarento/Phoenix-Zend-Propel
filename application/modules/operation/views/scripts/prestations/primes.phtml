@@ -1,0 +1,45 @@
+<table class="list" id="reward_listing_id" reward_deletion_confirmation="<?php echo $this->translate('Confirmez-vous la suppression de la prime'); ?>" reward_countries_edition_popup_title="<?php echo $this->translate('label_reward_countries'); ?>" reward_addition_popup_title="<?php echo $this->translate('label_add_new_reward'); ?>" reward_country_popup_overview_title="<?php echo $this->translate('label_rewarded_countries'); ?>">
+    <thead>
+        <tr>
+            <th class="column-noborder"></th>
+            <th><span class="notsortable"><?php echo $this->translate('Prime'); ?></span></th>
+            <th><span class="notsortable"><?php echo $this->translate('Code Prime'); ?></span></th>
+            <th><span class="notsortable"><?php echo $this->translate('label_reward_type'); ?></span></th>
+            <th><span class="notsortable"><?php echo $this->translate('label_reward_country'); ?></span></th>
+            <th><span class="notsortable"><?php echo $this->translate('label_reward_currency'); ?></span></th>
+            <th><span class="notsortable"><?php echo $this->translate('label_fix_amount'); ?></span></th>
+            <th><span class="notsortable">%&nbsp;<?php echo $this->translate('label_product_amount'); ?></span></th>
+            <th><span class="notsortable"><?php echo $this->translate('label_max_amount'); ?></span></th>
+            <th><span class="notsortable"><?php echo $this->translate('label_expedition_mode'); ?></span></th>
+            <th><span class="notsortable"><?php echo $this->translate('label_transporter'); ?></span></th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php
+        foreach ($this->rewards as $oReward) {
+            $iRewardId = $oReward->getOpPrimeId();
+			$aRewardedCountries = $this->prestations()->operationRewardsCountries($iRewardId);
+		
+            ?>
+            <tr reward_operation_id="<?php echo $oReward->getOpId() ?>" class="class_form_primes" action="<?php echo $this->url(array('module' => 'operation', 'controller' => 'prestations', 'action' => 'updateprime')) ?>" model_name="OperationPrimes" primary_value="<?php echo $oReward->getOpPrimeId() ?>">
+                <td width="16px"><a href="javascript:void(0)" onclick="oUiManager.deletePrime(<?php echo $iRewardId ?>)"  class="class_btn_delete_prime icon-list icon-delete" title="<?php echo $this->translate('Supprimer la prime'); ?>"><?php echo $this->translate('Supprimer la prime'); ?></a></td>
+                <td width="20%"><?php echo Phoenix_View_Helper_Html::input(array('id' => 'id_op_prime_libelle_' . $iRewardId, 'name' => 'op_prime_libelle', 'type' => 'text', 'class' => 'form-input input-editable size1of1', 'value' => $oReward->getOpPrimeLibelle())); ?></td>
+                <td align="left" width="5%" class="column-secondary"><?php echo $oReward->getOpPrimeNumero() ?></td>
+                <td align="center" width="15%" class="column-secondary"><?php echo Phoenix_View_Helper_Html::selectFromTable('r_reward_types', array('id' => 'operation_prime_r_reward_type_id_' . $iRewardId, 'name' => 'operation_prime_r_reward_type_id', 'value' => $oReward->getOperationPrimeRRewardTypeId(), 'default_value' => $oReward->getOperationPrimeRRewardTypeId(), 'class' => 'form-select size4of5 reward_type_selector'), array('value' => 'r_reward_type_id', 'name' => 'r_reward_type_label'), array('clause_where' => 'r_reward_type_actif = 1', 'default_label' => $this->translate('choisir') . '...')); ?></td>
+                <td align="left" width="5%">
+				
+				<div id="id_operation_reward_linked_countries_<?php echo $iRewardId ?>" class="operation_reward_linked_countries">
+				<?php echo $this->partial('prestations/operationrewardcountrieslist.phtml', array('rewardCountriesList' => $aRewardedCountries)); ?>
+				
+				
+				</div></td>
+                <td align="left" width="5%"><div id="id_operation_reward_currency_<?php echo $iRewardId ?>" class="operation_reward_currency"></div></td>
+                <td align="center" width="8%" class="column-secondary"><?php echo Phoenix_View_Helper_Html::input(array('name' => 'operation_prime_fixed_amount', 'id' => 'id_operation_prime_fixed_amount_' . $iRewardId, 'value' => $oReward->getOperationPrimeFixedAmount(), 'class' => 'form-input size4of5 text-right')) ?></td>
+                <td align="center" width="8%" class="column-secondary"><?php echo Phoenix_View_Helper_Html::input(array('name' => 'operation_prime_product_price_pourcentage', 'id' => 'id_operation_prime_product_price_pourcentage_' . $iRewardId, 'value' => $oReward->getOperationPrimeProductPricePourcentage(), 'class' => 'form-input size4of5 text-right')) ?></td>
+                <td align="center" width="8%" class="column-secondary"><?php echo Phoenix_View_Helper_Html::input(array('name' => 'operation_prime_maximum_amount', 'id' => 'id_operation_prime_maximum_amount_' . $iRewardId, 'value' => $oReward->getOperationPrimeMaximumAmount(), 'class' => 'form-input size4of5 text-right')) ?></td>
+                <td align="center" width="10%" class="column-secondary"><?php echo Phoenix_View_Helper_Html::selectFromTable('r_reward_expedition_modes', array('id' => 'id_operation_prime_r_reward_expedition_mode_id_' . $iRewardId, 'name' => 'operation_prime_r_reward_expedition_mode_id', 'value' => $oReward->getOperationPrimeRRewardExpeditionModeId(), 'default_value' => $oReward->getOperationPrimeRRewardExpeditionModeId(), 'expedition-mode-transporter-id' => \RRewardExpeditionModes::R_REWARD_EXPEDITON_MODE_TRANSPORTER_ID, 'class' => 'form-select size4of5'), array('value' => 'r_reward_expedition_mode_id', 'name' => 'r_reward_expedition_mode_label'), array('clause_where' => 'r_reward_expedition_mode_actif = 1', 'default_label' => $this->translate('choisir') . '...')); ?></td>
+                <td align="center" width="15%" class="column-secondary"><?php echo Phoenix_View_Helper_Html::selectFromTable('r_reward_transporters', array('id' => 'id_operation_prime_r_reward_transporter_id_' . $iRewardId, 'name' => 'operation_prime_r_reward_transporter_id', 'value' => $oReward->getOperationPrimeRRewardTransporterId(), 'default_value' => $oReward->getOperationPrimeRRewardTransporterId(), 'class' => 'form-select size4of5'), array('value' => 'r_reward_transporter_id', 'name' => 'r_reward_transporter_label'), array('clause_where' => 'r_reward_transporter_actif = 1', 'default_label' => $this->translate('choisir') . '...')); ?></td>
+            </tr>
+        <?php } ?>
+    </tbody>
+</table>

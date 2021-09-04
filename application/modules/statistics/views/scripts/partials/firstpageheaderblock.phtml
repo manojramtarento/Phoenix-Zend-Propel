@@ -1,0 +1,8 @@
+<div class="first-page-header">
+    <div class="operation-handling-details">
+        <?php echo $this->title; ?>
+    </div>
+    <?php if (!empty($this->iOperationNumber)) { ?>
+        <div class="header-operation-number"><?php echo $this->translate('label_campaign_number') . ' ' . $this->iOperationNumber; ?></div>
+    <?php } ?>
+</div>

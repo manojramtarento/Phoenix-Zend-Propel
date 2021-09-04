@@ -1,0 +1,109 @@
+<?php
+$sOperationLabel = isset($this->aStatisticsData['aOperation']['aOperationGlobalInformation']['sOperationLibelle']) ? $this->aStatisticsData['aOperation']['aOperationGlobalInformation']['sOperationLibelle'] : '';
+$iClientId = isset($this->aStatisticsData['aOperation']['aOperationGlobalInformation']['iClientId']) ? $this->aStatisticsData['aOperation']['aOperationGlobalInformation']['iClientId'] : 0;
+$iOperationNumber = isset($this->aStatisticsData['aOperation']['aOperationGlobalInformation']['iOperationNumber']) ? $this->aStatisticsData['aOperation']['aOperationGlobalInformation']['iOperationNumber'] : 0;
+$aOperationDates = isset($this->aStatisticsData['aOperation']['aOperationDates']) ? $this->aStatisticsData['aOperation']['aOperationDates'] : array();
+?>
+
+<!-- Page 1 !-->
+<div class="statistics-page">
+    <div class="statistics-page-body">
+        <?php if (!empty($this->aStatisticsData['aOperation'])) { ?>
+            <div class="zone1-2">
+                <?php echo $this->partial('/partials/operationglobalinfoblock.phtml', 'statistics', array('aData' => $this->aStatisticsData['aOperation'])); ?>
+            </div>
+        <?php } ?>
+        <div class="first-page-right-container">
+            <div class="zone1-1 first-page-bloc-margin">
+                <?php
+                $oDateCreateFile = $this->aStatisticsData['oDateCreateFile'];
+                echo $this->partial('/partials/firstpageheaderblock.phtml', 'statistics', array(
+                    'title' => $oDateCreateFile->modify('-1 day')->format('d/m/Y') . ' - ' . $this->translate('label_participations'),
+                    'iOperationNumber' => $iOperationNumber,
+                ));
+                ?>
+            </div>
+            <div class="zone1-3 first-page-bloc-margin">
+                <?php
+                $sData = isset($this->aStatisticsData['aKpis']['iParticipationNumber']) ? $this->aStatisticsData['aKpis']['iParticipationNumber'] : 0;
+                echo $this->partial('/partials/simpledatablock.phtml', 'statistics', array('sData' => $sData, 'sKpiTitle' => $this->translate('label_participations') . '*', 'sKpiLegend' => '* ' . $this->translate('text_legend_registered_participations')));
+
+                $sData = isset($this->aStatisticsData['aKpis']['iParticipationRate']) ? $this->aStatisticsData['aKpis']['iParticipationRate'] : 0;
+                echo $this->partial('/partials/simplepourcentageblock.phtml', 'statistics', array('sData' => $sData, 'sKpiTitle' => $this->translate('label_participation_rate') . '*', 'sKpiLegend' => '* ' . $this->translate('text_legend_participation_rate')));
+
+                echo isset($this->aStatisticsData['aKpis']['iProgressRate']) ? $this->partial('/partials/simplepourcentageblock.phtml', 'statistics', array('sData' => $this->aStatisticsData['aKpis']['iProgressRate'], 'sKpiTitle' => $this->translate('label_progress_rate') . '*', 'sKpiLegend' => '* ' . $this->translate('text_legend_progress_rate'))) : '';
+
+                $sData = isset($this->aStatisticsData['aKpis']['iElapsedTimePercentage']) ? $this->aStatisticsData['aKpis']['iElapsedTimePercentage'] : 0;
+                echo $this->partial('/partials/simplepourcentageblock.phtml', 'statistics', array('sData' => $sData, 'sKpiTitle' => $this->translate('label_elapsed_time') . '*', 'sKpiLegend' => '* % ' . $this->translate('text_legend_elapsed_time'), 'bLastElement' => true));
+                ?>
+            </div>
+            <?php
+            if (!empty($this->aStatisticsData['aKpis']['aReceivedLettersOverTheLastTwentyWeeks']['dataList'])) {
+                $aViewData = array('aBarChartGraphData' => $this->aStatisticsData['aKpis']['aReceivedLettersOverTheLastTwentyWeeks'], 'sLanguage' => $this->aStatisticsData['aOperation']['aOperationGlobalInformation']['sStatisticsLanguage'], 'sblockClass' => 'graph-courrier-full-width');
+                if (!empty($this->aStatisticsData['aKpis']['aReceivedLettersByMonthOverTheLastTwelveMonths']['dataList'])) {
+                    $aMonthsTableData = array('aMonthsData' => $this->aStatisticsData['aKpis']['aReceivedLettersByMonthOverTheLastTwelveMonths']);
+                }
+                ?>
+                <div class="zone0-4">
+                    <?php echo $this->partial('/partials/graphcourrierblock.phtml', 'statistics', isset($aMonthsTableData) ? array_merge($aViewData, $aMonthsTableData) : $aViewData); ?>
+                </div>
+            <?php } ?>
+        </div>
+        <div class="zone1-9">
+            <?php echo $this->partial('/partials/firstpagefooterblock.phtml', 'statistics'); ?>
+        </div>
+    </div>
+</div>
+<?php if (!empty($this->aStatisticsData['aKpis']['aRequestForFunds']['dataList']) || !empty($this->aStatisticsData['aInvoices'])) { ?>
+    <!-- Page 2 !-->
+    <?php $bDefaultHeaderDataPresent = $sOperationLabel && $iClientId && $iOperationNumber && $aOperationDates; ?>
+
+    <div class="statistics-page alwaysbreak">
+        <div class="statistics-page-body">
+            <?php if ($bDefaultHeaderDataPresent) { ?>
+                <div class="zone-header">
+                    <?php echo $this->partial('/partials/defaultpageheaderblock.phtml', 'statistics', array('sOperationLibelle' => $sOperationLabel, 'dateCreateFile' => $oDateCreateFile, 'iOperationNumber' => $iOperationNumber, 'aData' => $aOperationDates, 'iClientId' => $iClientId)); ?>
+                </div>
+            <?php } ?>
+            <div class="zone4-container">
+                <?php
+                $iOffset = 10;
+                echo (empty($this->aStatisticsData['aKpis']['aRequestForFunds']['dataList'])) ? '' : $this->partial('/partials/requestforfundblock.phtml', 'statistics', array('aFundsRequest' => $this->aStatisticsData['aKpis']['aRequestForFunds']));
+                echo (empty($this->aStatisticsData['aInvoices'])) ? '' : $this->partial('/partials/invoicestableblock.phtml', 'statistics', array('aInvoices' => array_slice($this->aStatisticsData['aInvoices'], 0, $iOffset), 'sKpiTitle' => $this->translate('label_invoices'), 'bDisplayKpiTitle' => true));
+                ?>
+            </div>
+        </div>
+        <div class="zone-footer">
+            <?php echo $this->partial('/partials/defaultpagefooterblock.phtml', 'statistics'); ?>
+        </div>
+    </div>
+
+    <!-- Adding more pages as good as more invoices exists !-->
+
+    <?php
+    if (isset($this->aStatisticsData['aInvoices']) && count($this->aStatisticsData['aInvoices']) > 9) {
+        $iItemsToSelect = 14;
+
+        while ($aInvoices = array_slice($this->aStatisticsData['aInvoices'], $iOffset, $iItemsToSelect)) {
+            ?>
+            <div class="statistics-page alwaysbreak">
+                <div class="statistics-page-body">
+                    <?php if ($bDefaultHeaderDataPresent) { ?>
+                        <div class="zone-header">
+                            <?php echo $this->partial('/partials/defaultpageheaderblock.phtml', 'statistics', array('sOperationLibelle' => $sOperationLabel, 'dateCreateFile' => $oDateCreateFile, 'iOperationNumber' => $iOperationNumber, 'aData' => $aOperationDates, 'iClientId' => $iClientId)); ?>
+                        </div>
+                    <?php } ?>
+                    <div class="zone4-container">
+                        <?php echo $this->partial('/partials/invoicestableblock.phtml', 'statistics', array('aInvoices' => $aInvoices, 'sKpiTitle' => $this->translate('label_invoices'), 'bDisplayKpiTitle' => false)); ?>
+                    </div>
+                </div>
+                <div class="zone-footer">
+                    <?php echo $this->partial('/partials/defaultpagefooterblock.phtml', 'statistics'); ?>
+                </div>
+            </div>
+            <?php
+            $iOffset +=$iItemsToSelect;
+        }
+    }
+}
+?>

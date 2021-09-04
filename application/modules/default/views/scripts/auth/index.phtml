@@ -1,0 +1,18 @@
+<form action="<?php echo $this->BaseUrl() ?>/auth/login" method="post">
+
+    <?php echo $this->FlashMessenger('error','inline'); ?>
+
+    <div class="line form-line">
+        <label for="login" class="form-label unit size1of3">Identifiant :</label>
+        <input type="text" id="login" name="login" value="" class="form-input unit size2of3" />
+    </div>
+    <div class="line form-line">
+        <label for="pwd" class="form-label unit size1of3">Mot de passe :</label>
+        <input type="password" id="pwd" name="password" value="" class="form-input unit size2of3" />
+    </div>
+    <div class="line">
+        <div class="unit size2of3 push1of3">
+            <input id="auth_submit_id" type="submit" value="Valider" class="btn btn-orange btn-big" />
+        </div>
+    </div>
+</form>

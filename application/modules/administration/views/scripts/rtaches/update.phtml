@@ -1,0 +1,127 @@
+<!-- DIALOG / AJOUT / MODIFICATION -->
+<form id="id_form_update_rtache" action="<?php echo $this->url(array('module' => 'administration', 'controller' => 'rtaches', 'action' => 'update')) ?>" method="post">
+    <input type="hidden" name="submit_update_rtache" value="1">
+	<?php echo Phoenix_View_Helper_Html::input(array('type' => 'hidden', 'name' => 'r_op_task_type_id')) ?>
+    <div class="line form-line">
+        <label class="unit size1of3 form-label" for='id_r_op_task_type_libelle'><?php echo $this->translate('Libellé');?> :</label>
+		<?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'r_op_task_type_libelle', 'class' => 'unit size2of3 form-input lastUnit')) ?>
+    </div>
+
+	<div class="line form-line">
+		<label class="unit size1of3 form-label" for='id_r_op_task_type_date_ref'><?php echo $this->translate('Date de référence');?> :</label>
+		<?php echo Phoenix_View_Helper_Html::selectFromTable('r_operation_tasks_type_date_ref', array('name' => 'r_op_task_type_date_ref', 'class' => 'unit size1of2 form-select lastUnit'), array('name' => 'r_op_task_type_date_ref_libelle', 'value' => 'r_op_task_type_date_ref_id'), array('default_label' => $this->translate('choisir').'...')) ?>
+	</div>
+
+	<div class="line form-line">
+		<label class="unit size1of3 form-label" for='id_r_op_task_type_delta'><?php echo $this->translate('Delta');?> :</label>
+		<?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'r_op_task_type_delta', 'class' => 'unit size2of3 form-input lastUnit')) ?>
+	</div>
+
+	<div class="line form-line">
+		<label class="unit size1of3 form-label" for='id_r_op_task_type_rappel'><?php echo $this->translate('Rappel à J-X');?> :</label>
+		<?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'r_op_task_type_rappel', 'class' => 'unit size2of3 form-input lastUnit')) ?>
+	</div>
+
+	<div class="line form-line">
+		<label class="unit size1of3 form-label" for='id_r_op_task_type_rappel'><?php echo $this->translate('Assignée à DC');?> :</label>
+		<?php //echo Phoenix_View_Helper_Html::checkbox(array('name' => 'r_op_task_type_assign_to_dc', 'value' => 1)) ?>
+		<?php echo Phoenix_View_Helper_Html::radio(array('name' => 'assign_to', 'value' => 'dc', 'class' => 'class_assign_to'),array('checked'=>($this->getParam('r_op_task_type_assign_to_dc')))) ?>
+	</div>
+
+	<div class="line form-line">
+		<label class="unit size1of3 form-label" for='id_r_op_task_type_rappel'><?php echo $this->translate('Assignée à CP');?> :</label>
+		<?php //echo Phoenix_View_Helper_Html::checkbox(array('name' => 'r_op_task_type_assign_to_cp', 'value' => 1)) ?>
+		<?php echo Phoenix_View_Helper_Html::radio(array('name' => 'assign_to', 'value' => 'cp', 'class' => 'class_assign_to'),array('checked'=>($this->getParam('r_op_task_type_assign_to_cp')))) ?>
+	</div>
+
+	<div class="line form-line">
+		<label class="unit size1of3 form-label" for='r_op_task_type_assign_to_user'><?php echo $this->translate('Assignée à l\'utilisateur');?> :</label>
+		<?php echo Phoenix_View_Helper_Html::radio(array('name' => 'assign_to', 'value' => 'user', 'class' => 'class_assign_to'),array('checked'=>($this->getParam('r_op_task_type_assign_to_user')))) ?>
+		<?php echo Phoenix_View_Helper_Html::input(array('name' => 'r_op_task_type_assign_to_user', 'id' => 'r_op_task_type_assign_to_user', 'type' => 'hidden')) ?>
+		<?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'assign_to_user', 'id' => 'assign_to_user', 'class' => 'unit size1of2 form-input input-autocomplete lastUnit')) ?>
+	</div>
+
+	<div class="line form-line">
+		<label class="unit size1of3 form-label" for='r_op_task_type_assign_to_group'><?php echo $this->translate('Assignée au groupe');?> :</label>
+		<?php echo Phoenix_View_Helper_Html::input(array('name' => 'r_op_task_type_assign_to_group', 'id' => 'r_op_task_type_assign_to_group', 'type' => 'hidden')) ?>
+		<?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'assign_to_group', 'id' => 'assign_to_group', 'class' => 'unit size1of2 form-input input-autocomplete lastUnit')) ?>
+	</div>
+	
+	<div class="line form-line">
+		<label class="unit size1of3 form-label" for='r_op_task_type_notify_to_user'><?php echo $this->translate('Notifiée à l\'utilisateur');?> :</label>
+		<?php echo Phoenix_View_Helper_Html::input(array('name' => 'r_op_task_type_notify_to_user', 'id' => 'r_op_task_type_notify_to_user', 'type' => 'hidden')) ?>
+		<?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'notify_to_user', 'id' => 'notify_to_user', 'class' => 'unit size1of2 form-input input-autocomplete lastUnit')) ?>
+	</div>
+
+	<div class="line form-line">
+		<label class="unit size1of3 form-label" for='r_op_task_type_notify_to_group'><?php echo $this->translate('Notifiée au groupe');?> :</label>
+		<?php echo Phoenix_View_Helper_Html::input(array('name' => 'r_op_task_type_notify_to_group', 'id' => 'r_op_task_type_notify_to_group', 'type' => 'hidden')) ?>
+		<?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'notify_to_group', 'id' => 'notify_to_group', 'class' => 'unit size1of2 form-input input-autocomplete lastUnit')) ?>
+	</div>
+
+    <div class="text-center">
+        <input type="submit" value="<?php echo $this->translate('Valider'); ?>" class="btn btn-orange">
+    </div>
+</form>
+
+
+<script language="javascript">
+	
+	function switchAssignTo(){
+
+		if(!$("#id_assign_to_user").is(':checked')){
+			$('#r_op_task_type_assign_to_user').attr('disabled', 'disabled');
+			$('#assign_to_user').attr('disabled', 'disabled');
+		}else{
+			$('#r_op_task_type_assign_to_user').removeAttr('disabled');
+			$('#assign_to_user').removeAttr('disabled');
+		}
+	}
+	
+    $(document).ready(function() {
+        $('#id_form_update_rtache').ajaxForm({
+            divId:'id_dialog_update_rtache'
+        });
+		
+		
+		$('.class_assign_to').change(function(){
+			switchAssignTo()
+		})
+		
+        // changement du user basé sur recherche avec autocompletion
+        $('#assign_to_user').AjaxAutocomplete({
+            url: baseUrl+'/common/autocomplete/user',
+            minLength: 3,
+            restrictive:true,
+			bindFieldId:'r_op_task_type_assign_to_user'
+        });
+		
+        // changement du user basé sur recherche avec autocompletion
+        $('#notify_to_user').AjaxAutocomplete({
+            url: baseUrl+'/common/autocomplete/user',
+            minLength: 3,
+            restrictive:true,
+			bindFieldId:'r_op_task_type_notify_to_user'
+        });
+		
+        // changement du user basé sur recherche avec autocompletion
+        $('#assign_to_group').AjaxAutocomplete({
+            url: baseUrl+'/common/autocomplete/groupad',
+            minLength: 3,
+            restrictive:true,
+			bindFieldId:'r_op_task_type_assign_to_group'
+        });
+		
+        // changement du user basé sur recherche avec autocompletion
+        $('#notify_to_group').AjaxAutocomplete({
+            url: baseUrl+'/common/autocomplete/groupad',
+            minLength: 3,
+            restrictive:true,
+			bindFieldId:'r_op_task_type_notify_to_group'
+        });
+		
+		
+		switchAssignTo()
+    });
+	
+</script>

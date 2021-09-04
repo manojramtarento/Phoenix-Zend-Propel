@@ -1,0 +1,219 @@
+<?php
+$this->title = $this->translate('Gestion des découverts');
+$this->headTitle($this->title);
+?>
+<div id="actions-bar">
+    <div class="unit size1of5">
+        <h1 class="page-title"><?php echo $this->title; ?></h1>
+    </div>
+    <div class="unit size2of5">
+        <div class="search">
+            <form action="" method="get">
+                <input type="text" name="findword" class="form-input" value="<?php if (isset($_REQUEST["findword"])) echo $_REQUEST["findword"]; ?>" placeholder="<?php echo $this->translate('Rechercher'); ?>" autocomplete="off" />
+                <input type="submit" value="<?php echo $this->translate('OK'); ?>" class="btn btn-orange" />
+                <input type="button" value="<?php echo $this->translate('Recherche avancée'); ?>" class="btn btn-big btn-adsearch" id="btn_adsearch" />
+            </form>
+        </div>
+    </div>
+    <div class="unit size2of5">
+        <fieldset class="large stats-op-fieldset">
+            <legend><span class="title-icon icon-chart"></span></legend>
+            <table class="stats-op">
+                <thead>
+                    <tr>
+                        <th class="size1of3 op-accepte"><?php echo $this->translate('Acceptée'); ?></th>
+                        <th class="size1of3 op-encours"><?php echo $this->translate('En attente'); ?></th>
+                        <th class="size1of3 op-refuse"><?php echo $this->translate('Refusée'); ?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="op-accepte"><?php echo Phoenix_Data_Convert::formatMoney($this->stats['sum_accord']); ?> </td>
+                        <td class="op-encours"><?php echo Phoenix_Data_Convert::formatMoney($this->stats['sum_attente']); ?> </td>
+                        <td class="op-refuse"><?php echo Phoenix_Data_Convert::formatMoney($this->stats['sum_refus']); ?> </td>
+                    </tr>
+                </tbody>
+            </table>
+        </fieldset>
+    </div>
+</div>
+
+<div id="site-content">
+    <div class="content-list">
+        <div class="list-actions">
+            <div class="unit col">
+                <a class="icon icon-32 icon-excel" href="<?php echo $this->url(array('format' => 'csv'), null, false) . '?' . $_SERVER['QUERY_STRING'] ?>" title="Exporter au format Excel"><?php echo $this->translate('Exporter au format Excel'); ?></a>
+            </div>
+            <div class="unit rightUnit">
+                <div class="unit col">
+                    <?php echo $this->NotifySearch()->link() ?>
+                </div>
+                <div class="unit">
+                    <?php echo $this->paginationControl($this->paginator, 'Sliding', '/partials/pagination.phtml'); ?>
+                </div>
+            </div>
+        </div>
+        <table class="list list-main">
+            <thead>
+                <tr>
+                    <th width="26" class="column-noborder"></th>
+                    <th width="65"><?php echo My_View_Helper_Html::UrlOrderBy('op_number', $this->translate('N° OP')); ?></th>
+                    <th><?php echo My_View_Helper_Html::UrlOrderBy('cl_libelle', $this->translate('Client')); ?></th>
+                    <th colspan="5" style="text-align:center;"><?php echo My_View_Helper_Html::UrlOrderBy('op_dec_mont_demande', $this->translate('Découvert')); ?></th>
+                    <th colspan="2" style="text-align:center;"><span class="notsortable"><?php echo $this->translate('Fact. non encaissées'); ?></span></th>
+                    <th colspan="2" style="text-align:center;"><span class="notsortable"><?php echo $this->translate('Cumul'); ?></span></th>
+                    <th colspan="2" style="text-align:center;"><span class="notsortable"><?php echo $this->translate('Cash'); ?></span></th>
+                    <th width="80"><?php echo My_View_Helper_Html::UrlOrderBy('os_libelle', $this->translate('État OP')); ?></th>
+                </tr>
+                <tr class="sub-head">
+                    <td colspan="3"></td>
+                    <td width="65" align="center" class="column-border"><?php echo $this->translate('Date'); ?></td>
+                    <td width="80" align="center" class="column-border"><?php echo $this->translate('Demandé'); ?></td>
+                    <td width="35" align="center" class="column-border"><?php echo $this->translate('Statut'); ?></td>
+                    <td width="80" align="center" class="column-border"><?php echo $this->translate('Autorisé'); ?></td>
+                    <td width="65" align="center"><b><?php echo $this->translate('MAJ'); ?></b></td>
+                    <td width="80" align="center" class="column-border"><?php echo $this->translate('Echues'); ?></td>
+                    <td width="80" align="center"><b><?php echo $this->translate('Total'); ?></b></td>
+                    <td width="80" align="center" class="column-border"><?php echo $this->translate('Facturé'); ?></td>
+                    <td width="80" align="center"><b><?php echo $this->translate('Encaissé'); ?></b></td>
+                    <td width="80" align="center" class="column-border"><?php echo $this->translate('Consommé'); ?></td>
+                    <td width="80" align="center"><b><?php echo $this->translate('Dispo'); ?></b></td>
+                    <td></td>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($this->paginator as $decouvert) { ?>
+                    <tr class="<?php echo $this->cycle(array('', 'alt'))->next() ?>">
+                        <td><a href="#edit" class="icon-list icon-edit" op_dec_id="<?php echo $decouvert['op_dec_id']; ?>" title="Modifier"><?php echo $this->translate('Modifier'); ?></a></td>
+                        <td style="font-size:12px;"><a href="<?php echo $this->url(array('action' => 'index', 'controller' => 'facturation', 'module' => 'operation', 'op_id' => $decouvert['op_id'])) ?>" target="_blanck"><?php echo $decouvert['op_number']; ?></a></td>
+                        <td style="font-size:12px;"><?php echo $decouvert['cl_libelle']; ?></td>
+                        <td style="font-size:12px;"><?php echo Phoenix_Data_Convert::formatDateFromSqlServer2($decouvert['date_create']); ?></td>
+                        <td style="font-size:12px;" align="right"><?php echo Phoenix_Data_Convert::formatMoney($decouvert['op_dec_mont_demande']); ?> </td>
+                        <td style="font-size:12px;" align="center"><?php echo Phoenix_View_Helper_Html::getDecouvertStatusIcon($decouvert['op_dec_statut_id']); ?></td>
+                        <td style="font-size:12px;" align="right"><?php echo Phoenix_Data_Convert::formatMoney($decouvert['op_dec_mont_accord']); ?> </td>
+                        <td style="font-size:12px;" class="column-border"><b><?php echo Phoenix_Data_Convert::formatDateFromSqlServer2($decouvert['date_modify']); ?></b></td>
+                        <td style="font-size:12px;" align="right"><?php echo Phoenix_Data_Convert::formatMoney($decouvert['montant_non_encaisse_echu']); ?> </td>
+                        <td style="font-size:12px;" align="right" class="column-border"><b><?php echo Phoenix_Data_Convert::formatMoney($decouvert['montant_non_encaisse_total']); ?> </b></td>
+                        <td style="font-size:12px;" align="right"><?php echo Phoenix_Data_Convert::formatMoney($decouvert['montant_facture_total']); ?> </td>
+                        <td style="font-size:12px;" align="right" class="column-border"><b><?php echo Phoenix_Data_Convert::formatMoney($decouvert['montant_encaisse_total']); ?> </b></td>
+                        <td style="font-size:12px;" align="right"><?php echo Phoenix_Data_Convert::formatMoney($decouvert['iUsedAdf']); ?> </td>
+                        <td style="font-size:12px;" align="right" class="column-border"><b><?php echo Phoenix_Data_Convert::formatMoney($decouvert['iAvailableAdf']); ?> </b></td>
+                        <td style="font-size:12px;"><?php echo $decouvert['os_libelle']; ?></td>
+                    </tr>
+                <?php } ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- DIALOG / RECHERCHE AVANCEE -->
+<div id="id_dialog_search" title="<?php echo $this->translate('Recherche avancée'); ?>" style="display:none;">
+    <form action="" method="get">
+        <div class="section">
+            <div class="section-bd">
+                <div class="line form-line">
+                    <label class="unit size1of3 form-label" for="id_autocomplete_cl_id"><?php echo $this->translate('Nom du client'); ?> :</label>
+                    <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_cl_id', 'type' => 'hidden')); ?>
+                    <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'autocomplete_cl_id', 'class' => 'unit size2of3 form-input input-autocomplete lastUnit')) ?>
+                </div>
+
+                <div class="line form-line">
+                    <label class="unit size1of3 form-label" for="id_autocomplete_op_id"><?php echo $this->translate('Numéro d\'opération'); ?> :</label>
+                    <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_op_id', 'type' => 'hidden')); ?>
+                    <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'autocomplete_op_id', 'class' => 'unit size2of3 form-input input-autocomplete lastUnit')) ?>
+                </div>
+
+                <div class="line form-line">
+                    <label class="unit size1of3 form-label" for="id_find_op_dec_statut_id"><?php echo $this->translate('Statut de la demande'); ?> :</label>
+                    <?php echo Phoenix_View_Helper_Html::selectFromTable('r_operation_decouvert_statuts', array('name' => 'find_op_dec_statut_id', 'class' => 'form-select unit size2of3 lastUnit'), array('value' => 'r_op_dec_statut_id', 'name' => 'r_op_dec_statut_libelle'), array('default_label' => $this->translate('choisir') . '...')); ?>
+                </div>
+            </div>
+        </div>
+        <div class="section">
+            <div class="section-hd">
+                <h2 class="section-title"><?php echo $this->translate('Dates'); ?></h2>
+            </div>
+            <div class="section-bd">
+                <div class="line form-line">
+                    <label class="unit size1of3 form-label" for=""><?php echo $this->translate('Date de la demande'); ?> :</label>
+                    <div class="unit size1of2">
+                        <div class="unit size1of4">
+                            <?php echo Phoenix_View_Helper_Html_Select::selectComparateur(array('name' => 'find_date_create_comp', 'class' => 'form-select')) ?>
+                        </div>
+
+                        <div class="unit size3of4 date">
+                            <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_date_create', 'value' => $this->getParam('find_date_create'), 'class' => 'date-input', 'placeholder' => 'JJ/MM/AAAA', 'maxlenght' => '10')); ?>
+                        </div>
+                    </div>
+                </div>
+                <div class="line form-line">
+                    <label class="unit size1of3 form-label" for=""><?php echo $this->translate('Date de MAJ'); ?> :</label>
+                    <div class="unit size1of2">
+                        <div class="unit size1of4">
+                            <?php echo Phoenix_View_Helper_Html_Select::selectComparateur(array('name' => 'find_date_modify_comp', 'class' => 'form-select')) ?>
+                        </div>
+
+                        <div class="unit size3of4 date">
+                            <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_date_modify', 'value' => $this->getParam('find_date_modify'), 'class' => 'date-input', 'placeholder' => 'JJ/MM/AAAA', 'maxlenght' => '10')); ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="section">
+            <div class="section-hd">
+                <h2 class="section-title"><?php echo $this->translate('Montant'); ?></h2>
+            </div>
+            <div class="section-bd">
+                <div class="line form-section">
+                    <label class="form-label unit size1of3" for=""><?php echo $this->translate('Montant demandé'); ?> :</label>
+                    <div class="unit size1of2">
+                        <div class="unit size1of4">
+                            <?php echo Phoenix_View_Helper_Html_Select::selectComparateur(array('name' => 'find_op_dec_mont_demande_comp', 'class' => 'form-select')) ?>
+                        </div>
+
+                        <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_op_dec_mont_demande', 'class' => 'form-input size1of2')); ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <input type="submit" name="findbyfields" value="<?php echo $this->translate('Rechercher'); ?>" class="btn btn-orange push1of3">
+    </form>
+</div>
+
+<script language="javascript">
+    $(document).ready(function () {
+        //-- DIALOG / RECHERCHE AVANCEE -->
+        $('#btn_adsearch').click(function (e) {
+            $('#id_dialog_search').dialog({
+                width: 400,
+                modal: true,
+                resizable: false
+            });
+        });
+
+        //-- DIALOG / MODIFIER -->
+        $('.list .icon-edit').live('click', function (e) {
+            op_dec_id = $(this).attr("op_dec_id");
+            AjaxComponent.ajaxDialog(baseUrl + '/comptabilite/decouverts/update', {op_dec_id: op_dec_id}, {width: '500', title: 'Modifier le découvert N°' + op_dec_id, id: 'id_dialog_update_decouvert', close: function () {
+                    Component.refreshPage();
+                }});
+        });
+
+        // changement de l'opération basé sur recherche avec autocompletion
+        $('#id_autocomplete_op_id').AjaxAutocomplete({
+            url: baseUrl + '/common/autocomplete/operation',
+            minLength: 3,
+            restrictive: true,
+            bindFieldId: 'id_find_op_id'
+        });
+
+        //changement du client basé sur recherche avec autocompletion
+        $('#id_autocomplete_cl_id').AjaxAutocomplete({
+            url: baseUrl + '/common/autocomplete/client',
+            minLength: 3,
+            restrictive: true,
+            bindFieldId: 'id_find_cl_id'
+        });
+    });
+</script>

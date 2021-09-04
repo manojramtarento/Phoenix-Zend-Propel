@@ -1,0 +1,83 @@
+<div id="id_ajout_rubrique">
+
+    <form id="id_form_recherche_rubrique">
+        <div class="section">
+            <div class="section-hd">
+                <h2 class="section-title"><?php echo $this->translate('Rechercher une rubrique'); ?></h2>
+            </div>
+            <div class="section-bd">
+                <div class="line form-line">
+                    <label class="form-label unit size1of5" for="id_find_r_prestation_id"><?php echo $this->translate('Libellé'); ?> :</label>
+                    <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'find_r_rub_libelle')) ?>
+                </div>
+                <div class="line form-line">
+                    <label class="form-label unit size1of5" for="id_find_r_rub_type_id"><?php echo $this->translate('Type'); ?> :</label>
+                    <?php echo Phoenix_View_Helper_Html::selectFromTable('r_rubriques_type', array('name' => 'find_r_rub_type_id', 'class' => 'form-select unit lastUnit size1of5'), array('value' => 'rubrique_type_id', 'name' => 'rubrique_type_libelle'), array('default_label' => $this->translate('choisir') . '...')) ?>
+                </div>
+                <?php //echo Phoenix_View_Helper_Html::selectFromTable($sDbTableName, $aAttr, $aOptionsMapper, $aParam)  ?>
+                <div class="line form-line">
+                    <label class="form-label unit size1of5" for="id_find_r_tva_type_id"><?php echo $this->translate('TVA'); ?> :</label>
+                    <?php echo Phoenix_View_Helper_Html::selectFromTable('r_tva_type', array('name' => 'find_r_tva_type_id', 'class' => 'form-select unit lastUnit size1of5'), array('value' => 'r_tva_id', 'name' => 'r_tva_libelle'), array('default_label' => $this->translate('choisir') . '...', 'clause_where' => 'actif=1')) ?>
+                </div>
+                <div class="form-line">
+                    <input type="hidden" name="op_id" value="<?php echo $this->op_id ?>">
+                    <?php echo Phoenix_View_Helper_Html::input(array('name' => 'recherche', 'value' => $this->translate('Recherche'), 'type' => 'submit', 'class' => 'btn push1of5')) ?>
+                    <?php echo Phoenix_View_Helper_Html::input(array('name' => 'findbyfields', 'value' => '1', 'type' => 'hidden')) ?>
+                </div>
+            </div>
+        </div>
+    </form>
+    <?php if (count($this->rubriques) > 0) { ?>
+        <form method="post" action="<?php echo $this->url(array('module' => 'operation', 'controller' => 'prestations', 'action', 'ajoutrubrique')) ?> ">
+            <div class="section">
+                <div class="section-hd">
+                    <h2 class="section-title"><?php echo $this->translate('Résultat de votre recherche'); ?></h2>
+                </div>
+                <div class="section-bd" style="height:220px;overflow:auto;">
+                    <?php if (count($this->rubriques) > 0) { ?>
+                        <table class="list list-main">
+                            <thead>
+                                <tr>
+                                    <th width="40" class="check-column"><input id="check_all_rub" type="checkbox" value="1"></th>
+                                    <th width="40"><span class="notsortable"><?php echo $this->translate('ID'); ?></span></th>
+                                    <th><span class="notsortable"><?php echo $this->translate('Libellé Rubrique'); ?></span></th>
+                                    <th><span class="notsortable"><?php echo $this->translate('Type'); ?></span></th>
+                                    <th><span class="notsortable"><?php echo $this->translate('TVA'); ?></span></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($this->rubriques as $rubrique) { ?>
+                                    <tr class="tr-check <?php echo $this->cycle(array('', 'alt'))->next() ?>">
+                                        <td class="check-column"><input class="checkbox_rub" type="checkbox" id="checkbox<?php echo $rubrique['r_rub_id']; ?>" name="op_r_rubrique_id[]" value="<?php echo $rubrique['r_rub_id']; ?>"></td>
+                                        <td align="left"><?php echo $rubrique['r_rub_id']; ?></td>
+                                        <td><?php echo $rubrique['r_rub_libelle']; ?></td>
+                                        <td><?php echo $rubrique['rubrique_type_libelle']; ?></td>
+                                        <td><?php echo $rubrique['r_tva_libelle']; ?></td>
+                                    </tr>
+                                <?php } ?>
+                            </tbody>
+                        </table>
+                    <?php } else { ?>
+                        <?php echo $this->translate('Aucun résultat'); ?>
+                    <?php } ?>
+                </div>
+            </div>
+            <div class="text-center">
+                <input type="hidden" name="op_id" value="<?php echo $this->op_id ?>">
+                <input type="submit" class="btn btn-orange btn-big" value="<?php echo $this->translate('Ajouter'); ?>" name="submit_ajouter_rubrique">
+            </div>
+        </form>
+    <?php } ?>
+
+    <script language="javascript">
+        $(document).ready(function () {
+            $('#check_all_rub').bindCheckboxes('checkbox_rub');
+
+            $('#id_form_recherche_rubrique').submit(function () {
+                AjaxComponent.ajaxDiv(baseUrl + '/operation/prestations/ajoutrubrique', $(this).serialize(), 'id_ajout_rubrique');
+                return false;
+            });
+        });
+
+    </script>
+</div>

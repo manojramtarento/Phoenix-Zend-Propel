@@ -1,0 +1,382 @@
+<?php
+$this->title = $this->translate('title_general_settings');
+$this->headTitle($this->title);
+echo $this->FlashMessenger('error', 'popup');
+?>
+<div id="actions-bar">
+    <div class="unit size1of5">
+        <h1 class="page-title"><?php echo $this->title; ?></h1>
+    </div>
+</div>
+<div id="site-content">
+    <div class="line">
+        <div class="line">
+            <div class="unit size1of1">
+                <div class="box">
+                    <div class="box-hd">
+                        <h2 class="box-title title-icon icon-user"><?php echo $this->translate('title_company_settings'); ?></h2>
+                    </div>
+                    <div class="box-bd size1of2">
+                        <div class="line form-line">
+                            <form name="company_settings" action="<?php echo $this->url(array('module' => 'administration', 'controller' => 'generalsettings', 'action' => 'updatesettings', null, true)) ?>" method="POST">
+                                <div class="line form-line">
+                                    <label class="form-label unit size1of2"><?php echo $this->translate('label_company_name'); ?> :</label>
+                                    <div class="unit size1of2 lastUnit">
+                                        <?php echo Phoenix_View_Helper_Html::input(array('name' => Settings::SETTING_KEY_COMPANY_NAME.'['.RLanguages::LOCALE_FR.']', 'value' => $this->getSettingValue(Settings::SETTING_KEY_COMPANY_NAME), 'class' => 'unit size1of1 lastUnit')); ?>
+                                    </div>
+                                </div>
+                                <div class="line form-line">
+                                    <label class="form-label unit size1of2"><?php echo $this->translate('label_company_statutes'); ?> (<?php echo $this->translate('label_locale_french') ?>):</label>
+                                    <div class="unit size1of2 lastUnit">
+                                        <?php echo Phoenix_View_Helper_Html::input(array('name' => Settings::SETTING_KEY_COMPANY_STATUTES.'['.RLanguages::LOCALE_FR.']', 'value' => $this->getSettingValue(Settings::SETTING_KEY_COMPANY_STATUTES), 'class' => 'unit size1of1 lastUnit')); ?>
+                                    </div>
+                                </div>
+                                <div class="line form-line">
+                                    <label class="form-label unit size1of2"><?php echo $this->translate('label_company_statutes'); ?> (<?php echo $this->translate('label_locale_english') ?>):</label>
+                                    <div class="unit size1of2 lastUnit">
+                                        <?php echo Phoenix_View_Helper_Html::input(array('name' => Settings::SETTING_KEY_COMPANY_STATUTES.'['.RLanguages::LOCALE_EN.']', 'value' => $this->getSettingValue(Settings::SETTING_KEY_COMPANY_STATUTES,RLanguages::LOCALE_EN), 'class' => 'unit size1of1 lastUnit')); ?>
+                                    </div>
+                                </div>
+                                <div class="line form-line">
+                                    <label class="form-label unit size1of2"><?php echo $this->translate('label_company_vat_number'); ?> :</label>
+                                    <div class="unit size1of2 lastUnit">
+                                        <?php echo Phoenix_View_Helper_Html::input(array('name' => Settings::SETTING_KEY_COMPANY_VAT_NUMBER.'['.RLanguages::LOCALE_FR.']', 'value' => $this->getSettingValue(Settings::SETTING_KEY_COMPANY_VAT_NUMBER), 'class' => 'unit size1of1 lastUnit')); ?>
+                                    </div>
+                                </div>
+                                <div class="line form-line">
+                                    <label class="form-label unit size1of2"><?php echo $this->translate('label_company_website'); ?> :</label>
+                                    <div class="unit size1of2">
+                                        <?php echo Phoenix_View_Helper_Html::input(array('name' => Settings::SETTING_KEY_COMPANY_WEBSITE.'['.RLanguages::LOCALE_FR.']', 'value' => $this->getSettingValue(Settings::SETTING_KEY_COMPANY_WEBSITE), 'class' => 'unit size1of1 lastUnit')); ?>
+                                    </div>
+                                </div>
+                                <div class="line form-line">
+                                    <label class="form-label unit size1of2"><?php echo $this->translate('label_company_address'); ?> :</label>
+                                    <div class="unit size1of2">
+                                        <?php echo Phoenix_View_Helper_Html::input(array('name' => Settings::SETTING_KEY_COMPANY_ADDRESS.'['.RLanguages::LOCALE_FR.']', 'value' => $this->getSettingValue(Settings::SETTING_KEY_COMPANY_ADDRESS), 'class' => 'unit size1of1 lastUnit')); ?>
+                                    </div>
+                                </div>
+                                <div class="line form-line">
+                                    <label class="form-label unit size1of2"><?php echo $this->translate('label_company_phone_number'); ?> :</label>
+                                    <div class="unit size1of2">
+                                        <?php echo Phoenix_View_Helper_Html::input(array('name' => Settings::SETTING_KEY_COMPANY_PHONE_NUMBER.'['.RLanguages::LOCALE_FR.']', 'value' => $this->getSettingValue(Settings::SETTING_KEY_COMPANY_PHONE_NUMBER), 'class' => 'unit size1of1 lastUnit')); ?>
+                                    </div>
+                                </div>
+                                <div class="line form-line">
+                                    <label class="form-label unit size1of2"><?php echo $this->translate('label_company_fax_number'); ?> :</label>
+                                    <div class="unit size1of2">
+                                        <?php echo Phoenix_View_Helper_Html::input(array('name' => Settings::SETTING_KEY_COMPANY_FAX_NUMBER.'['.RLanguages::LOCALE_FR.']', 'value' => $this->getSettingValue(Settings::SETTING_KEY_COMPANY_FAX_NUMBER), 'class' => 'unit size1of1 lastUnit')); ?>
+                                    </div>
+                                </div>
+                                <input type="submit" value="<?php echo $this->translate('Valider'); ?>" class="btn" />
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="line">
+            <div class="unit size1of1">
+                <div class="box">
+                    <div class="box-hd">
+                        <h2 class="box-title title-icon icon-user"><?php echo $this->translate('title_financial_settings'); ?></h2>
+                    </div>
+                    <div class="box-bd size1of2">
+                        <div class="line form-line">
+                            <form name="company_settings" action="<?php echo $this->url(array('module' => 'administration', 'controller' => 'generalsettings', 'action' => 'updatesettings', null, true)) ?>" method="POST">
+                                <div class="line form-line">
+                                    <label class="form-label unit size1of2"><?php echo $this->translate('label_operation_number_format'); ?> :</label>
+                                    <div class="unit size1of2">
+                                        <?php echo Phoenix_View_Helper_Html::input(array('name' => Settings::SETTING_KEY_OPERATION_NUMBER_FORMAT.'['.RLanguages::LOCALE_FR.']', 'value' => $this->getSettingValue(Settings::SETTING_KEY_OPERATION_NUMBER_FORMAT), 'class' => 'unit size1of1 lastUnit')); ?>
+                                    </div>
+                                </div>
+                                <div class="line form-line">
+                                    <label class="form-label unit size1of2"><?php echo $this->translate('label_accounts_department_phone_number'); ?> :</label>
+                                    <div class="unit size1of2">
+                                        <?php echo Phoenix_View_Helper_Html::input(array('name' => Settings::SETTING_KEY_ACCOUNTS_DEPARTMENT_PHONE_NUMBER.'['.RLanguages::LOCALE_FR.']', 'value' => $this->getSettingValue(Settings::SETTING_KEY_ACCOUNTS_DEPARTMENT_PHONE_NUMBER), 'class' => 'unit size1of1 lastUnit')); ?>
+                                    </div>
+                                </div>
+                                <div class="line form-line">
+                                    <label class="form-label unit size1of2"><?php echo $this->translate('label_accounts_department_fax_number'); ?> :</label>
+                                    <div class="unit size1of2">
+                                        <?php echo Phoenix_View_Helper_Html::input(array('name' => Settings::SETTING_KEY_ACCOUNTS_DEPARTMENT_FAX_NUMBER.'['.RLanguages::LOCALE_FR.']', 'value' => $this->getSettingValue(Settings::SETTING_KEY_ACCOUNTS_DEPARTMENT_FAX_NUMBER), 'class' => 'unit size1of1 lastUnit')); ?>
+                                    </div>
+                                </div>
+                                <div class="line form-line">
+                                    <label class="form-label unit size1of2"><?php echo $this->translate('label_financial_administrative_division_signature'); ?> (<?php echo $this->translate('label_locale_french') ?>):</label>
+                                    <div class="unit size1of2 lastUnit">
+                                        <?php echo Phoenix_View_Helper_Html::textarea(array('name' => Settings::SETTING_KEY_FINANCIAL_ADMINISTRATIVE_DIVISION_SIGNATURE.'['.RLanguages::LOCALE_FR.']', 'value' => $this->getSettingValue(Settings::SETTING_KEY_FINANCIAL_ADMINISTRATIVE_DIVISION_SIGNATURE), 'class' => 'unit size1of1 lastUnit')); ?>
+                                    </div>
+                                </div>
+                                <div class="line form-line">
+                                    <label class="form-label unit size1of2"><?php echo $this->translate('label_financial_administrative_division_signature'); ?> (<?php echo $this->translate('label_locale_english') ?>):</label>
+                                    <div class="unit size1of2 lastUnit">
+                                        <?php echo Phoenix_View_Helper_Html::textarea(array('name' => Settings::SETTING_KEY_FINANCIAL_ADMINISTRATIVE_DIVISION_SIGNATURE.'['.RLanguages::LOCALE_EN.']', 'value' => $this->getSettingValue(Settings::SETTING_KEY_FINANCIAL_ADMINISTRATIVE_DIVISION_SIGNATURE,RLanguages::LOCALE_EN), 'class' => 'unit size1of1 lastUnit')); ?>
+                                    </div>
+                                </div>
+                                <div class="line form-line">
+                                    <label class="form-label unit size1of2"><?php echo $this->translate('label_company_rib'); ?> :</label>
+                                    <br/><br/>
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th><?php echo $this->translate('label_company_rib_bank_code'); ?></th>
+                                                <th><?php echo $this->translate('label_company_rib_sort_code'); ?></th>
+                                                <th><?php echo $this->translate('label_company_rib_account_number'); ?></th>
+                                                <th><?php echo $this->translate('label_company_rib_key'); ?></th>
+                                                <th><?php echo $this->translate('label_company_rib_bank_name'); ?></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td><?php echo Phoenix_View_Helper_Html::input(array('name' => Settings::SETTING_KEY_COMPANY_RIB_BANK_CODE.'['.RLanguages::LOCALE_FR.']', 'value' => $this->getSettingValue(Settings::SETTING_KEY_COMPANY_RIB_BANK_CODE))); ?></td>
+                                                <td><?php echo Phoenix_View_Helper_Html::input(array('name' => Settings::SETTING_KEY_COMPANY_RIB_SORT_CODE.'['.RLanguages::LOCALE_FR.']', 'value' => $this->getSettingValue(Settings::SETTING_KEY_COMPANY_RIB_SORT_CODE))); ?></td>
+                                                <td><?php echo Phoenix_View_Helper_Html::input(array('name' => Settings::SETTING_KEY_COMPANY_RIB_ACCOUNT_NUMBER.'['.RLanguages::LOCALE_FR.']', 'value' => $this->getSettingValue(Settings::SETTING_KEY_COMPANY_RIB_ACCOUNT_NUMBER))); ?></td>
+                                                <td><?php echo Phoenix_View_Helper_Html::input(array('name' => Settings::SETTING_KEY_COMPANY_RIB_KEY.'['.RLanguages::LOCALE_FR.']', 'value' => $this->getSettingValue(Settings::SETTING_KEY_COMPANY_RIB_KEY))); ?></td>
+                                                <td><?php echo Phoenix_View_Helper_Html::input(array('name' => Settings::SETTING_KEY_COMPANY_RIB_BANK_NAME.'['.RLanguages::LOCALE_FR.']', 'value' => $this->getSettingValue(Settings::SETTING_KEY_COMPANY_RIB_BANK_NAME))); ?></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="line form-line">
+                                    <label class="form-label unit size1of2"><?php echo $this->translate('label_company_bic_code'); ?> :</label>
+                                    <div class="unit size1of2">
+                                        <?php echo Phoenix_View_Helper_Html::input(array('name' => Settings::SETTING_KEY_COMPANY_BIC_CODE.'['.RLanguages::LOCALE_FR.']', 'value' => $this->getSettingValue(Settings::SETTING_KEY_COMPANY_BIC_CODE), 'class' => 'unit size1of1 lastUnit')); ?>
+                                    </div>
+                                </div>
+                                <div class="line form-line">
+                                    <label class="form-label unit size1of2"><?php echo $this->translate('label_company_iban'); ?> :</label>
+                                    <div class="unit size1of2">
+                                        <?php echo Phoenix_View_Helper_Html::input(array('name' => Settings::SETTING_KEY_COMPANY_IBAN.'['.RLanguages::LOCALE_FR.']', 'value' => $this->getSettingValue(Settings::SETTING_KEY_COMPANY_IBAN), 'class' => 'unit size1of1 lastUnit')); ?>
+                                    </div>
+                                </div>
+                                <div class="line form-line">
+                                    <label class="form-label unit size1of2"><?php echo $this->translate('label_company_account_holder'); ?> :</label>
+                                    <div class="unit size1of2">
+                                        <?php echo Phoenix_View_Helper_Html::input(array('name' => Settings::SETTING_KEY_COMPANY_ACCOUNT_HOLDER.'['.RLanguages::LOCALE_FR.']', 'value' => $this->getSettingValue(Settings::SETTING_KEY_COMPANY_ACCOUNT_HOLDER), 'class' => 'unit size1of1 lastUnit')); ?>
+                                    </div>
+                                </div>
+                                <div class="line form-line">
+                                    <label class="form-label unit size1of2"><?php echo $this->translate('label_company_bank_address'); ?> :</label>
+                                    <div class="unit size1of2">
+                                        <?php echo Phoenix_View_Helper_Html::input(array('name' => Settings::SETTING_KEY_COMPANY_BANK_ADDRESS.'['.RLanguages::LOCALE_FR.']', 'value' => $this->getSettingValue(Settings::SETTING_KEY_COMPANY_BANK_ADDRESS), 'class' => 'unit size1of1 lastUnit')); ?>
+                                    </div>
+                                </div>
+                                <div class="line form-line">
+                                    <label class="form-label unit size1of2"><?php echo $this->translate('label_company_invoice_missed_deadline'); ?> (<?php echo $this->translate('label_locale_french') ?>):</label>
+                                    <div class="unit size1of2 lastUnit">
+                                        <?php echo Phoenix_View_Helper_Html::textarea(array('name' => Settings::SETTING_KEY_COMPANY_INVOICE_MISSED_DEADLINE.'['.RLanguages::LOCALE_FR.']', 'value' => $this->getSettingValue(Settings::SETTING_KEY_COMPANY_INVOICE_MISSED_DEADLINE), 'class' => 'unit size1of1 lastUnit')); ?>
+                                    </div>
+                                </div>
+                                <div class="line form-line">
+                                    <label class="form-label unit size1of2"><?php echo $this->translate('label_company_invoice_missed_deadline'); ?> (<?php echo $this->translate('label_locale_english') ?>):</label>
+                                    <div class="unit size1of2 lastUnit">
+                                        <?php echo Phoenix_View_Helper_Html::textarea(array('name' => Settings::SETTING_KEY_COMPANY_INVOICE_MISSED_DEADLINE.'['.RLanguages::LOCALE_EN.']', 'value' => $this->getSettingValue(Settings::SETTING_KEY_COMPANY_INVOICE_MISSED_DEADLINE,RLanguages::LOCALE_EN), 'class' => 'unit size1of1 lastUnit')); ?>
+                                    </div>
+                                </div>
+                                <div class="line form-line">
+                                    <label class="form-label unit size1of2"><?php echo $this->translate('label_company_reimbursement_instruction'); ?> (<?php echo $this->translate('label_locale_french') ?>):</label>
+                                    <div class="unit size1of2 lastUnit">
+                                        <?php echo Phoenix_View_Helper_Html::textarea(array('name' => Settings::SETTING_KEY_COMPANY_REIMBURSEMENT_INSTRUCTION.'['.RLanguages::LOCALE_FR.']', 'value' => $this->getSettingValue(Settings::SETTING_KEY_COMPANY_REIMBURSEMENT_INSTRUCTION), 'class' => 'unit size1of1 lastUnit')); ?>
+                                    </div>
+                                </div>
+                                <div class="line form-line">
+                                    <label class="form-label unit size1of2"><?php echo $this->translate('label_company_reimbursement_instruction'); ?> (<?php echo $this->translate('label_locale_english') ?>):</label>
+                                    <div class="unit size1of2 lastUnit">
+                                        <?php echo Phoenix_View_Helper_Html::textarea(array('name' => Settings::SETTING_KEY_COMPANY_REIMBURSEMENT_INSTRUCTION.'['.RLanguages::LOCALE_EN.']', 'value' => $this->getSettingValue(Settings::SETTING_KEY_COMPANY_REIMBURSEMENT_INSTRUCTION,RLanguages::LOCALE_EN), 'class' => 'unit size1of1 lastUnit')); ?>
+                                    </div>
+                                </div>
+                                <input type="submit" value="<?php echo $this->translate('Valider'); ?>" class="btn" />
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="unit size1of1">
+                <div class="box">
+                    <div class="box-hd">
+                        <h2 class="box-title title-icon icon-user"><?php echo $this->translate('title_emails_settings'); ?></h2>
+                    </div>
+                    <div class="box-bd size1of2">
+                        <div class="line form-line">
+                            <form name="emails_settings" action="<?php echo $this->url(array('module' => 'administration', 'controller' => 'generalsettings', 'action' => 'updatesettings', null, true)) ?>" method="POST">
+                                 <div class="line form-line">
+                                    <label class="form-label unit size1of2"><?php echo $this->translate('label_application_email'); ?> :</label>
+                                    <div class="unit size1of2">
+                                        <?php echo Phoenix_View_Helper_Html::input(array('name' => Settings::SETTING_KEY_EMAIL_APPLICATION.'['.RLanguages::LOCALE_FR.']', 'value' => $this->getSettingValue(Settings::SETTING_KEY_EMAIL_APPLICATION), 'class' => 'unit size1of1 lastUnit')); ?>
+                                    </div>
+                                </div>
+                                <div class="line form-line">
+                                    <label class="form-label unit size1of2"><?php echo $this->translate('label_contact_email'); ?> :</label>
+                                    <div class="unit size1of2">
+                                        <?php echo Phoenix_View_Helper_Html::input(array('name' => Settings::SETTING_KEY_EMAIL_CONTACT.'['.RLanguages::LOCALE_FR.']', 'value' => $this->getSettingValue(Settings::SETTING_KEY_EMAIL_CONTACT), 'class' => 'unit size1of1 lastUnit')); ?>
+                                    </div>
+                                </div>
+                                <div class="line form-line">
+                                    <label class="form-label unit size1of2"><?php echo $this->translate('label_financial_administrative_division_email'); ?> :</label>
+                                    <div class="unit size1of2">
+                                        <?php echo Phoenix_View_Helper_Html::input(array('name' => Settings::SETTING_KEY_EMAIL_FINANCIAL_ADMINISTRATIVE_DIVISION.'['.RLanguages::LOCALE_FR.']', 'value' => $this->getSettingValue(Settings::SETTING_KEY_EMAIL_FINANCIAL_ADMINISTRATIVE_DIVISION), 'class' => 'unit size1of1 lastUnit')); ?>
+                                    </div>
+                                </div>
+                                <div class="line form-line">
+                                    <label class="form-label unit size1of2"><?php echo $this->translate('label_invoicing_department_email'); ?> :</label>
+                                    <div class="unit size1of2">
+                                        <?php echo Phoenix_View_Helper_Html::input(array('name' => Settings::SETTING_KEY_EMAIL_INVOICING_DEPARTMENT.'['.RLanguages::LOCALE_FR.']', 'value' => $this->getSettingValue(Settings::SETTING_KEY_EMAIL_INVOICING_DEPARTMENT), 'class' => 'unit size1of1 lastUnit')); ?>
+                                    </div>
+                                </div>
+                                <div class="line form-line">
+                                    <label class="form-label unit size1of2"><?php echo $this->translate('label_paid_invoices_email'); ?> :</label>
+                                    <div class="unit size1of2">
+                                        <?php echo Phoenix_View_Helper_Html::input(array('name' => Settings::SETTING_KEY_EMAIL_PAID_INVOICES.'['.RLanguages::LOCALE_FR.']', 'value' => $this->getSettingValue(Settings::SETTING_KEY_EMAIL_PAID_INVOICES), 'class' => 'unit size1of1 lastUnit')); ?>
+                                    </div>
+                                </div>
+                                <div class="line form-line">
+                                    <label class="form-label unit size1of2"><?php echo $this->translate('label_logistic_department_email'); ?> :</label>
+                                    <div class="unit size1of2">
+                                        <?php echo Phoenix_View_Helper_Html::input(array('name' => Settings::SETTING_KEY_EMAIL_LOGISTIC_DEPARTMENT.'['.RLanguages::LOCALE_FR.']', 'value' => $this->getSettingValue(Settings::SETTING_KEY_EMAIL_LOGISTIC_DEPARTMENT), 'class' => 'unit size1of1 lastUnit')); ?>
+                                    </div>
+                                </div>
+                                <input type="submit" value="<?php echo $this->translate('Valider'); ?>" class="btn" />
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="unit size1of1">
+                <div class="box">
+                    <div class="box-hd">
+                        <h2 class="box-title title-icon icon-user"><?php echo $this->translate('title_terms_of_sale_settings'); ?></h2>
+                    </div>
+                    <div class="box-bd size1of2">
+                        <div class="line form-line">
+                            <form name="emails_settings" action="<?php echo $this->url(array('module' => 'administration', 'controller' => 'generalsettings', 'action' => 'updatesettings', null, true)) ?>" method="POST">
+                                <div class="line form-line">
+                                    <label class="form-label unit size1of2"><?php echo $this->translate('label_locale_french') ?> :</label>
+                                    <div class="unit size1of2">
+                                        <?php echo Phoenix_View_Helper_Html::textarea(array('name' => Settings::SETTING_KEY_COMPANY_TERMS_OF_SALE.'['.RLanguages::LOCALE_FR.']', 'value' => $this->getSettingValue(Settings::SETTING_KEY_COMPANY_TERMS_OF_SALE), 'class' => 'unit size1of1 lastUnit')); ?>
+                                    </div>
+                                </div>
+                                <div class="line form-line">
+                                    <label class="form-label unit size1of2"><?php echo $this->translate('label_terms_of_sale_url') ?> :</label>
+                                    <div class="unit size1of2">
+                                        <?php echo Phoenix_View_Helper_Html::input(array('name' => Settings::SETTING_KEY_COMPANY_TERMS_OF_SALE_URL.'['.RLanguages::LOCALE_FR.']', 'value' => $this->getSettingValue(Settings::SETTING_KEY_COMPANY_TERMS_OF_SALE_URL), 'class' => 'unit size1of1 lastUnit')); ?>
+                                    </div>
+                                </div>
+                                <div class="line form-line">
+                                    <label class="form-label unit size1of2"><?php echo $this->translate('label_terms_of_sale_last_update') ?> :</label>
+                                    <div class="unit size1of2">
+                                        <?php echo Phoenix_View_Helper_Html::input(array('name' => Settings::SETTING_KEY_COMPANY_TERMS_OF_SALE_LAST_UPDATE.'['.RLanguages::LOCALE_FR.']', 'value' => $this->getSettingValue(Settings::SETTING_KEY_COMPANY_TERMS_OF_SALE_LAST_UPDATE), 'class' => 'unit size1of1 lastUnit')); ?>
+                                    </div>
+                                </div>
+                                <div class="line form-line">
+                                    <label class="form-label unit size1of2"><?php echo $this->translate('label_global_budget_terms_of_sale') ?> :</label>
+                                    <div class="unit size1of2">
+                                        <?php echo Phoenix_View_Helper_Html::input(array('name' => Settings::SETTING_KEY_GLOBAL_BUDGET_TERMS_OF_SALE.'['.RLanguages::LOCALE_FR.']', 'value' => $this->getSettingValue(Settings::SETTING_KEY_GLOBAL_BUDGET_TERMS_OF_SALE), 'class' => 'unit size1of1 lastUnit')); ?>
+                                    </div>
+                                </div>
+                                <div class="line form-line">
+                                    <label class="form-label unit size1of2"><?php echo $this->translate('label_locale_english') ?> :</label>
+                                    <div class="unit size1of2">
+                                        <?php echo Phoenix_View_Helper_Html::textarea(array('name' => Settings::SETTING_KEY_COMPANY_TERMS_OF_SALE.'['.RLanguages::LOCALE_EN.']', 'value' => $this->getSettingValue(Settings::SETTING_KEY_COMPANY_TERMS_OF_SALE,RLanguages::LOCALE_EN), 'class' => 'unit size1of1 lastUnit')); ?>
+                                    </div>
+                                </div>
+                                <div class="line form-line">
+                                    <label class="form-label unit size1of2"><?php echo $this->translate('label_terms_of_sale_url') ?> :</label>
+                                    <div class="unit size1of2">
+                                        <?php echo Phoenix_View_Helper_Html::input(array('name' => Settings::SETTING_KEY_COMPANY_TERMS_OF_SALE_URL.'['.RLanguages::LOCALE_EN.']', 'value' => $this->getSettingValue(Settings::SETTING_KEY_COMPANY_TERMS_OF_SALE_URL,RLanguages::LOCALE_EN), 'class' => 'unit size1of1 lastUnit')); ?>
+                                    </div>
+                                </div>
+                                <div class="line form-line">
+                                    <label class="form-label unit size1of2"><?php echo $this->translate('label_terms_of_sale_last_update') ?> :</label>
+                                    <div class="unit size1of2">
+                                        <?php echo Phoenix_View_Helper_Html::input(array('name' => Settings::SETTING_KEY_COMPANY_TERMS_OF_SALE_LAST_UPDATE.'['.RLanguages::LOCALE_EN.']', 'value' => $this->getSettingValue(Settings::SETTING_KEY_COMPANY_TERMS_OF_SALE_LAST_UPDATE,RLanguages::LOCALE_EN), 'class' => 'unit size1of1 lastUnit')); ?>
+                                    </div>
+                                </div>
+                                <div class="line form-line">
+                                    <label class="form-label unit size1of2"><?php echo $this->translate('label_global_budget_terms_of_sale') ?> :</label>
+                                    <div class="unit size1of2">
+                                        <?php echo Phoenix_View_Helper_Html::input(array('name' => Settings::SETTING_KEY_GLOBAL_BUDGET_TERMS_OF_SALE.'['.RLanguages::LOCALE_EN.']', 'value' => $this->getSettingValue(Settings::SETTING_KEY_GLOBAL_BUDGET_TERMS_OF_SALE,RLanguages::LOCALE_EN), 'class' => 'unit size1of1 lastUnit')); ?>
+                                    </div>
+                                </div>
+                                <input type="submit" value="<?php echo $this->translate('Valider'); ?>" class="btn" />
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="unit size1of1">
+                <div class="box">
+                    <div class="box-hd">
+                        <h2 class="box-title title-icon icon-user"><?php echo $this->translate('title_logo_settings'); ?></h2>
+                    </div>
+                    <div class="box-bd size1of1">
+                        <h3><?php echo $this->translate('title_application_logo'); ?></h3>
+                        <img class="application-logo" src="<?php echo $this->getSettingValue(Settings::SETTING_KEY_APPLICATION_LOGO) ?>">
+                       <br/><br/>
+                        <form enctype="multipart/form-data" action="<?php echo $this->url(array('module' => 'administration', 'controller' => 'generalsettings', 'action' => 'upload', null, true)) ?>" method="POST">
+                            <label class="form-label"><?php echo $this->translate('Parcourir'); ?> :</label>
+                            <?php echo Phoenix_View_Helper_Html::input(array('type' => 'file', 'name' => Settings::SETTING_KEY_APPLICATION_LOGO.'['.RLanguages::LOCALE_FR.']')); ?>
+                            <input type="submit" value="<?php echo $this->translate('Ajouter'); ?>" class="btn" />
+                        </form>
+                    </div>
+                    <div class="box-bd size1of1">
+                        <h3><?php echo $this->translate('title_company_logo'); ?></h3>
+                        <img width="103" height="42" src="<?php echo $this->getSettingValue(Settings::SETTING_KEY_COMPANY_LOGO) ?>">
+                        <br/><br/>
+                        <form enctype="multipart/form-data" action="<?php echo $this->url(array('module' => 'administration', 'controller' => 'generalsettings', 'action' => 'upload', null, true)) ?>" method="POST">
+                            <label class="form-label"><?php echo $this->translate('Parcourir'); ?> :</label>
+                            <?php echo Phoenix_View_Helper_Html::input(array('type' => 'file', 'name' => Settings::SETTING_KEY_COMPANY_LOGO.'['.RLanguages::LOCALE_FR.']')); ?>
+                            <input type="submit" value="<?php echo $this->translate('Ajouter'); ?>" class="btn" />
+                        </form>
+                    </div>
+                    <div class="box-bd size1of1">
+                        <h3><?php echo $this->translate('label_header_pdf_logo'); ?> (<?php echo $this->translate('label_locale_french') ?>):</h3>
+                        <img width="1240" height="171" src="<?php echo $this->getSettingValue(Settings::SETTING_KEY_PDF_HEADER_LOGO) ?>">
+                        <br/><br/>
+                        <form enctype="multipart/form-data" action="<?php echo $this->url(array('module' => 'administration', 'controller' => 'generalsettings', 'action' => 'upload', null, true)) ?>" method="POST">
+                            <label class="form-label"><?php echo $this->translate('Parcourir'); ?> :</label>
+                            <?php echo Phoenix_View_Helper_Html::input(array('type' => 'file', 'name' => Settings::SETTING_KEY_PDF_HEADER_LOGO.'['.RLanguages::LOCALE_FR.']')); ?>
+                            <input type="submit" value="<?php echo $this->translate('Ajouter'); ?>" class="btn" />
+                        </form>
+                    </div>
+                     <div class="box-bd size1of1">
+                        <h3><?php echo $this->translate('label_header_pdf_logo'); ?> (<?php echo $this->translate('label_locale_english') ?>):</h3>
+                        <img width="1240" height="171" src="<?php echo $this->getSettingValue(Settings::SETTING_KEY_PDF_HEADER_LOGO,RLanguages::LOCALE_EN) ?>">
+                        <br/><br/>
+                        <form enctype="multipart/form-data" action="<?php echo $this->url(array('module' => 'administration', 'controller' => 'generalsettings', 'action' => 'upload', null, true)) ?>" method="POST">
+                            <label class="form-label"><?php echo $this->translate('Parcourir'); ?> :</label>
+                            <?php echo Phoenix_View_Helper_Html::input(array('type' => 'file', 'name' => Settings::SETTING_KEY_PDF_HEADER_LOGO.'['.RLanguages::LOCALE_EN.']')); ?>
+                            <input type="submit" value="<?php echo $this->translate('Ajouter'); ?>" class="btn" />
+                        </form>
+                    </div>
+                </div>
+            </div>
+             <div class="unit size1of1">
+                <div class="box">
+                    <div class="box-hd">
+                        <h2 class="box-title title-icon icon-user"><?php echo $this->translate('title_external_connections'); ?></h2>
+                    </div>
+                    <div class="box-bd size1of2">
+                        <div class="line form-line">
+                            <form name="external_connections_settings" action="<?php echo $this->url(array('module' => 'administration', 'controller' => 'generalsettings', 'action' => 'updatesettings', null, true)) ?>" method="POST">
+                                <div class="line form-line">
+                                    <label class="form-label unit size1of2"><?php echo $this->translate('label_external_connection_arthur') ?> :</label>
+                                    <div class="unit size1of2 lastUnit">
+                                        <label class="unit size1of2"><?php echo $this->translate('label_enabled') ?> <?php echo Phoenix_View_Helper_Html::radio(array('name' => Settings::SETTING_KEY_EXTERNAL_CONNECTION_ARTHUR.'['.RLanguages::LOCALE_FR.']', 'default_value' => $this->getSettingValue(Settings::SETTING_KEY_EXTERNAL_CONNECTION_ARTHUR),'value' => 1)); ?>
+                                        <label class="unit size1of2 lastUnit"><?php echo $this->translate('label_disabled') ?> <?php echo Phoenix_View_Helper_Html::radio(array('name' => Settings::SETTING_KEY_EXTERNAL_CONNECTION_ARTHUR.'['.RLanguages::LOCALE_FR.']', 'default_value' => $this->getSettingValue(Settings::SETTING_KEY_EXTERNAL_CONNECTION_ARTHUR),'value' => 0,)); ?>
+                                    </div>
+                                </div>
+                                <div class="line form-line">
+                                    <label class="form-label unit size1of2"><?php echo $this->translate('label_external_connection_compil') ?> :</label>
+                                    <div class="unit size1of2 lastUnit">
+                                        <label class="unit size1of2"><?php echo $this->translate('label_enabled') ?> <?php echo Phoenix_View_Helper_Html::radio(array('name' => Settings::SETTING_KEY_EXTERNAL_CONNECTION_COMPIL.'['.RLanguages::LOCALE_FR.']', 'default_value' => $this->getSettingValue(Settings::SETTING_KEY_EXTERNAL_CONNECTION_COMPIL),'value' => 1)); ?>
+                                        <label class="unit size1of2 lastUnit"><?php echo $this->translate('label_disabled') ?> <?php echo Phoenix_View_Helper_Html::radio(array('name' => Settings::SETTING_KEY_EXTERNAL_CONNECTION_COMPIL.'['.RLanguages::LOCALE_FR.']', 'default_value' => $this->getSettingValue(Settings::SETTING_KEY_EXTERNAL_CONNECTION_COMPIL),'value' => 0,)); ?>
+                                    </div>
+                                </div>
+                                <input type="submit" value="<?php echo $this->translate('Valider'); ?>" class="btn" />
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

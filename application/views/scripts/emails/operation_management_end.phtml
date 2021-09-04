@@ -1,0 +1,49 @@
+<?php echo $this->oTranslate->translate('Bonjour');?>,
+<br/>
+<br/>
+<?php echo $this->oTranslate->translate('Les opérations suivantes arriveront en fin de gestion dans moins d\'un mois. Veuillez finaliser les actions de production et facturation')?>:
+<br/>
+<br/>
+   <table>
+<?php $iPreviousUser = 0; 
+    foreach($this->operations as $aOperation){
+ 
+        if($iPreviousUser && $iPreviousUser !== $aOperation['user_id']){ ?>
+                    </table>
+                </td>
+            </tr>
+        <?php } 
+
+        if($iPreviousUser === 0 || $iPreviousUser !== $aOperation['user_id']){ $iPreviousUser = $aOperation['user_id']; ?>
+           <tr style="background:#80808061; "><td><b style="padding:10px"><?php echo $aOperation['cp_name'];?></b></td></tr>
+           <tr>
+               <td>
+                    <table cellspacing="10" width="100%">
+                        <tr>
+                            <th align='left' width="15%"><?php echo $this->oTranslate->translate('N° Opération');?></th>
+                            <th align='left' width="50%"><?php echo $this->oTranslate->translate('Intitulé Opération');?></th>
+                            <th align='left' width="15%"><?php echo $this->oTranslate->translate('Client');?></th>
+                            <th align='left' width="15%"><?php echo $this->oTranslate->translate('Date Fin de Gestion');?></th>
+                        </tr>
+        <?php }  ?>
+                        <tr>
+                            <td><?php echo $aOperation['op_number']; ?></td>
+                            <td><?php echo $aOperation['op_libelle']; ?></td>
+                            <td><?php echo $aOperation['cl_libelle']; ?></td>
+                            <td><?php echo $aOperation['op_stamp_end']; ?></td>
+                        </tr>
+       
+
+        
+    <?php } ?>
+</table>
+<br/>
+<br/>
+<?php echo $this->oTranslate->translate('Cordialement');?>,
+<br/>
+<?php echo $this->oTranslate->translate('L\'équipe');?>  <?php echo $this->company_name;?> 
+
+
+
+
+ 

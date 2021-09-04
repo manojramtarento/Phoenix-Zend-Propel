@@ -1,0 +1,52 @@
+<div class="block-graph noborder-block wide-container-block">
+    <?php if ($this->bDisplayKpiTitle) { ?>
+        <div class="title-bloc invoice-title-bloc title-bloc-full-width"><?php echo $this->sKpiTitle; ?></div>
+    <?php } ?>
+    <div class="invoices-situation-content-bloc">
+        <table>
+            <tr class ="data-table-head">
+                <th class ="data-column-name invoice-col-center"><?php echo $this->translate('label_invoice_numbre'); ?></th>
+                <th class ="data-column-name invoice-col-center"><?php echo $this->translate('label_order_number'); ?></th>
+                <th class ="data-column-name invoice-col-left"><?php echo $this->translate('label_type_invoice'); ?></th>
+                <th class ="data-column-name invoice-col-right"><?php echo $this->translate('label_pre_tax_amount'); ?></th>
+                <th class ="data-column-name invoice-col-right"><?php echo $this->translate('label_vat_inclusive_amount'); ?></th>
+                <th class ="data-column-name invoice-col-center"><?php echo $this->translate('label_status'); ?></th>
+                <th class ="data-column-name invoice-col-center"><?php echo $this->translate('label_due_date'); ?></th>
+                <th class ="data-column-name invoice-col-center"><?php echo $this->translate('label_edition'); ?></th>
+                <th class ="data-column-name invoice-col-center"><?php echo $this->translate('label_cashed'); ?></th>
+            </tr>
+            <?php
+            foreach ($this->aInvoices as $aData) {
+                $sInvoiceStatusClass = '';
+                switch ($aData['Statut']) {
+                    case 'Editée' : $sInvoiceStatusClass = 'invoice-status-edited';
+                        break;
+                    case 'Encaissée' :
+                        $sInvoiceStatusClass = 'invoice-status-chashed';
+                        break;
+                    case 'Annulation' :
+                    case 'Annulée' :
+                        $sInvoiceStatusClass = 'invoice-status-canceled';
+                        break;
+                    case 'Encaissement partiel':
+                        $sInvoiceStatusClass = '';
+                        break;
+                    default:
+                        throw new \DomainException('Undefined invoice status "' . $aData['Statut'] . '".');
+                }
+                ?>
+                <tr class="table-body-rows">
+                    <td class="invoice-td invoice-col-center"><?php echo isset($aData['N° facture']) ? $aData['N° facture'] : ''; ?></td>
+                    <td class="invoice-td invoice-col-center"><?php echo empty($aData['N° Commande']) ? '-------------' : $aData['N° Commande']; ?></td>
+                    <td class="invoice-td invoice-col-left"><?php echo isset($aData['Type de facture']) ? $this->translate($aData['Type de facture']) : ''; ?></td>
+                    <td class="invoice-td invoice-col-right"><?php echo isset($aData['Montant HT']) ? Phoenix_Data_Convert::formatMoney($aData['Montant HT'], false, true, true) : ''; ?></td>
+                    <td class="invoice-td invoice-col-right"><?php echo isset($aData['Montant TTC']) ? Phoenix_Data_Convert::formatMoney($aData['Montant TTC'], false, true, true) : ''; ?></td>
+                    <td class="invoice-td invoice-col-center invoice-col-status"><span class="invoice-status <?php echo $sInvoiceStatusClass; ?>"><?php echo isset($aData['Statut']) ? $this->translate($aData['Statut']) : ''; ?></span></td>
+                    <td class="invoice-td invoice-col-center"><?php echo isset($aData['Echéance']) ? $aData['Echéance'] : ''; ?></td>
+                    <td class="invoice-td invoice-col-center"><?php echo isset($aData['Edition']) ? $aData['Edition'] : ''; ?></td>
+                    <td class="invoice-td invoice-col-center"><?php echo isset($aData['Encaissée']) ? $aData['Encaissée'] : ''; ?></td>
+                </tr>
+            <?php } ?>
+        </table>
+    </div>
+</div>

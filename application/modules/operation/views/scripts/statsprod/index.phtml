@@ -1,0 +1,331 @@
+<?php
+$this->title = $this->translate('Description de l\'opération');
+$this->headTitle($this->title);
+$this->headScript()->appendFile($this->baseUrl() . '/js/operation/description/index.js');
+
+echo $this->FlashMessenger('error', 'popup');
+?>
+<?php echo $this->partial('partials/actionsbar.phtml', array('operation' => $this->operation)); ?>
+<input type="hidden" id="id_input_op_id" value="<?php echo $this->operation->getOpId() ?>" />
+<input type="hidden" id="id_input_op_cl_id" value="<?php echo $this->operation->getOpClId() ?>" />
+
+<div id="site-content">
+    <?php echo $this->partial('partials/menu.phtml'); ?>
+
+    <div id="content-bd">
+
+        <!--<div class="list-actions">
+            <div class="unit size1of3 lastunit">
+                <fieldset class="stats-op-fieldset large" style="/*margin-top:10px;margin-bottom:10px*/">
+                    <legend><span class="title-icon icon-chart"></span></legend>
+                    <table class="stats-op">
+                        <thead>
+                            <tr>
+                                <th class="op-accepte"><?php echo $this->translate('Total des courriers reçus'); ?></th>
+                                <th class="op-encours"><?php echo $this->translate('Total des courriers saisis'); ?></th>
+                                <th class="op-refuse"><?php echo $this->translate('Total conforme'); ?></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="op-accepte">1</td>
+                                <td class="op-encours">2</td>
+                                <td class="op-refuse">3</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </fieldset>
+            </div>
+        </div>
+        <div class="clear"></div>-->
+
+        <div class="line">
+            <div class="unit size2of5">
+                <div class="box box-blue ">
+                    <div class="box-hd">
+                        <div class="line">
+                            <h2 class="box-title unit size4of5"><?php echo $this->translate('Total des courriers reçus (La totalité des courriers reçus tt les états)'); ?></h2>
+                            <h2 class="box-title unit size1of5"><?php echo $this->courriers_recus ?></h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="unit size3of5 lastUnit">
+                <a class="icon icon-32 icon-excel" href="<?php echo $this->url(array('format' => 'csv'), null, false) ?>" title="<?php echo $this->translate('Exporter au format Excel'); ?>"><?php echo $this->translate('Exporter au format Excel'); ?></a>
+            </div>
+        </div>
+        <div class="line">
+            <div class="unit size2of5 col lastUnit">
+                <div class="box box-blue">
+                    <div class="box-hd">
+                        <div class="line">
+                            <h2 class="box-title unit size4of5"><?php echo $this->translate('Total des courriers saisis (ensemble des conforme initiaux et non conforme)'); ?></h2>
+                            <h2 class="box-title unit size1of5"><?php echo $this->courriers_saisis ?></h2>
+                        </div>
+                    </div>
+                </div></div></div>
+        <div class="line">
+            <div class="unit size2of5 col lastUnit">
+                <div class="box box-blue">
+                    <div class="box-hd">
+                        <div class="line">
+                            <h2 class="box-title unit size4of5"><?php echo $this->translate('Total conforme (total des conformes de la demande intiale, état initial)'); ?></h2>
+                            <h2 class="box-title unit size1of5"><?php echo $this->conforme ?></h2>
+                        </div>
+                    </div>
+                </div></div></div>
+        <div class="line">
+            <div class="unit size2of5 col lastUnit">
+                <div class="box box-blue">
+                    <div class="box-hd">
+                        <div class="line">
+                            <h2 class="box-title unit size4of5"><?php echo $this->translate('Total des non conformes initiaux'); ?></h2>
+                            <h2 class="box-title unit size1of5"><?php echo $this->nc_initiaux ?></h2>
+                        </div>
+                    </div>
+                </div></div></div>
+
+        <div class="line">
+            <div class="unit size2of5 col lastUnit">
+                <div class="box box-blue toggle hide">
+                    <div class="box-hd">
+                        <div class="line">
+                            <h2 class="box-title unit size4of5"><?php echo $this->translate('NC REM initiaux'); ?></h2>
+                            <h2 class="box-title unit size1of5"><?php echo $this->nc_rem_initiaux['total'] ?></h2>
+                        </div>
+                    </div>
+                    <div class="box-bd">
+                        <table class="list">
+                            <tbody>
+                                <tr class="<?php echo $this->cycle(array('', 'alt'))->next() ?> " >
+                                    <td class="size4of5"><?php echo $this->translate('Total NC REM devenu CF (suite NC+ ou recla)'); ?></td>
+                                    <td class="size1of5"><?php echo isset($this->nc_rem_initiaux['DEVENU_CF']) ? $this->nc_rem_initiaux['DEVENU_CF'] : 0 ?></td>
+                                </tr>
+                                <tr class="<?php echo $this->cycle(array('', 'alt'))->next() ?> " >
+                                    <td class="size4of5"><?php echo $this->translate('Total NC REM resté NC REM (pas d\'état supplémentaire)'); ?></td>
+                                    <td class="size1of5"><?php echo isset($this->nc_rem_initiaux['RESTE_NC_REM']) ? $this->nc_rem_initiaux['RESTE_NC_REM'] : 0 ?></td>
+                                </tr>
+                                <tr class="<?php echo $this->cycle(array('', 'alt'))->next() ?> " >
+                                    <td class="size4of5"><?php echo $this->translate('Total NC REM resté NC REM (suite NC+ ou recla)'); ?></td>
+                                    <td class="size1of5"><?php echo isset($this->nc_rem_initiaux['REDEVENU_NC_REM']) ? $this->nc_rem_initiaux['REDEVENU_NC_REM'] : 0 ?></td>
+                                </tr>
+                                <tr class="<?php echo $this->cycle(array('', 'alt'))->next() ?> " >
+                                    <td class="size4of5"><?php echo $this->translate('Total NC REM devenu NC IRREM (suite NC+ ou recla)'); ?></td>
+                                    <td class="size1of5"><?php echo isset($this->nc_rem_initiaux['DEVENU_NC_IRREM']) ? $this->nc_rem_initiaux['DEVENU_NC_IRREM'] : 0 ?></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="line">
+            <div class="unit size2of5 col lastUnit">
+                <div class="box box-blue toggle hide">
+                    <div class="box-hd">
+                        <div class="line">
+                            <h2 class="box-title unit size4of5"><?php echo $this->translate('NC IRREM initiaux'); ?></h2>
+                            <h2 class="box-title unit size1of5"><?php echo $this->nc_irrem_initiaux['total'] ?></h2>
+                        </div>
+                    </div>
+                    <div class="box-bd">
+                        <table class="list">
+                            <tbody>
+                                <tr class="<?php echo $this->cycle(array('', 'alt'))->next() ?> " >
+                                    <td class="size4of5"><?php echo $this->translate('Total NC IRREM resté NC IRREM (pas d\'état supplémentaire)'); ?></td>
+                                    <td class="size1of5"><?php echo isset($this->nc_irrem_initiaux['RESTE_NC_IRREM']) ? $this->nc_irrem_initiaux['RESTE_NC_IRREM'] : 0 ?></td>
+                                </tr>
+                                <tr class="<?php echo $this->cycle(array('', 'alt'))->next() ?> " >
+                                    <td class="size4of5"><?php echo $this->translate('Total NC IRREM resté NC IRREM (suite NC+ ou récla)'); ?></td>
+                                    <td class="size1of5"><?php echo isset($this->nc_irrem_initiaux['REDEVENU_NC_IRREM']) ? $this->nc_irrem_initiaux['REDEVENU_NC_IRREM'] : 0 ?></td>
+                                </tr>
+                                <tr class="<?php echo $this->cycle(array('', 'alt'))->next() ?> " >
+                                    <td class="size4of5"><?php echo $this->translate('Total NC IRREM devenu CONF (suite NC+ ou recla)'); ?></td>
+                                    <td class="size1of5"><?php echo isset($this->nc_irrem_initiaux['DEVENU_CONF']) ? $this->nc_irrem_initiaux['DEVENU_CONF'] : 0 ?></td>
+                                </tr>
+                                <tr class="<?php echo $this->cycle(array('', 'alt'))->next() ?> " >
+                                    <td class="size4of5"><?php echo $this->translate('Total NC IRREM devenu NC REM (suite NC+ ou recla)'); ?></td>
+                                    <td class="size1of5"><?php echo isset($this->nc_irrem_initiaux['DEVENU_NC_REM']) ? $this->nc_irrem_initiaux['DEVENU_NC_REM'] : 0 ?></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="line">
+            <div class="unit size2of5 col lastUnit">
+                <div class="box box-blue toggle hide">
+                    <div class="box-hd">
+                        <div class="line">
+                            <h2 class="box-title unit size4of5"><?php echo $this->translate('Réclamations'); ?></h2>
+                            <h2 class="box-title unit size1of5"><?php echo $this->reclamations['total'] ?></h2>
+                        </div>
+                    </div>
+                    <div class="box-bd">
+                        <table class="list">
+                            <tbody>
+                                <tr class="<?php echo $this->cycle(array('', 'alt'))->next() ?> " >
+                                    <td class="size4of5"><?php echo $this->translate('Total récla avec remboursment conso (qui engendre un remboursement ou une dotation)'); ?></td>
+                                    <td class="size1of5"><?php echo isset($this->reclamations['AVEC_REMB']) ? $this->reclamations['AVEC_REMB'] : 0 ?></td>
+                                </tr>
+                                <tr class="<?php echo $this->cycle(array('', 'alt'))->next() ?> " >
+                                    <td class="size4of5"><?php echo $this->translate('Total récla sans remboursement conso (ttes les autres)'); ?></td>
+                                    <td class="size1of5"><?php echo isset($this->reclamations['SANS_REMB']) ? $this->reclamations['SANS_REMB'] : 0 ?></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="line">
+            <div class="unit size2of5 col lastUnit">
+                <div class="box box-blue toggle hide">
+                    <div class="box-hd">
+                        <div class="line">
+                            <h2 class="box-title unit size4of5"><?php echo $this->translate('Total NC+'); ?></h2>
+                            <h2 class="box-title unit size1of5"><?php echo $this->nc_plus['total'] ?></h2>
+                        </div>
+                    </div>
+                    <div class="box-bd">
+                        <table class="list">
+                            <tbody>
+                                <tr class="<?php echo $this->cycle(array('', 'alt'))->next() ?> " >
+                                    <td class="size4of5"><?php echo $this->translate('Total NC+ ayant engendré un remboursement ou une dotation'); ?></td>
+                                    <td class="size1of5"><?php echo isset($this->nc_plus['DEVENU_CONF']) ? $this->nc_plus['DEVENU_CONF'] : 0 ?></td>
+                                </tr>
+                                <tr class="<?php echo $this->cycle(array('', 'alt'))->next() ?> " >
+                                    <td class="size4of5"><?php echo $this->translate('Total NC+ restant non conforme'); ?></td>
+                                    <td class="size1of5"><?php echo isset($this->nc_plus['DEVENU_NON_CONF']) ? $this->nc_plus['DEVENU_NON_CONF'] : 0 ?></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="line">
+            <div class="unit size2of5 col lastUnit">
+                <div class="box box-blue toggle hide">
+                    <div class="box-hd">
+                        <div class="line">
+                            <h2 class="box-title unit size4of5"><?php echo $this->translate('Particpations'); ?></h2>
+                            <h2 class="box-title unit size1of5"><?php echo $this->participations_TOTAL ?></h2>
+                        </div>
+                    </div>
+                    <div class="box-bd">
+                        <table class="list">
+                            <tbody>
+                                <tr class="<?php echo $this->cycle(array('', 'alt'))->next() ?> " >
+                                    <td class="size4of5"><?php echo $this->translate('Web'); ?></td>
+                                    <td class="size1of5"><?php echo isset($this->participations_WEB) ? $this->participations_WEB : 0 ?></td>
+                                </tr>
+                                <tr class="<?php echo $this->cycle(array('', 'alt'))->next() ?> " >
+                                    <td class="size4of5"><?php echo $this->translate('Audiotel'); ?></td>
+                                    <td class="size1of5"><?php echo isset($this->participations_AUDIOTEL) ? $this->participations_AUDIOTEL : 0 ?></td>
+                                </tr>
+                                <tr class="<?php echo $this->cycle(array('', 'alt'))->next() ?> " >
+                                    <td class="size4of5"><?php echo $this->translate('SMS'); ?></td>
+                                    <td class="size1of5"><?php echo isset($this->participations_SMS) ? $this->participations_SMS : 0 ?></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="line">
+            <div class="unit size2of5 col lastUnit">
+                <div class="box box-blue toggle hide">
+                    <div class="box-hd">
+                        <div class="line">
+                            <h2 class="box-title unit size4of5"><?php echo $this->translate('Gagnants'); ?></h2>
+                            <h2 class="box-title unit size1of5"><?php echo $this->gagnant_jeux['total'] ?></h2>
+                        </div>
+                    </div>
+                    <div class="box-bd">
+                        <table class="list">
+                            <tbody>
+                                <tr class="<?php echo $this->cycle(array('', 'alt'))->next() ?> " >
+                                    <td class="size4of5"><?php echo $this->translate('Web'); ?></td>
+                                    <td class="size1of5"><?php echo isset($this->gagnant_jeux['WEB']) ? $this->gagnant_jeux['WEB'] : 0 ?></td>
+                                </tr>
+                                <tr class="<?php echo $this->cycle(array('', 'alt'))->next() ?> " >
+                                    <td class="size4of5"><?php echo $this->translate('Audiotel'); ?></td>
+                                    <td class="size1of5"><?php echo isset($this->gagnant_jeux['AUDIOTEL']) ? $this->gagnant_jeux['AUDIOTEL'] : 0 ?></td>
+                                </tr>
+                                <tr class="<?php echo $this->cycle(array('', 'alt'))->next() ?> " >
+                                    <td class="size4of5"><?php echo $this->translate('SMS'); ?></td>
+                                    <td class="size1of5"><?php echo isset($this->gagnant_jeux['SMS']) ? $this->gagnant_jeux['SMS'] : 0 ?></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="line">
+            <div class="unit size2of5 col lastUnit">
+                <div class="box box-blue toggle hide">
+                    <div class="box-hd">
+                        <div class="line">
+                            <h2 class="box-title unit size4of5"><?php echo $this->translate('Anomalies'); ?></h2>
+                            <h2 class="box-title unit size1of5"><?php echo $this->nb_anomalies_total ?></h2>
+                        </div>
+                    </div>
+                    <div class="box-bd">
+                        <table class="list">
+                            <tbody>
+                                <?php foreach ($this->nb_anomalies as $libelle => $nb_anomalies) { ?>
+                                    <tr class="<?php echo $this->cycle(array('', 'alt'))->next() ?> " >
+                                        <td class="size4of5"><?php echo $libelle ?></td>
+                                        <td class="size1of5"><?php echo $nb_anomalies ?></td>
+                                    </tr>
+                                <?php } ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="line">
+            <div class="unit size2of5 col lastUnit">
+                <div class="box box-blue toggle hide">
+                    <div class="box-hd">
+                        <div class="line">
+                            <h2 class="box-title unit size4of5"><?php echo $this->translate('Montants remboursés'); ?></h2>
+                            <h2 class="box-title unit size1of5"></h2>
+                        </div>
+                    </div>
+                    <div class="box-bd">
+                        <table class="list">
+                            <tbody>
+                                <tr class="<?php echo $this->cycle(array('', 'alt'))->next() ?> " >
+                                    <td class="size4of5"><?php echo $this->translate('Minimum'); ?></td>
+                                    <td class="size1of5"><?php echo isset($this->montant_remb['MONTANT_MIN']) ? $this->montant_remb['MONTANT_MIN'] : 0 ?></td>
+                                </tr>
+                                <tr class="<?php echo $this->cycle(array('', 'alt'))->next() ?> " >
+                                    <td class="size4of5"><?php echo $this->translate('Maximum'); ?></td>
+                                    <td class="size1of5"><?php echo isset($this->montant_remb['MONTANT_MAX']) ? $this->montant_remb['MONTANT_MAX'] : 0 ?></td>
+                                </tr>
+                                <tr class="<?php echo $this->cycle(array('', 'alt'))->next() ?> " >
+                                    <td class="size4of5"><?php echo $this->translate('Moyen'); ?></td>
+                                    <td class="size1of5"><?php echo isset($this->montant_remb['MONTANT_AVG']) ? $this->montant_remb['MONTANT_AVG'] : 0 ?></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,93 @@
+<?php
+$this->title = $this->translate('Gestion des contrats');
+$this->headTitle($this->title);
+
+echo $this->FlashMessenger('error', 'popup');
+?>
+<?php echo $this->partial('partials/actionsbar.phtml', array('cl_id' => $this->cl_id, 'cl_libelle' => $this->cl_libelle)); ?>
+<div id="site-content">
+    <?php echo $this->partial('partials/menu.phtml', array('cl_id' => $this->cl_id)); ?>
+    <div id="content-bd">
+        <div class="line">
+            <div class="unit size1of1 lastUnit">
+                <div class="box">
+                    <div class="box-hd">
+                        <h2 class="box-title"><?php echo $this->translate('Paramétrage contrat'); ?></h2>
+                    </div>
+                    <div class="box-bd">
+                        <form id="id_form_update" action="<?php echo $this->url(array('module' => 'client', 'controller' => 'contrat', 'action' => 'update'), null, true) ?>" model_name="ClientContratOptions" primary_value="<?php echo $this->cl_ct_opt_id; ?>">
+                            <div class="line form-line">
+                                <label class="form-label unit size1of5"><?php echo $this->translate('Durée d\'archivage des données'); ?> :</label>
+                                <?php echo Phoenix_View_Helper_Html::select(array('name' => 'cl_ct_archivage_duree', 'value' => $this->cl_ct_archivage_duree, 'class' => 'form-select unit col'), array('1' => array('value' => '1'), '2' => array('value' => '2'), '3' => array('value' => '3'), '4' => array('value' => '4'), '5' => array('value' => '5')), array('default_label' => $this->translate('Choisir...'))); ?>
+                                <?php echo Phoenix_View_Helper_Html::select(array('name' => 'cl_ct_archivage_unit', 'value' => $this->cl_ct_archivage_unit, 'class' => 'form-select unit lastUnit'), array('Mois' => array('value' => 'month'), 'Ans' => array('value' => 'year')), array('default_label' => $this->translate('Choisir...'))); ?>
+                            </div>
+
+                            <div class="line form-line">
+                                <label class="form-label unit size1of5"><?php echo $this->translate('Révision annuelle'); ?></label>
+                                <div class="unit col">
+                                    <?php echo Phoenix_View_Helper_Html::radio(array('name' => 'cl_ct_revision_birthday', 'id' => 'annuelle', 'value' => 0, 'default_value' => $this->cl_ct_revision_birthday)); ?>
+                                    <label for="annuelle"><?php echo $this->translate('Au 1er janvier'); ?></label>
+                                </div>
+                                <div class="unit lastUnit">
+                                    <?php echo Phoenix_View_Helper_Html::radio(array('name' => 'cl_ct_revision_birthday', 'id' => 'anniversaire', 'value' => 1, 'default_value' => $this->cl_ct_revision_birthday)); ?>
+                                    <label for="anniversaire"><?php echo $this->translate('A la date anniversaire'); ?></label>
+                                </div>
+                            </div>
+
+                            <div class="line form-line">
+                                <label class="form-label unit size1of5" for="id_cl_ct_start"><?php echo $this->translate('Prise d\'effet du contrat'); ?> :</label>
+                                <div class="unit size4of5 date lastUnit">
+                                    <?php echo Phoenix_View_Helper_Html::input(array('name' => 'cl_ct_start', 'value' => $this->cl_ct_start, 'class' => 'date-input', 'placeholder' => 'JJ/MM/AAAA', 'maxlenght' => '10')); ?>
+                                </div>
+                            </div>
+
+                            <div class="line form-line">
+                                <label class="form-label unit size1of5" for="id_cl_ct_echeance"><?php echo $this->translate('Échéance du contrat'); ?> :</label>
+                                <div class="unit size4of5 date lastUnit">
+                                    <?php echo Phoenix_View_Helper_Html::input(array('name' => 'cl_ct_echeance', 'value' => $this->cl_ct_echeance, 'class' => 'date-input', 'placeholder' => 'JJ/MM/AAAA', 'maxlenght' => '10')); ?>
+                                </div>
+                            </div>
+
+                            <div class="line form-line">
+                                <div class="unit size4of5 push1of5">
+                                    <?php echo Phoenix_View_Helper_Html::checkbox(array('value' => '1', 'default_value' => $this->cl_ct_reconduction, 'name' => 'cl_ct_reconduction', 'class' => '')); ?>
+                                    <label for="id_cl_ct_reconduction"><?php echo $this->translate('Reconduction tacite'); ?></label>
+                                </div>
+                            </div>
+                        </form>
+
+                        <div class="line form-line">
+                            <label class="form-label unit size1of5" for=""><?php echo $this->translate('Ajouter un contrat'); ?> :</label>
+                            <div class="unit size4of5">
+                                <form enctype="multipart/form-data" action="<?php echo $this->url(array('module' => 'client', 'controller' => 'contrat', 'action' => 'uploadcontrat', null, true)) ?>" method="post">
+                                    <label class="form-label"><?php echo $this->translate('Parcourir (pdf, rtf, doc...)'); ?> :</label>
+                                    <input type="file" name="contrat" class="no_update" />
+                                    <input type="submit" id="id_btn_ajout_contrat" value="<?php echo $this->translate('Ajouter'); ?>" class="btn" />
+                                </form>
+                                <div style="overflow:auto;max-height:110px;margin-top:20px;">
+                                    <table class="list" id="id_div_contratversions">
+                                        <?php echo $this->partial('/contrat/contratversions.phtml', array('contrats' => $this->client->getFilesContrat())) ?>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<?php //die; ?>
+<script language="javascript">
+    $('#id_form_update').formUpdate();
+
+    // suppression d'un fichier de contrat
+    function deleteContrat(fileId) {
+        Component.confirm('<?php echo $this->translate('Êtes vous sûre de vouloir supprimer le contrat?'); ?>',
+                function() {
+                    AjaxComponent.ajaxDiv(baseUrl + '/client/contrat/deletecontrat', {file_id: fileId}, 'id_div_contratversions', function() {
+                        $('#id_btn_ajout_contrat').css('visibility', 'visible')
+                    });
+                });
+    }
+</script>

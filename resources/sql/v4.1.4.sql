@@ -1,0 +1,2 @@
+UPDATE contacts SET actif = 0 WHERE actif IS NULL;
+ALTER TABLE `contacts` CHANGE COLUMN `actif` `actif` TINYINT(3) UNSIGNED NOT NULL DEFAULT 1;

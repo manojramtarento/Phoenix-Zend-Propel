@@ -1,0 +1,20 @@
+Bonjour,
+<br/>
+<br/>
+L'opération <?php echo $this->op_number; ?> - <?php echo $this->op_libelle; ?> vient d'être signée par <?php echo $this->dc_libelle; ?>.
+<?php 
+if($this->cp_libelle){
+    echo 'Cette opération sera gérée par '.$this->cp_libelle.'.'; 
+}
+?>
+<br/>
+<br/>
+Montant CA estimé HT : <b><?php echo Phoenix_Data_Convert::formatMoney($this->fEstimatedCaServicesAmont, false, true, true) ?></b>
+<br/>
+Montant estimé TTC : <b><?php echo Phoenix_Data_Convert::formatMoney($this->fVatIncludedEstimatedServicesAmont, false, true, true) ?></b>
+<br/>
+<br/>
+Merci,
+<br/>
+<br/>
+Cordialement,

@@ -1,0 +1,103 @@
+<?php /* @var $this Zend_View */ ?>  
+<?php
+$this->title = $this->translate('Nouveau contact');
+$this->headTitle($this->title);
+?>
+
+<!--- basic creation form -->
+<div id="site-content">
+    <div id="content-bd">
+        <div class="line">
+			<div class="unit size2of2">
+				<div class="box box-blue">
+					<div class="box-hd">
+						<h2 class="box-title title-icon icon-user"><?php echo $this->translate('Création d\'un nouveau contact');?></h2>
+					</div>
+					<div class="box-bd">
+
+						<form id="frm-contact-create" name="" method="post" action="<?php echo $this->url(array('module' => 'client', 'controller' => 'contact', 'action' => 'creation')); ?>">
+							<div class="line">
+								<div class="unit">
+									<div class="col">
+										<div class="section">
+											<div class="section-hd">
+												<h2 class="section-title"><?php echo $this->translate('Coordonnées du contact');?></h2>
+											</div>
+											<div class="section-bd">
+												<div class="line form-line">
+													<label class="unit size1of3 form-label"><?php echo $this->translate('Client');?> :</label>
+													<?php echo Phoenix_View_Helper_Html::selectFromTable('View_Client_Listing', array('name' => 'cl_id', 'value' => $this->cl_id, 'class' => 'unit size2of3 form-select lastUnit'), array('name' => 'cl_libelle', 'value' => 'cl_id'), array('default_label' => $this->translate('Choisir ...'))) ?>
+												</div>
+
+												<div class="line form-line">
+													<label class="unit size1of3 form-label"><?php echo $this->translate('Nom du contact');?> :</label>
+													<?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'ct_lastname', 'id' => 'id_ct_lastname', 'value' => $this->ct_lastname, 'class' => 'unit size1of3 form-input lastUnit')) ?>
+												</div>
+
+												<div class="line form-line">
+													<label class="unit size1of3 form-label"><?php echo $this->translate('Prénom du contact');?> :</label>
+													<?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'ct_firstname', 'id' => 'id_ct_firstname', 'value' => $this->ct_firstname, 'class' => 'unit size1of3 form-input lastUnit')) ?>
+												</div>
+
+												<div class="line form-line">
+													<label class="unit size1of3 form-label"><?php echo $this->translate('Adresse email');?> :</label>
+													<?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'ct_email', 'id' => 'id_ct_email', 'value' => $this->ct_email, 'class' => 'unit size1of3 form-input lastUnit')) ?>
+												</div>
+
+												<div class="line form-line">
+													<label class="unit size1of3 form-label"><?php echo $this->translate('N° de téléphone');?>:</label>
+													<?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'ct_phone', 'id' => 'id_ct_phone', 'value' => $this->ct_phone, 'class' => 'unit size1of3 form-input lastUnit')) ?>
+												</div>
+
+												<div class="line form-line">
+													<label class="unit size1of3 form-label"><?php echo $this->translate('N° de fax');?> :</label>
+													<?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'ct_fax', 'id' => 'id_ct_fax', 'value' => $this->ct_fax, 'class' => 'unit size1of3 form-input lastUnit')) ?>
+												</div>
+
+												<div class="line form-line">
+													<label class="unit size1of3 form-label"><?php echo $this->translate('N° de mobile');?> :</label>
+													<?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'ct_mobile', 'id' => 'id_ct_mobile', 'value' => $this->ct_mobile, 'class' => 'unit size1of3 form-input lastUnit')) ?>
+												</div>
+
+											</div>
+										</div>
+										<div class="section">
+											<div class="section-hd">
+												<h2 class="section-title"><?php echo $this->translate('Option de traitement');?></h2>
+											</div>
+											<div class="section-bd">
+												<div class="line form-line">
+													<div class="unit col">
+														<input type="checkbox" name="ct_default_gestion" value="1"><label><?php echo $this->translate(' Contact de gestion par défaut');?></label>
+													</div>
+												</div>
+												<div class="line form-line">
+													<div class="unit col">
+														<input type="checkbox" name="ct_default_factu" value="1"><label><?php echo $this->translate(' Contact de facturation par défaut');?></label>
+													</div>
+												</div>
+												<?php                                                
+                                                // Disable newsletter, not used at the moment                                                
+                                                /**
+                                                <div class="line form-line">
+													<div class="unit col">
+														<input type="checkbox" name="ct_newsletter" value="1"><label><?php echo $this->translate(' Inscription à la newsletter');?></label>
+													</div>
+												</div>**/
+                                                ?>
+											</div>
+										</div>
+									</div>		
+									<div class="unit push1of3 size1of2 lastUnit">
+										<input type="submit" value="<?php echo $this->translate('Enregistrer');?>" class="btn btn-orange">
+									</div>
+								</div>
+							</div>
+						</form>
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

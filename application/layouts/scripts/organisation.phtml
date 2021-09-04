@@ -1,0 +1,51 @@
+<?php
+$this->headMeta()->appendHttpEquiv('Content-Type', 'text/html;charset=utf-8');
+$this->headTitle()->setSeparator(' - ');
+$this->headTitle('Phoenix');
+echo $this->doctype();
+?>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
+    <head>
+        <link rel="shortcut icon" type="image/x-icon" href="<?php echo $this->baseUrl(); ?>/favicon.ico" />
+        <?php echo $this->headMeta(); ?>
+        <?php echo $this->headTitle(); ?>
+        <link rel="stylesheet" type="text/css" href="<?php echo $this->baseUrl(); ?>/css/styles.css">
+            <script type="text/javascript" src="<?php echo $this->baseUrl() . '/js/jquery-1.7.2.min.js' ?>" ></script>
+    </head>
+
+    <body id="auth">
+        <div id="site">
+            <div id="site-hd">
+                <div id="site-logo"><img class="application-logo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJYAAAAqCAIAAADeazW7AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA4RpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTM4IDc5LjE1OTgyNCwgMjAxNi8wOS8xNC0wMTowOTowMSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDo1NmRjZTA1OS0zOTRkLTFiNGMtOTBkZi1jYjYxMzdmN2IzMTQiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6MjMwMUM4MDBCNDlEMTFFN0I1RTRGN0VGMkMwNjQ1OTciIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6MjMwMUM3RkZCNDlEMTFFN0I1RTRGN0VGMkMwNjQ1OTciIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTcgKFdpbmRvd3MpIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6M2Q0YzkyODQtNGNhYy02YjQ2LWE5MjAtZmVjMjc4MWY1YWI0IiBzdFJlZjpkb2N1bWVudElEPSJhZG9iZTpkb2NpZDpwaG90b3Nob3A6NzhjNjliNjItYjNlOC0xMWU3LWEwZGEt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"></div>
+                <div id="site-nav">
+                    <h1 id="auth-title">ORGANISATION</h1>
+                     <div id="auth-translate">
+                         <a href="#" id="lang-fr">Fr</a> | <a href="#" id="lang-en">En</a>
+                    </div>
+                </div>
+                <div id="site-content">
+                    <?php echo $this->layout()->content; ?>
+                </div>
+            </div>
+
+            <script language="javascript">
+                $(document).ready(function() {
+                    //-- SWITCH LANGUAGE DISPLAY TO FRENCH-->
+                    $("#lang-fr").click(function(e) {
+                        $("#auth-title").text("ORGANISATION");
+                        $("label[for='organisation_label']").text("Choisir organisation : ");
+                        $("#auth_submit_id").prop('value', 'Valider');
+                    });
+                });
+                $(document).ready(function() {
+                    //-- SWITCH LANGUAGE DISPLAY TO ENGLISH -->
+                    $("#lang-en").click(function(e) {
+                        $("#auth-title").text("ORGANISATION");
+                        $("label[for='organisation_label']").text("Select Organisation : ");
+                        $("#auth_submit_id").prop('value', 'Submit');
+                    });
+                });
+            </script>
+    </body>
+
+</html>

@@ -1,0 +1,157 @@
+<?php
+$this->title = $this->translate('title_adminstration_r_countries_listing');
+$this->headTitle($this->title);
+
+$this->headScript()->appendFile($this->baseUrl() . '/js/administration/rcountries/RCountryManager.js');
+$this->headScript()->appendFile($this->baseUrl() . '/js/administration/rcountries/index.js');
+$bCreateEditIsAllowed = Phoenix_Auth_User::mvcActionIsAllowed('administration','rcountries','loadrcountryeditionpopup')  && Phoenix_Auth_User::mvcActionIsAllowed('administration','rcountries','savercountrydata');
+$bDeleteIsAllowed = Phoenix_Auth_User::mvcActionIsAllowed('administration','rcountries','deletercountryrecord');
+?>
+<div id="actions-bar">
+    <div class="unit size1of5">
+        <h1 class="page-title"><?php echo $this->title; ?></h1>
+        <?php if($bCreateEditIsAllowed){ ?>
+        <input href="#" id="btn-add-new-country" type="button" data-country-popup-title="<?php echo $this->translate('title_country_addition_popup_title') ?>" class="btn btn-orange btn-big" value="<?php echo $this->translate('label_button_add_new_country_label'); ?>" />
+        <?php } ?>
+    </div>
+    <div class="unit size3of5">
+        <div class="search">
+            <form method="get" id="countries-form" action ="<?php echo $this->url(array('module' => 'administration', 'controller' => 'rcountries', 'action' => 'index'), null, true) ?>" >
+                <input type="text" name="findword" class="form-input" value="<?php echo isset($this->findword) ? $this->findword : ''; ?>" placeholder="<?php echo $this->translate('placeholder_search'); ?>" autocomplete="off" />
+                <input type="submit" value="<?php echo $this->translate('OK'); ?>" class="btn btn-orange" />
+                <input type="button" value="<?php echo $this->translate('label_advanced_search'); ?>" class="btn btn-big btn-adsearch" id="btn-adsearch" />
+            </form>
+        </div>
+    </div>
+</div>
+<div id="site-content">
+    <div class="content-list">
+        <div class="list-actions">
+            <div class="unit col">
+                <a class="icon icon-32 icon-excel" href="<?php echo $this->url(array('format' => 'csv'), null, false) . '?' . $_SERVER['QUERY_STRING'] ?>" title="<?php echo $this->translate('label_export_excel'); ?>"><?php echo $this->translate('label_export_excel'); ?></a>
+            </div>
+            <div class="unit rightUnit">
+                <div class="unit col">
+                    <?php echo $this->NotifySearch()->link() ?>
+                </div>
+                <div class="unit">
+                    <?php echo $this->paginationControl($this->paginator, 'Sliding', '/partials/pagination.phtml'); ?>
+                </div>
+            </div>
+        </div>
+        <table class="list list-main">
+            <thead>
+                <tr>
+                    <th width="26" class="column-noborder"></th>
+                    <th width="26" class="column-noborder"></th>
+                    <th>
+                        <?php echo My_View_Helper_Html::UrlOrderBy('r_country_id', $this->translate('label_id')); ?>
+                    </th>
+                    <th>
+                        <?php echo My_View_Helper_Html::UrlOrderBy('r_country_code', $this->translate('label_country_code')); ?>
+                    </th>
+                    <th>
+                        <?php echo My_View_Helper_Html::UrlOrderBy('r_country_name', $this->translate('label_country_label')); ?>
+                    </th>
+                    <th>
+                        <?php echo My_View_Helper_Html::UrlOrderBy('r_currency_label', $this->translate('label_country_currency_label')); ?>
+                    </th>
+                    <th>
+                        <?php echo My_View_Helper_Html::UrlOrderBy('r_country_calling_code', $this->translate('label_country_calling_label')); ?>
+                    </th>
+                    <th>
+                        <a hre="#"><?php echo $this->translate('label_country_culture'); ?></a>
+                    </th>
+                    <th>
+                        <a hre="#"><?php echo $this->translate('label_country_languages'); ?></a>
+                    </th>
+                    <th>
+                        <?php echo My_View_Helper_Html::UrlOrderBy('r_country_actif', $this->translate('label_actif')); ?>
+                    </th>
+            </thead>
+            <tbody>
+                <?php foreach ($this->paginator as $aCountry){ ?>
+                    <tr class="<?php echo $this->cycle(array('', 'alt'))->next() ?>">
+                        <td>
+                        <?php if($bDeleteIsAllowed){ ?>
+                            <a href="#delete" class="icon-list icon-delete" data-country-id="<?php echo $aCountry['r_country_id']; ?>" delete-country-record-confirmation-message="<?php echo $this->translate('text_confirm_country_record_deletion') . ' : ' . $aCountry['r_country_name'] ?>" title="<?php echo $this->translate('label_link_delete_country'); ?>"><?php echo $this->translate('label_link_delete_country'); ?></a>
+                        <?php } ?>
+                        </td>
+                        <td>
+                        <?php if($bCreateEditIsAllowed){ ?>
+                            <a href="#edit" class="icon-list icon-edit" data-country-popup-title="<?php echo $this->translate('title_edition'); ?>" data-country-id="<?php echo $aCountry['r_country_id']; ?>" title="<?php echo $this->translate('label_link_edit_country'); ?>"><?php echo $this->translate('label_link_edit_country'); ?></a>
+                        <?php } ?>
+                        </td>
+                        <td align="left"><?php echo $aCountry['r_country_id']; ?></td>
+                        <td align="left"><?php echo $aCountry['r_country_code']; ?></td>
+                        <td align="left"><?php echo $aCountry['r_country_name']; ?></td>
+                        <td align="left"><?php echo $aCountry['r_currency_label']; ?></td>
+                        <td align="left"><?php echo $aCountry['r_country_calling_code']; ?></td>
+                        <td align="left"><?php echo $aCountry['cultures']; ?></td>
+                        <td align="left"><?php echo $aCountry['languages']; ?></td>
+                        <td align="left"><?php echo $aCountry['r_country_actif']; ?></td>
+                    </tr>
+                <?php } ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div id="id-dialog-search" title="<?php echo $this->translate('label_advanced_search'); ?>" style="display:none;">
+    <form action="<?php echo $this->BaseUrl() ?>/administration/rcountries/index" method="GET">
+        <div class="section-bd">
+            <div class="line form-line">
+                <label class="unit size1of2 form-label" for="id-find-r-country-id"><?php echo $this->translate('label_id'); ?> :</label>
+                <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'find_r_country_id', 'class' => 'unit size1of2 form-input lastUnit')) ?>
+            </div>
+
+            <div class="line form-line">
+                <label class="unit size1of2 form-label" for="id-find-r-country-code"><?php echo $this->translate('label_country_code'); ?> :</label>
+                <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'find_r_country_code', 'class' => 'unit size1of2 form-input lastUnit')) ?>
+            </div>
+
+            <div class="line form-line">
+                <label class="unit size1of2 form-label" for="id-find-r-country-name"><?php echo $this->translate('label_country_label'); ?> :</label>
+                <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'find_r_country_name', 'class' => 'unit size1of2 form-input lastUnit')) ?>
+            </div>
+            <div class="line form-line">
+                <label class="unit size1of2 form-label" for='id-find-r-country-r-currency-id'><?php echo $this->translate('label_country_currency_label'); ?> :</label>
+                <?php
+                echo Phoenix_View_Helper_Html::selectFromTable(
+                        'r_currencies', array('name' => 'find_r_country_r_currency_id', 'class' => 'unit size1of2 form-select lastUnit', 'id' => 'id-find-r-country-r-currency-id'), array('name' => 'r_currency_label', 'value' => 'r_currency_id'), array('default_label' => $this->translate('choisir') . '...')
+                );
+                ?>
+            </div>
+            <div class="line form-line">
+                <label class="unit size1of2 form-label" for='id-find-r-country-r-country-calling-code-id'><?php echo $this->translate('label_country_calling_label'); ?> :</label>
+                <?php
+                echo Phoenix_View_Helper_Html::selectFromTable(
+                        'r_countries_calling_codes', array('name' => 'find_r_country_r_country_calling_code_id', 'class' => 'unit size1of2 form-select lastUnit', 'id' => 'id-find-r-country-r-country-calling-code-id'), array('name' => 'r_country_calling_code', 'value' => 'r_country_calling_code_id'), array('default_label' => $this->translate('choisir') . '...')
+                );
+                ?>
+            </div>
+            <div class="line form-line">
+                <label class="unit size1of2 form-label" for='id-find-r-country-culture-id'><?php echo $this->translate('label_country_culture'); ?> :</label>
+                <?php
+                echo Phoenix_View_Helper_Html::selectFromTable(
+                        'r_cultures', array('name' => 'find_r_country_culture_id', 'class' => 'unit size1of2 form-select lastUnit', 'id' => 'id-find-r-country-culture-id'), array('name' => 'r_culture_code', 'value' => 'r_culture_id'), array('default_label' => $this->translate('choisir') . '...')
+                );
+                ?>
+            </div>
+            <div class="line form-line">
+                <label class="unit size1of2 form-label" for='id-find-r-country-language-code'><?php echo $this->translate('label_country_languages'); ?> :</label>
+                <?php
+                echo Phoenix_View_Helper_Html::selectFromTable(
+                        'r_languages', array('name' => 'find_r_country_language_code', 'class' => 'unit size1of2 form-select lastUnit', 'id' => 'id-find-r-country-language-code'), array('name' => 'r_lang_libelle', 'value' => 'r_lang_code'), array('default_label' => $this->translate('choisir') . '...')
+                );
+                ?>
+            </div>
+            <div class="line form-line">
+                <label class="unit size1of2 form-label" for="id-find-r-country-actif"><?php echo $this->translate('label_actif'); ?> :</label>
+                <?php echo Phoenix_View_Helper_Html::checkbox(array('name' => 'find_r_country_actif', 'value' => 1, 'id' => 'id-find-r-country-actif')); ?>
+            </div>
+        </div>
+        <div class="text-center">
+            <input type="submit" name="findbyfields" value="<?php echo $this->translate('label_search'); ?>" class="btn btn-orange">
+        </div>
+    </form>
+</div>

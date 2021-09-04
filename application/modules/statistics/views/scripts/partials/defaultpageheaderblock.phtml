@@ -1,0 +1,14 @@
+<div class="default-page-header">
+    <div class="statistics-report-img-container">
+        <img class="statistics-report-img" src="<?php echo ROOT_PATH . '/public/img/pdfgen/logo-promoanalytics-pdf.png'; ?>"/>
+    </div>
+    <div class="default-page-header-content">
+        <div class="default-page-header-operation-libelle">
+            <?php echo $this->TextManager()->truncate($this->sOperationLibelle, 55); ?>
+        </div>
+        <div class="operation-handling-details">
+            <?php echo $this->dateCreateFile->format('d/m/Y') . ' - ' . $this->translate('label_process_details'); ?>
+        </div>
+    </div>
+    <div class="header-operation-number"><?php echo $this->translate('label_campaign_number') . ' ' . $this->iOperationNumber; ?></div>
+</div>

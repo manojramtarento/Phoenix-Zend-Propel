@@ -1,0 +1,42 @@
+<?php
+$bOpen = false;
+foreach ($this->sites as $iKey => $aSiteData) {
+    if (($iKey % 2) == 0) {
+        if ($bOpen) {
+            echo '</div>';
+        }
+        echo '<div class="line">';
+        $bOpen = true;
+    }
+    if ($aSiteData['actif']) {
+        $sTooltip = $this->translate('Basculer le statut du site client inactif');
+    } else {
+        $sTooltip = $this->translate('Basculer le statut du site client actif');
+    }
+    ?>
+    <div class="address-div form-section unit size1of2">
+        <h3 class="address-title">
+            <span class="col"><?php echo $aSiteData['cl_site_libelle']; ?></span>
+            <?php if ($aSiteData['actif']) { ?>
+                <a href="#update" class="icon-list icon-edit col" site_id="<?php echo $aSiteData['cl_site_id']; ?>" title="<?php echo $this->translate('Modifier l\'adresse'); ?>"><?php echo $this->translate('Modifier l\'adresse'); ?></a>
+            <?php } else { ?>
+                <span class="icon-statut icon-inline-block icon-warning" title="<?php echo $this->translate('Site client inactif') ?>"><?php echo $this->translate('Site client inactif') ?></span>
+            <?php } ?>
+            <a href="#switch" class="icon-list icon-delete" site_id="<?php echo $aSiteData['cl_site_id']; ?>" title="<?php echo $sTooltip; ?>"><?php echo $this->translate('Supprimer l\'adresse'); ?></a>
+		</h3>
+        <div><?php echo $this->cl_libelle; ?></div>
+        <div><?php echo $aSiteData['cl_site_addr_1']; ?></div>
+        <div><?php echo $aSiteData['cl_site_addr_2']; ?></div>
+        <div><?php echo $aSiteData['cl_site_addr_3']; ?></div>
+        <div><?php echo $aSiteData['cl_site_zipcode']; ?></div>
+        <div><?php echo $aSiteData['cl_site_town']; ?></div>
+        <div><?php echo $aSiteData['cl_site_country_name']; ?></div>
+        <div><?php echo $this->translate('Site logistique'); ?> : <?php echo ($aSiteData['cl_site_is_for_log'] == 1 ? 'oui' : 'non'); ?></div>
+    </div>
+    <?php
+
+}
+if ($bOpen) {
+    echo '</div>';
+}
+?>

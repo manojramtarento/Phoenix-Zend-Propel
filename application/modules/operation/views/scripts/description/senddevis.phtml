@@ -1,0 +1,84 @@
+<!-- DIALOG / ENVOI DE DEVIS -->
+<form method="post" id="id_form_send_devis" action="<?php echo $this->url(array('module' => 'operation', 'controller' => 'description', 'action' => 'senddevis')) ?>" >
+	<input type="hidden" name="submit_send_devis" value="1">
+	<input type="hidden" name="op_id" value="<?php echo $this->op_id ?>">
+
+    <div class="line form-line">
+			<span class="unit size1of4 form-label"><?php echo $this->translate('Client'); ?> : </span>
+			<span class="unit size3of4 form-text"><b><?php echo $this->cl_libelle; ?></b></span>
+    </div>
+
+    <div class="line form-line">
+				<span class="unit size1of4 form-label"><?php echo $this->translate('Opération'); ?> : </span>
+        <span class="unit size3of4 form-text"><b><?php echo $this->op_libelle; ?></b></span>
+    </div>
+
+    <div class="line form-line">
+			<span class="unit size1of4 form-label"><?php echo $this->translate('à'); ?> : </span>
+			<?php echo Phoenix_View_Helper_Html::input(array('name' => 'mail_dest[to]', 'type' => 'text', 'value' => $this->mail_dest_to, 'placeholder' => $this->translate('Indiquez ici une ou plusieurs adresses, séparées par un espace'), 'class' => 'unit size3of4 form-input')); ?>
+    </div>
+
+    <div class="line form-line">
+			<span class="unit size1of4 form-label"><?php echo $this->translate('copie'); ?> : </span>
+			<?php echo Phoenix_View_Helper_Html::input(array('name' => 'mail_dest[cc]', 'type' => 'text', 'value' => $this->mail_dest_cc, 'placeholder' => $this->translate('Indiquez ici une ou plusieurs adresses, séparées par un espace'), 'class' => 'unit size3of4 form-input')); ?>
+    </div>
+
+    <div class="line form-line">
+			<span class="unit size1of4 form-label"><?php echo $this->translate('copie cachée'); ?> : </span>
+			<?php echo Phoenix_View_Helper_Html::input(array('name' => 'mail_dest[bcc]', 'type' => 'text', 'value' => $this->mail_dest_bcc, 'placeholder' => $this->translate('Indiquez ici une ou plusieurs adresses, séparées par un espace'), 'class' => 'unit size3of4 form-input')); ?>
+    </div>
+
+    <div class="line form-line">
+			<span class="unit size1of4 form-label"><?php echo $this->translate('Sujet du mail'); ?> : </span>
+			<?php echo Phoenix_View_Helper_Html::input(array('name' => 'mail_subject', 'type' => 'text', 'value' => $this->mail_subject, 'placeholder' => $this->translate('Indiquez ici le sujet du mail'), 'class' => 'unit size3of4 form-input')); ?>
+    </div>
+
+    <div class="line form-section">
+        <textarea name="mail_content" id="id_mail_content" rows="40" cols="100%" class="form-textarea unit size1of1 lastUnit"><?php echo $this->mail_content; ?></textarea>
+		</div>
+	
+    <div class="line form-section">
+			<span class="unit size1of4 form-label"><?php echo $this->translate('Pièces jointes'); ?> : </span>
+			<span class="unit size3of4 form-label">
+				<?php echo Phoenix_View_Helper_Html::checkbox(array('value' => 1, 'default_value' => 1, 'name' => 'mail_pj_devis', 'disabled' => true)); ?>
+				<label for="id_mail_pj_devis"><?php echo $this->translate('Joindre le dernier devis généré'); ?></label>
+			</span>
+    </div>
+
+    <div class="line form-section">
+			<span class="unit size1of4 form-label"></span>
+			<span class="unit size3of4 form-label">
+				<?php echo Phoenix_View_Helper_Html::selectFromTable('files', array('name' => 'mail_pj_contrat', 'class' => 'unit size2of3 form-select lastUnit'), array('name' => 'file_name', 'value' => 'file_id'), array('clause_where' => "file_entity_id='" . $this->op_id . "' AND file_entity_name='" . Operations::FILE_ENTITY_NAME . "' AND file_category_id='" . RFileCategories::CONTRAT . "'", 'default_label' => $this->translate('Ne pas joindre de contrat'))) ?>
+			</span>
+    </div>
+
+    <div class="line form-section">
+			<span class="unit size1of4 form-label"></span>
+
+			<span class="unit size3of4 form-label">
+				<?php echo Phoenix_View_Helper_Html::selectFromTable('files', array('name' => 'mail_pj_plan', 'class' => 'unit size2of3 form-select lastUnit'), array('name' => 'file_name', 'value' => 'file_id'), array('clause_where' => "file_entity_id='" . $this->op_id . "' AND file_entity_name='" . Operations::FILE_ENTITY_NAME . "' AND file_category_id='" . RFileCategories::PLAN . "'", 'default_label' => $this->translate('Ne pas joindre de plan de transport'))) ?>
+			</span>
+    </div>
+
+		<input type="submit" id="id_submit_statut" value="<?php echo $this->translate('Envoyer le devis'); ?>" class="btn btn-orange push1of3" />
+</form>
+
+
+<script language="javascript">
+	$(document).ready(function(){
+			$('#id_form_send_devis').ajaxForm({
+            divId:'id_dialog_send_devis',
+			before:function(){
+				$('#id_mail_content').val(CKEDITOR.instances.id_mail_content.getData());
+			}
+        });
+		
+		CKEDITOR.replace('id_mail_content',
+			{	
+			toolbar: [
+				[ 'Bold', 'Italic', '-', 'NumberedList', 'BulletedList', '-', 'Link', 'Unlink' ],
+				[ 'FontSize', 'TextColor', 'BGColor' ]
+			]}
+		);
+	})
+</script>

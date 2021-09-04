@@ -1,0 +1,12 @@
+<?php
+
+if($this->rewardCountriesList){
+	$sTitle = implode(', ',$this->rewardCountriesList);
+	$sLabel = count($this->rewardCountriesList) > 5 ? implode(', ',array_slice($this->rewardCountriesList,0,5)).'...' : $sTitle;
+}
+else{
+	$sTitle = $sLabel = $this->translate('label_add_operation_reward_countries');
+}
+
+?>
+<a href="javascript://" class="operation_reward_listing_shortcut tip" title="<?php echo $sTitle ?>"><?php echo $sLabel; ?></a>

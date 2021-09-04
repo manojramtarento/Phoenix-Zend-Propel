@@ -1,0 +1,9 @@
+<div id="content-nav">
+	<ul class="nav">
+		<li class="nav-elem elem-first <?php echo $this->getParam('controller') === 'fiche' ? 'elem-actif' : ''; ?>"><a href="<?php echo $this->url(array('action'=>'index', 'controller'=>'fiche', 'module' => 'client', 'cl_id'=>$this->getParam('cl_id')), null, true) ?>"><?php echo $this->translate('Fiche client');?></a></li>
+		<li class="nav-elem <?php echo $this->getParam('controller') === 'contact' ? 'elem-actif' : ''; ?>"><a href="<?php echo $this->url(array('action'=>'client', 'controller'=>'contact', 'module' => 'client', 'cl_id'=>$this->getParam('cl_id')), null, true) ?>"><?php echo $this->translate('Contacts');?></a></li>
+		<li class="nav-elem <?php echo $this->getParam('controller') === 'contrat' ? 'elem-actif' : ''; ?>"><a href="<?php echo $this->url(array('action'=>'index', 'controller'=>'contrat', 'module' => 'client', 'cl_id'=>$this->getParam('cl_id')), null, true) ?>"><?php echo $this->translate('Gestion des contrats');?></a></li>
+		<li class="nav-elem <?php echo $this->getParam('controller') === 'facturation' ? 'elem-actif' : ''; ?>"><a href="<?php echo $this->url(array('action'=>'index', 'controller'=>'facturation', 'module' => 'client', 'cl_id'=>$this->getParam('cl_id')), null, true) ?>"><?php echo $this->translate('Facturation');?></a></li>
+		<li class="nav-elem <?php echo $this->getParam('controller') === 'prestation' ? 'elem-actif' : ''; ?>"><a href="<?php echo $this->url(array('action'=>'index', 'controller'=>'prestation', 'module' => 'client', 'cl_id'=>$this->getParam('cl_id')), null, true) ?>"><?php echo $this->translate('Prestations négociées');?></a></li>
+	</ul>
+</div>

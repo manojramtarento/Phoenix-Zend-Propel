@@ -1,0 +1,14 @@
+<?php
+$sRenderedMessage = '<ul>';
+foreach (new \RecursiveIteratorIterator(new \RecursiveArrayIterator($this->flashMessenger)) as $sMessage) {
+    $sRenderedMessage .= '<li>' . addslashes($sMessage) .  '</li>';
+}
+$sRenderedMessage .= '</ul>';
+?>
+<script language="javascript">
+    $(document).ready(function() {
+        Component.modalDialog('<?php echo $sRenderedMessage; ?>', {
+            type: 'error'
+        });
+    });
+</script>

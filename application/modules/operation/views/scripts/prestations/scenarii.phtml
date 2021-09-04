@@ -1,0 +1,91 @@
+<table class="list list-sortable" id="list-scenarii-sortable" scenario_deletion_confirmation="<?php echo $this->translate('Confirmez-vous la suppression du scénario'); ?>">
+    <thead>
+        <tr>
+            <th class="column-noborder"></th>
+            <th class="column-noborder"></th>
+            <th style="text-align:right;"><span class="notsortable"><?php echo $this->translate('N°'); ?></span></th>
+            <th><span class="notsortable"><?php echo $this->translate('Libellé'); ?></span></th>
+            <th><span class="notsortable"><?php echo $this->translate('Ref'); ?></span></th>
+            <th><span class="notsortable"><?php echo $this->translate('Quantité'); ?></span></th>
+            <th><span class="notsortable">% <?php echo $this->translate('Taux'); ?></span></th>
+            <th><span class="notsortable"><?php echo $this->translate('Total'); ?></span></th>
+            <th><span class="notsortable"><?php echo $this->translate('Prime'); ?></span></th>
+            <th><span class="notsortable"><?php echo $this->translate('Ref Scénario'); ?></span></th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php
+        foreach ($this->scenarii as $scenario) {
+            $op_scenarii_id = $scenario->getOpScenarioId();
+            ?>
+
+            <tr data-pos="<?php echo $scenario->getOpScenarioNumero() ?>" class="class_form_scenarii" id="id_form_scenarii_<?php echo $op_scenarii_id ?>" action="<?php echo $this->url(array('module' => 'operation', 'controller' => 'prestations', 'action' => 'updatescenarii')) ?>" model_name="OperationScenarii" primary_value="<?php echo $scenario->getOpScenarioId() ?>">
+                <td width="3px" class="column-handle" title="<?php echo $this->translate('Déplacer le scénario'); ?>"></td>
+                <td width="16px"><a href="javascript:void(0)" onclick="javascript:oUiManager.deleteScenario(<?php echo $op_scenarii_id ?>)" op_scenario_id="<?php echo $op_scenarii_id ?>" id="id_btn_delete_scenarii" class="icon-list icon-delete" title="<?php echo $this->translate('Supprimer le scénario'); ?>"><?php echo $this->translate('Supprimer le scénario'); ?></a></td>
+                <td width="1%" class="column-secondary" style="text-align:right;"><?php echo $scenario->getOpScenarioNumero() ?></td>
+                <td width="28%"><?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'id' => 'id_op_scenario_libelle_' . $op_scenarii_id, 'name' => 'op_scenario_libelle', 'class' => 'form-input input-editable size1of1', 'value' => $scenario->getOpScenarioLibelle(), 'title' => $scenario->getOpScenarioLibelle())) ?></td>
+                <td width="8%">
+                    <span title="<?php echo $scenario->getOpScenarioReference(); ?>">
+                        <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'id' => 'id_op_scenario_reference_' . $op_scenarii_id, 'name' => 'op_scenario_reference', 'class' => 'form-input input-editable size1of1', 'value' => $scenario->getOpScenarioReference())) ?>
+                    </span>
+                </td>
+                <td width="8%"><?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'id' => 'id_op_scenario_volume_' . $op_scenarii_id, 'name' => 'op_scenario_volume', 'class' => 'form-input input-editable size1of1', 'value' => $scenario->getOpScenarioVolume())) ?></td>
+                <td width="8%" align="right"><?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'id' => 'id_op_scenario_pcent_' . $op_scenarii_id, 'name' => 'op_scenario_pcent', 'class' => 'form-input input-editable size4of5 text-right', 'value' => $scenario->getOpScenarioPcent())) ?>&nbsp;%</td>
+                <td width="8%"><?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'id' => 'id_op_scenario_total_' . $op_scenarii_id, 'name' => 'op_scenario_total_' . $op_scenarii_id, 'name' => 'op_scenario_total', 'class' => 'form-input input-editable size1of1 text-right', 'value' => $scenario->getOpScenarioTotal())) ?></td>
+                <td width="10%">
+                    <?php echo Phoenix_View_Helper_Html::selectFromTable('operation_primes', array('id' => 'op_r_prime_id_' . $op_scenarii_id, 'name' => 'op_r_prime_id', 'class' => 'form-select size1of1 input-editable class_select_prime', 'value' => $scenario->getOpRPrimeId()), array('value' => 'op_prime_id', 'name' => 'op_prime_numero'), array('clause_where' => "op_id='" . $scenario->getOpId() . "'", 'default_label' => $this->translate('Aucune'))) ?>
+                </td>
+                <td width="25%">
+                    <?php echo Phoenix_View_Helper_Html::selectFromTable('r_scenarios', array('id' => 'op_r_scenario_id_' . $op_scenarii_id, 'name' => 'op_r_scenario_id', 'class' => 'form-select size1of1 input-editable', 'value' => $scenario->getOpRScenarioId()), array('value' => 'r_scenario_id', 'name' => 'r_scenario_libelle'), array('clause_where' => 'r_scenario_actif=1 or r_scenario_id=' . $scenario->getOpRScenarioId())) ?>
+                </td>
+            </tr>
+        <?php } ?>
+    </tbody>
+</table>
+
+<script language="javascript">
+    $(document).ready(function() {
+
+        //maj des champs de scénario
+        $('.class_form_scenarii').formUpdate({
+            callback: function() {
+                oUiManager.refreshRubriques();
+                oUiManager.refreshScenarii(<?php echo $this->getParam('op_id') ?>);
+
+            }
+        });
+
+
+        // -- sortable sur les tableaux "list-sortable"
+        $('#list-scenarii-sortable tbody').sortable({
+            placeholder: 'ui-sortable-placeholder',
+            helper: oUiManager.fixHelper,
+            handle: '.column-handle',
+            start: function(event, ui) {
+                var colspan = ui.item.children().length;
+                var height = ui.item.height();
+                ui.placeholder.html('<td colspan="' + colspan + '">&nbsp;</td>');
+                ui.placeholder.css({height: height + 'px'});
+            },
+            update: function(event, ui) {
+                var order = $(this).sortable('toArray', {attribute: 'data-pos'});
+                var op_scenario_numero = ui.item.attr('data-pos');
+                var op_scenario_new_numero = parseInt(order.indexOf(ui.item.attr('data-pos')) + 1);
+                AjaxComponent.ajaxQuery(
+                        baseUrl + '/operation/prestations/updatescenariiposition/op_id/<?php echo $this->getParam('op_id') ?>',
+                        {op_scenario_numero: op_scenario_numero, op_scenario_new_numero: op_scenario_new_numero}
+                ).success(function(data) {
+                    if (typeof data == 'object') {
+                        if (data.action == 1) {//erreur
+                            $('#list-scenarii-sortable tbody').sortable('cancel');
+                        } else {//ok
+                            oUiManager.refreshScenarii(<?php echo $this->getParam('op_id') ?>);
+                            oUiManager.refreshRubriques();
+                        }
+                    }
+                });
+            }
+        });
+
+    });
+</script>

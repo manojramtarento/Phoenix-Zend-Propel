@@ -1,0 +1,65 @@
+
+<!-- DIALOG / CREATION CLIENT -->
+<?php if (isset($this->msg)) { ?>
+    <div class="success-msg"><?php echo $this->msg; ?></div>
+<?php } ?>
+<form method="post" action="<?php echo $this->url(array('module' => 'operation', 'controller' => 'new', 'action' => 'ajoutclient')) ?>" id="id_form_ajout_client">
+    <div class="section">
+        <div class="section-hd">
+            <h2 class="section-title title-icon icon-doc"><?php echo $this->translate('Infos Générales'); ?></h2>
+        </div>
+        <div class="section-bd">
+            <div class="line form-section">
+                <label for="" class="form-label unit size2of5"><?php echo $this->translate('Nom du client'); ?> :</label>
+                <?php echo Phoenix_View_Helper_Html::input(array('name' => 'cl_libelle', 'class' => 'form-input unit size3of5 lastUnit')); ?>
+            </div>
+            <div class="line form-section">
+                <label for="" class="form-label unit size2of5"><?php echo $this->translate('N° de TVA intracommunautaire'); ?>  :</label>
+                <?php echo Phoenix_View_Helper_Html::input(array('name' => 'cl_fact_tvaintra', 'class' => 'form-input unit size3of5 lastUnit')); ?>
+            </div>
+        </div>
+    </div>
+    <div class="section">
+        <div class="section-hd">
+            <h2 class="section-title title-icon icon-user"><?php echo $this->translate('Contact commercial'); ?></h2>
+        </div>
+        <div class="section-bd">
+            <div class="form-section">
+                <div class="line form-line">
+                    <label for="" class="form-label unit size2of5"><?php echo $this->translate('Nom'); ?>  :</label>
+                    <?php echo Phoenix_View_Helper_Html::input(array('name' => 'ct_lastname', 'class' => 'form-input unit size3of5 lastUnit')); ?>
+                </div>
+                <div class="line form-line">
+                    <label for="" class="form-label unit size2of5"><?php echo $this->translate('Prénom'); ?> :</label>
+                    <?php echo Phoenix_View_Helper_Html::input(array('name' => 'ct_firstname', 'class' => 'form-input unit size3of5 lastUnit')); ?>
+                </div>
+                <div class="line form-line">
+                    <label for="" class="form-label unit size2of5"><?php echo $this->translate('Email'); ?> :</label>
+                    <input type="hidden" name="submit_ajout_client" value="1">
+                    <?php echo Phoenix_View_Helper_Html::input(array('name' => 'ct_email', 'class' => 'form-input unit size3of5 lastUnit')); ?>
+                </div>
+            </div>
+        </div>
+    </div>
+    <input type="hidden" name="cl_id" value="<?php echo $this->cl_id ?>">
+    <input type="submit" value="<?php echo $this->translate('Valider'); ?>" class="btn btn-orange push1of3" />
+</form>
+
+<script language="javascript">
+    $(document).ready(function () {
+        $('#id_form_ajout_client').ajaxForm({
+            divId: 'id_dialog_ajout_client',
+            success: function (data) {
+                if (data.action == 2) {
+                    $('#id_op_cl_id').val(data.msg.cl_id);
+                    $('#id_autocomplete_client').val(data.msg.cl_libelle);
+                    $('#id_div_contact').show();
+                    refreshSelectContact(data.msg.cl_id);
+                    console.debug($("#id_op_ct_id option").html());
+                    $("#id_op_ct_id option[value='" + data.msg.ct_id + "']").attr('selected', 'selected');
+                }
+            }
+        });
+
+    })
+</script>

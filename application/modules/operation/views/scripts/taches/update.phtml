@@ -1,0 +1,195 @@
+<!-- DIALOG / AJOUT / MODIFICATION -->
+<form id="id_form_update_task" action="<?php echo $this->url(array('module' => 'operation', 'controller' => 'taches', 'action' => 'update')) ?>" method="post">
+    <input type="hidden" name="submit_update_task" value="1">
+    <?php echo Phoenix_View_Helper_Html::input(array('type' => 'hidden', 'name' => 'op_task_id')) ?>
+    <div class="line form-line">
+        <label class="unit size1of2 form-label" for=""><?php echo $this->translate('N° OP');?> :</label>
+        <?php echo Phoenix_View_Helper_Html::input(array('name' => 'op_id', 'id' => 'op_id', 'type' => 'hidden', 'value' => $this->op_id)) ?>
+        <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'op_number','value'=>$this->op_number, 'id' => 'autocomplete_op_id', 'class' => 'unit size1of2 form-input input-autocomplete lastUnit')) ?>
+    </div>
+
+    <div class="line form-line">
+        <label class="unit size1of2 form-label" for=""><?php echo $this->translate('Type de tâche');?> :</label>
+        <?php echo Phoenix_View_Helper_Html::input(array('name' => 'op_task_type_id', 'id' => 'op_task_type_id', 'type' => 'hidden')) ?>
+        <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'r_op_task_type_libelle', 'id' => 'autocomplete_r_op_task_type_libelle', 'class' => 'unit size1of2 form-input input-autocomplete lastUnit')) ?>
+    </div>
+
+    <div class="line form-line">
+        <label class="unit size1of2 form-label" for=""><?php echo $this->translate('Date de réalisation souhaitée');?> :</label>
+        <div class="unit size1of4 date">
+            <?php echo Phoenix_View_Helper_Html::input(array('name' => 'op_task_deadline', 'id' => 'op_task_deadline', 'class' => 'date-input', 'placeholder' => $this->translate('JJ/MM/AAAA'), 'maxlenght' => '10'),array('date_format'=>'d/m/Y')); ?>
+        </div>
+    </div>
+
+    <div class="line form-line">
+        <label class="unit size1of2 form-label" for=""><?php echo $this->translate('Durée estimée');?> :</label>
+        <div class="unit size1of2 lastUnit">
+            <?php echo Phoenix_View_Helper_Html::input(array('name' => 'op_task_duree_estim', 'id' => 'op_task_duree_estim',  'class' => 'form-input size1of4')); ?>&nbsp;<?php echo $this->translate('minutes'); ?>
+        </div>
+    </div>
+	
+	<div class="line form-line">
+		<label class="unit size1of2 form-label" for='id_r_op_task_type_assign_to_user'><?php echo $this->translate('Assignée à l\'utilisateur');?> :</label>
+        <?php echo Phoenix_View_Helper_Html::input(array('name' => 'op_task_assign_to_user', 'id' => 'op_task_assign_to_user', 'type' => 'hidden')) ?>
+        <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'assign_to_user', 'id' => 'autocomplete_assign_to_user', 'class' => 'unit size2of5 form-input input-autocomplete lastUnit')) ?>
+        <a href="javascript:void(0)" onclick="desaffect('op_task_assign_to_user','autocomplete_assign_to_user')" class="icon-list icon-delete" title="<?php echo $this->translate('Désaffecter'); ?>"></a>
+    </div>
+
+	<div class="line form-line">
+		<label class="unit size1of2 form-label" for='id_r_op_task_type_notify_to_user'><?php echo $this->translate('Notifiée à l\'utilisateur');?> :</label>
+        <?php echo Phoenix_View_Helper_Html::input(array('name' => 'op_task_notify_to_user', 'id' => 'op_task_notify_to_user', 'type' => 'hidden')) ?>
+        <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'notify_to_user', 'id' => 'autocomplete_notify_to_user', 'class' => 'unit size2of5 form-input input-autocomplete lastUnit')) ?>
+        <a href="javascript:void(0)" onclick="desaffect('op_task_notify_to_user','autocomplete_notify_to_user')" class="icon-list icon-delete" title="<?php echo $this->translate('Désaffecter'); ?>"></a>
+    </div>
+	
+	<div class="line form-line">
+		<label class="unit size1of2 form-label" for='id_r_op_task_type_assign_to_group'><?php echo $this->translate('Assignée au groupe');?> :</label>
+        <?php echo Phoenix_View_Helper_Html::input(array('name' => 'op_task_assign_to_group', 'id' => 'op_task_assign_to_group', 'type' => 'hidden')) ?>
+        <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'assign_to_group', 'id' => 'autocomplete_assign_to_group', 'class' => 'unit size2of5 form-input input-autocomplete lastUnit')) ?>
+        <a href="javascript:void(0)" onclick="desaffect('op_task_assign_to_group','autocomplete_assign_to_group')" class="icon-list icon-delete" title="<?php echo $this->translate('Désaffecter'); ?>"></a>
+    </div>
+	
+	<div class="line form-line">
+		<label class="unit size1of2 form-label" for='id_r_op_task_type_notify_to_group'><?php echo $this->translate('Notifiée au groupe');?> :</label>
+        <?php echo Phoenix_View_Helper_Html::input(array('name' => 'op_task_notify_to_group', 'id' => 'op_task_notify_to_group', 'type' => 'hidden')) ?>
+        <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'notify_to_group', 'id' => 'autocomplete_notify_to_group', 'class' => 'unit size2of5 form-input input-autocomplete lastUnit')) ?>
+        <a href="javascript:void(0)" onclick="desaffect('op_task_notify_to_group','autocomplete_notify_to_group')" class="icon-list icon-delete" title="<?php echo $this->translate('Désaffecter'); ?>"></a>
+    </div>
+
+    <div class="line form-line">
+        <label class="unit size1of2 form-label" for=""><?php echo $this->translate('Alerte rappel');?> :</label>
+        <div class="unit size1of2 date">
+            <?php echo Phoenix_View_Helper_Html::input(array('name' => 'op_task_alerte', 'id' => 'op_task_alerte',  'class' => 'date-input', 'placeholder' => $this->translate('JJ/MM/AAAA'), 'maxlenght' => '10'),array('date_format'=>'d/m/Y')); ?>
+        </div>
+    </div>
+
+    <div class="line form-line">
+        <label class="unit size1of2 form-label" for=""><?php echo $this->translate('Alerte retard');?> :</label>
+        <div class="unit size1of2 date">
+            <?php echo Phoenix_View_Helper_Html::input(array('name' => 'op_task_retard', 'id' => 'op_task_retard',  'class' => 'date-input', 'placeholder' => $this->translate('JJ/MM/AAAA'), 'maxlenght' => '10'),array('date_format'=>'d/m/Y')); ?>
+        </div>
+    </div>
+
+    <div class="line form-line">
+        <label class="unit size1of1 form-label" for=""><?php echo $this->translate('Détail de la tâche');?> :</label>
+    </div>
+
+    <div class="line form-section">
+		<?php echo Phoenix_View_Helper_Html::textarea(array('name'=>'op_task_detail','class'=>'form-textarea unit size1of1 lastUnit'))  ?>
+	</div>
+
+    <div class="text-center">
+        <input type="submit" value="<?php echo $this->translate('Valider'); ?>" class="btn btn-orange">
+    </div>
+</form>
+
+
+<script language="javascript">
+    $(document).ready(function(){
+        // Indique s'il s'agit d'une création de tâche
+        // > Certains traitements ne seront faits que dans ce cas là
+        CREATE =  $('#id_op_task_id').val()<=0?1:0;
+        
+        $('#id_form_update_task').ajaxForm({
+            divId:'id_dialog_update_task'
+        });
+        
+        $('#op_task_deadline').datepicker({
+			showOn: "button",
+			buttonText: "",
+			altFormat: "yyyy-mm-dd"
+		});
+
+		$('#op_task_alerte').datepicker({
+			showOn: "button",
+			buttonText: "",
+			altFormat: "yyyy-mm-dd"
+		});
+
+		$('#op_task_retard').datepicker({
+			showOn: "button",
+			buttonText: "",
+			altFormat: "yyyy-mm-dd"
+		});
+        
+        // changement du client basé sur recherche avec autocompletion
+        $('#autocomplete_op_id').AjaxAutocomplete({
+			url: baseUrl+'/common/autocomplete/operation',
+			minLength: 3,
+			restrictive:true,
+			bindFieldId:'op_id'
+        });
+        
+        // changement du user basé sur recherche avec autocompletion
+        $('#autocomplete_assign_to_user').AjaxAutocomplete({
+            url: baseUrl+'/common/autocomplete/user',
+            minLength: 3,
+            restrictive:true,
+			bindFieldId:'op_task_assign_to_user'
+        });
+		
+        // changement du user basé sur recherche avec autocompletion
+        $('#autocomplete_notify_to_user').AjaxAutocomplete({
+            url: baseUrl+'/common/autocomplete/user',
+            minLength: 3,
+            restrictive:true,
+			bindFieldId:'op_task_notify_to_user'
+        });
+		
+		
+        // changement du user basé sur recherche avec autocompletion
+        $('#autocomplete_assign_to_group').AjaxAutocomplete({
+            url: baseUrl+'/common/autocomplete/groupad',
+            minLength: 3,
+            restrictive:true,
+			bindFieldId:'op_task_assign_to_group'
+        });
+        
+        // changement du user basé sur recherche avec autocompletion
+        $('#autocomplete_notify_to_group').AjaxAutocomplete({
+            url: baseUrl+'/common/autocomplete/groupad',
+            minLength: 3,
+            restrictive:true,
+			bindFieldId:'op_task_notify_to_group'
+        });
+		
+		
+        // changement du type de tâche avec autocompletion
+        $('#autocomplete_r_op_task_type_libelle').AjaxAutocomplete({
+            url: baseUrl+'/operation/taches/autocompletetache',
+            minLength: 3,
+            restrictive:true,
+			bindFieldId:'op_task_type_id',
+            select:function(event, ui){
+                if(CREATE) {
+                    AjaxComponent.ajaxQuery(baseUrl+'/operation/taches/gettypeinfo', {
+                            op_id: $('#op_id').val(),
+                            type_id: ui.item.id
+                    }).success(function(json_data){
+                        var data = eval('(' + json_data + ')');
+
+                        // On remplace les valeurs si elles n'ont pas déjà été définies
+						for(var name in data) {
+							 idChamp = '#' + name;
+							 
+							 if($(idChamp).val() == "") {
+								$(idChamp).val(data[name]);
+							}
+						}
+                    });
+                }
+            }
+        });
+        
+
+        
+        
+        
+    });
+    
+        function desaffect(id1, id2){
+            $('#'+id1).val('');
+            $('#'+id2).val('');
+        }
+    
+</script>

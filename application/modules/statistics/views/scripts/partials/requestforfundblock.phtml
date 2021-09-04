@@ -1,0 +1,47 @@
+<?php
+$aFundsRequest = $this->aFundsRequest['dataList'];
+?>
+<div class="block-graph noborder-block wide-container-block">
+    <div class="title-bloc title-bloc-full-width"><?php echo $this->translate('label_funds_tracking'); ?></div>
+    <div class="request-for-fund-content-bloc">
+        <div class="request-for-fund-data">
+            <div class="request-for-fund-data-element request-for-fund-data-element-estimated">
+                <?php echo $this->translate('label_adf_estimated'); ?>
+                <br/>
+                <?php echo Phoenix_Data_Convert::formatMoney(isset($aFundsRequest['ADF_Estim']) ? $aFundsRequest['ADF_Estim'] : 0, false, false, true); ?>
+            </div>
+            <div class="request-for-fund-data-element request-for-fund-data-element-invoiced">
+                <?php echo $this->translate('label_adf_invoiced'); ?>
+                <br/>
+                <?php echo Phoenix_Data_Convert::formatMoney(isset($aFundsRequest['ADF_Facture']) ? $aFundsRequest['ADF_Facture'] : 0, false, false, true); ?>
+
+            </div>
+            <div class="request-for-fund-data-element request-for-fund-data-element-cashed">
+                <?php echo $this->translate('label_adf_cashed'); ?>
+                <br/>
+                <?php
+                $fAdfEncaisse = isset($aFundsRequest['ADF_Encaisse']) ? (float) $aFundsRequest['ADF_Encaisse'] : 0;
+                echo Phoenix_Data_Convert::formatMoney($fAdfEncaisse, false, false, true);
+                ?>
+
+            </div>
+            <div class="request-for-fund-data-element request-for-fund-data-element-used">
+                <?php echo $this->translate('label_dedicated'); ?><br/>
+                <?php
+                $fAdfRequired = isset($aFundsRequest['ADF_Requis']) ? (float) $aFundsRequest['ADF_Requis'] : 0;
+                $fAdfUsed = isset($aFundsRequest['ADF_Utilise']) ? (float) $aFundsRequest['ADF_Utilise'] : 0;
+                $fAdfAffecte = $fAdfRequired + $fAdfUsed;
+                echo Phoenix_Data_Convert::formatMoney($fAdfAffecte, false, false, true);
+                ?>
+            </div>
+            <div class="request-for-fund-data-element request-for-fund-data-element-available">
+                <?php $fAdfDisponible = ($fAdfEncaisse - $fAdfAffecte); ?>
+                <?php echo $this->translate('label_adf_available'); ?><br/>
+                <span class="<?php echo ($fAdfDisponible < 0) ? 'warning-value' : ''; ?>"> <?php echo Phoenix_Data_Convert::formatMoney(($fAdfDisponible), false, false, true); ?></span>
+            </div>
+        </div>
+        <div class="request-for-fund-img">
+            <img src="<?php echo ROOT_PATH . '/public/img/pdfgen/request_for_fund.png'; ?>" width="1476">
+        </div>
+    </div>
+</div>

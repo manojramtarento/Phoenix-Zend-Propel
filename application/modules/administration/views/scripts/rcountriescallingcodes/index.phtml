@@ -1,0 +1,78 @@
+<?php
+$this->title = $this->translate('title_adminstration_r_countries_calling_codes_listing');
+$this->headTitle($this->title);
+
+$this->headScript()->appendFile($this->baseUrl() . '/js/administration/rcountriescallingcodes/RCountriesCallingCodesManager.js');
+$this->headScript()->appendFile($this->baseUrl() . '/js/administration/rcountriescallingcodes/index.js');
+
+$bCreateEditIsAllowed = Phoenix_Auth_User::mvcActionIsAllowed('administration','rcountriescallingcodes','loadrcountrycallingcodeeditionpopup')  && Phoenix_Auth_User::mvcActionIsAllowed('administration','rcountriescallingcodes','savercountrycallingcodedata');
+$bDeleteIsAllowed = Phoenix_Auth_User::mvcActionIsAllowed('administration','rcountriescallingcodes','deletercountrycallingcoderecord');
+?>
+<div id="actions-bar">
+    <div class="unit size1of5">
+        <h1 class="page-title"><?php echo $this->title; ?></h1>
+        <?php if($bCreateEditIsAllowed){ ?>
+        <input href="#" id="btn-add-country-calling-code" type="button" data-country-calling-code-addition-popup-title="<?php echo $this->translate('label_title_country_calling_code_addition_popup_title') ?>" class="btn btn-orange btn-big" value="<?php echo $this->translate('button_add_new_country_calling_code_label'); ?>" />
+        <?php } ?>
+    </div>
+    <div class="unit size3of5">
+        <div class="search">
+            <form method="get" id="countries_calling_codes_form" action ="<?php echo $this->url(array('module' => 'administration', 'controller' => 'rcountriescallingcodes', 'action' => 'index'), null, true) ?>" >
+                <input type="text" name="findword" class="form-input" value="<?php echo isset($this->findword) ? $this->findword : ''; ?>" placeholder="<?php echo $this->translate('placeholder_search'); ?>" autocomplete="off" />
+                <input type="submit" value="<?php echo $this->translate('OK'); ?>" class="btn btn-orange" />
+            </form>
+        </div>
+    </div>
+</div>
+<div id="site-content">
+    <div class="content-list">
+        <div class="list-actions">
+            <div class="unit col">
+                <a class="icon icon-32 icon-excel" href="<?php echo $this->url(array('format' => 'csv'), null, false) . '?' . $_SERVER['QUERY_STRING'] ?>" title="<?php echo $this->translate('Exporter au format Excel'); ?>"><?php echo $this->translate('Exporter au format Excel'); ?></a>
+            </div>
+            <div class="unit rightUnit">
+                <div class="unit col">
+                    <?php echo $this->NotifySearch()->link() ?>
+                </div>
+                <div class="unit">
+                    <?php echo $this->paginationControl($this->paginator, 'Sliding', '/partials/pagination.phtml'); ?>
+                </div>
+            </div>
+        </div>
+        <table class="list list-main">
+            <thead>
+                <tr>
+                    <th width="26" class="column-noborder"></th>
+                    <th width="26" class="column-noborder"></th>
+                    <th>
+                        <?php echo My_View_Helper_Html::UrlOrderBy('r_country_calling_code_id', $this->translate('label_id')); ?>
+                    </th>
+                    <th>
+                        <?php echo My_View_Helper_Html::UrlOrderBy('r_country_calling_code', $this->translate('label_country_calling_code')); ?>
+                    </th>
+                    <th>
+                        <?php echo My_View_Helper_Html::UrlOrderBy('r_country_calling_code_actif', $this->translate('label_actif')); ?>
+                    </th>
+            </thead>
+            <tbody>
+                <?php foreach ($this->paginator as $aCountryCallingCode): ?>
+                    <tr class="<?php echo $this->cycle(array('', 'alt'))->next() ?>">
+                        <td>
+                            <?php if($bDeleteIsAllowed){ ?>
+                            <a href="#delete" class="icon-list icon-delete" data-country-calling-code-id="<?php echo $aCountryCallingCode['r_country_calling_code_id']; ?>" delete-country-calling-code-record-confirmation-message="<?php echo $this->translate('text_confirm_country_calling_code_record_deletion') . ' : ' . $aCountryCallingCode['r_country_calling_code'] ?>" title="<?php echo $this->translate('link_delete_country_calling_code'); ?>"><?php echo $this->translate('link_delete_country_calling_code'); ?></a>
+                            <?php } ?>
+                        </td>
+                        <td>
+                            <?php if($bCreateEditIsAllowed){ ?>
+                            <a href="#edit" class="icon-list icon-edit" data-country-calling-code-edition-popup-title="<?php echo $this->translate('title_edition'); ?>" data-country-calling-code-id="<?php echo $aCountryCallingCode['r_country_calling_code_id']; ?>" title="<?php echo $this->translate('link_edit_country_calling_code'); ?>"><?php echo $this->translate('link_edit_country_calling_code'); ?></a>
+                            <?php } ?>
+                        </td>
+                        <td align="left"><?php echo $aCountryCallingCode['r_country_calling_code_id']; ?></td>
+                        <td align="left"><?php echo $aCountryCallingCode['r_country_calling_code']; ?></td>
+                        <td align="left"><?php echo $aCountryCallingCode['r_country_calling_code_actif']; ?></td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,36 @@
+<form method="post" id="id_form_save_kpi_settings">
+    <div class="form-section">
+        <div class="line form-line">
+            <label for="" class="form-label unit size1of3"><?php echo $this->translate('Nom du paramétrage '); ?> :</label>
+            <input type="text" name="userKpiSettingsName" value="<?php echo $this->kpiSettingsName; ?>"/>
+        </div>
+    </div>
+    <input type="hidden" name="paramData" value="<?php echo $this->paramData ?>">
+    <input type="hidden" name="user_kpi_setting_id" value="<?php echo $this->kpiSettingsId ?>">
+    <div id="btn_submit">
+        <input type="submit" id="id_submit_settings" value="<?php echo $this->translate('Valider'); ?>" class="btn btn-orange push1of3" />
+    </div>
+</form>
+
+<script language="javascript">
+
+    $(document).ready(function() {
+
+        $("#id_submit_settings").click(function() {
+            $('#btn_submit').loader('show');
+        });
+
+        $('#id_form_save_kpi_settings').ajaxForm({
+            action: baseUrl + '/reporting/kpirender/savekpisettings',
+            success: function(data) {
+                $('#id_dialog_save_settings').dialog('close');
+            },
+            complete: function() {
+                setTimeout(function() {
+                    $('#btn_submit').loader('hide');
+                    window.location.href = baseUrl + '/reporting/kpirender';
+                }, 2000);
+            }
+        });
+    })
+</script>

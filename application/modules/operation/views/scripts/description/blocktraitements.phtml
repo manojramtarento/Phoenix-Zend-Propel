@@ -1,0 +1,55 @@
+<?php
+
+$bCreateTasksIsAllowed = Phoenix_Auth_User::mvcActionIsAllowed('operation','description','createtasks');
+$bInitGedelogIsAllowed = Phoenix_Auth_User::mvcActionIsAllowed('operation','description','initgedelog');
+
+if($bCreateTasksIsAllowed || $bInitGedelogIsAllowed){
+?>
+<div class="box">
+    <div class="line box-hd">
+        <h2 class="box-title title-icon icon-attach"><?php echo $this->translate('Traitements'); ?></h2>
+    </div>
+    <div class="box-bd">
+        <?php if($bCreateTasksIsAllowed){ ?>
+        <div class="line form-line">
+            <?php if ($OptSyncTaskDate = $this->operation->getOperationsExt()->getOptSyncTaskDate('d/m/Y')) { ?>
+                <span id="id_span_opt_sync_task_date"><?php echo $this->translate('Tâches créées le '); ?> : <?php echo $OptSyncTaskDate ?></span>
+            <?php } else { ?>
+                <input type="button" onclick="javascript:createTasks(<?php echo $this->operation->getOpId() ?>)" class="btn" value="Créer les tâches">
+            <?php } ?>
+        </div>
+        <?php } if($bInitGedelogIsAllowed){ ?>
+        <div class="line form-line">
+            <?php if ($OptSyncGedelogDate = $this->operation->getOperationsExt()->getOptSyncGedelogDate('d/m/Y')) { ?>
+                <span id="id_span_opt_sync_gedelog_date"><?php echo $this->translate('Poussée dans Gedelog le'); ?> : <?php echo $OptSyncGedelogDate ?></span>
+            <?php } else { ?>
+                <input type="button" onclick="javascript:initGedelog(<?php echo $this->operation->getOpId() ?>)" class="btn" value="<?php echo $this->translate('Envoyer dans Gedelog'); ?>">
+            <?php } ?>
+        </div>
+        <?php } ?>
+    </div>
+</div>
+<script languagae="javascript">
+    /**
+     * création des tâches
+     * @param int opId
+     */
+    function createTasks(opId) {
+        $('#id_block_traitements').loader('show');
+        AjaxComponent.ajaxQuery('/operation/description/createtasks', {op_id: opId}).success(function () {
+            refreshBlockTraitements();
+        });
+    }
+
+    /**
+     *
+     * @param int opId
+     */
+    function initGedelog(opId) {
+        $('#id_block_traitements').loader('show');
+        AjaxComponent.ajaxQuery('/operation/description/initgedelog', {op_id: opId}).success(function () {
+            refreshBlockTraitements();
+        });
+    }
+</script>
+<?php } ?>

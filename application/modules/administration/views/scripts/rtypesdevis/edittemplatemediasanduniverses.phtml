@@ -1,0 +1,29 @@
+<form method="post"  id="id-form-template-medias-and-universes">
+    <div class="form-section mini_list_checkbox_popup_form_container">
+        <table class="list list-main">
+            <thead>
+                <tr>
+                    <th width="40" class="check-column"><input id="check_all_template_related_data" type="checkbox" /></th>
+                    <th><span class="notsortable"><?php echo $this->translate('label_media'); ?></span></th>
+                    <th><span class="notsortable"><?php echo $this->translate('label_universe'); ?></span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($this->universesAndMedias as $aUniverseAndMedia) { ?>
+                    <tr class="tr-check <?php echo $this->cycle(array('', 'alt'))->next() ?>">
+                        <td class="check-column">
+                            <input class="template_related_data" type="checkbox" name="templateUnivereseAndMedia[][<?php echo $aUniverseAndMedia['ROperationMedia']['id']; ?>]" value="<?php echo $aUniverseAndMedia['ROperationUniverses']['id']; ?>" <?php echo $aUniverseAndMedia['isSelected'] ? 'checked="checked"' : '' ?>>
+                        </td>
+                        <td><?php echo $aUniverseAndMedia['ROperationMedia']['label']; ?></td>
+                        <td><?php echo $aUniverseAndMedia['ROperationUniverses']['label']; ?></td>
+                    </tr>
+                <?php } ?>
+            </tbody>
+        </table>
+    </div>
+    <div class="text-center">
+        <input type="hidden" name="template_id" value="<?php echo $this->templateId ?>" />
+        <input type="hidden" name="submit_template_medias_and_universes" value="1" />
+        <input type="submit" value="<?php echo $this->translate('Valider'); ?>" class="btn btn-orange" />
+    </div>
+</form>

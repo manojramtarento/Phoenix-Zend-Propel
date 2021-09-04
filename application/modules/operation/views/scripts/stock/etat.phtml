@@ -1,0 +1,76 @@
+<?php
+$this->title = $this->translate('Etat des stocks');
+$this->headTitle($this->title);
+?>
+
+<?php echo $this->partial('partials/actionsbar.phtml', array('operation' => $this->operation)); ?>
+<input type="hidden" id="id_input_op_id" name="input_op_id" value="<?php echo $this->operation->getOpId() ?>">
+<div id="site-content">
+    <?php echo $this->partial('partials/menu.phtml'); ?>
+    <div id="content-bd">
+        <?php echo $this->partial('stock/partials/entete.phtml', array('total_qte' => $this->total_qte)); ?>
+        <div class="clear"></div>
+
+        <div class="list-actions">
+            <div class="unit rightUnit">
+                <div class="unit col">
+                </div>
+                <div class="unit">
+                </div>
+            </div>
+        </div>
+
+        <table class="list list-main">
+            <thead>
+                <tr>
+                    <th style="text-align:center;"><?php echo My_View_Helper_Html::UrlOrderBy('ref_prod', $this->translate('Ref')) ?></th>
+                    <th style="text-align:center;"><?php echo My_View_Helper_Html::UrlOrderBy('libelle_prod', $this->translate('Prime / Produit')) ?></th>
+                    <th style="text-align:center;"><?php echo My_View_Helper_Html::UrlOrderBy('qte_entree', $this->translate('Qté reçue')) ?></th>
+                    <th style="text-align:center;"><?php echo My_View_Helper_Html::UrlOrderBy('qte_sortie', $this->translate('Qté sortie')) ?></th>
+                    <th style="text-align:center;"><?php echo My_View_Helper_Html::UrlOrderBy('qte_stock', $this->translate('Qté en stock')) ?></th>
+                    <th colspan="2" style="text-align:center;"><span class="notsortable"><?php echo $this->translate('Reçus'); ?></span></th>
+                    <th colspan="2" style="text-align:center;"><span class="notsortable"><?php echo $this->translate('Sorties'); ?></span></th>
+                    <th colspan="4" style="text-align:center;"><span class="notsortable"><?php echo $this->translate('En stock'); ?></span></th>
+                </tr>
+                <tr class="sub-head">
+                    <td colspan="5"></td>
+                    <td align="center" class="column-border"><?php echo My_View_Helper_Html::UrlOrderBy('palette_entree', $this->translate('Palettes')) ?></td>
+                    <td class="column-border"><?php echo My_View_Helper_Html::UrlOrderBy('colis_entree', $this->translate('Colis')) ?></td>
+                    <td align="center" class="column-border"><?php echo My_View_Helper_Html::UrlOrderBy('palette_sortie', $this->translate('Palettes')) ?></td>
+                    <td class="column-border"><?php echo My_View_Helper_Html::UrlOrderBy('colis_sortie', $this->translate('Colis')) ?></td>
+                    <td align="center" class="column-border"><?php echo My_View_Helper_Html::UrlOrderBy('palette_stock_secu', $this->translate('Palettes sécu')) ?></td>
+                    <td class="column-border"><?php echo My_View_Helper_Html::UrlOrderBy('palette_stock', $this->translate('Palettes non sécu')) ?></td>
+                    <td align="center" class="column-border"><?php echo My_View_Helper_Html::UrlOrderBy('casier_stock_secu', $this->translate('Casier sécu')) ?></td>
+                    <td ><?php echo My_View_Helper_Html::UrlOrderBy('casier_stock', 'Casier non sécu') ?></td>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($this->paginator as $produit) { ?>
+                    <tr class="<?php echo $this->cycle(array('', 'alt'))->next() ?>" data-href="<?php echo $this->url(array('module' => 'operation', 'controller' => 'flux', 'action' => 'listing', 'op_id' => $this->operation->getOpId())) ?>" >
+                        <td><?php echo $produit['ref_prod']; ?></td>
+                        <td><?php echo $produit['libelle_prod']; ?></td>
+                        <td align="center"><?php echo $produit['qte_entree']; ?></td>
+                        <td align="center"><?php echo $produit['qte_sortie']; ?></td>
+                        <td align="center"><?php echo $produit['qte_stock']; ?></td>
+                        <td align="center"><?php echo $produit['palette_entree']; ?></td>
+                        <td align="center"><?php echo $produit['colis_entree']; ?></td>
+                        <td align="center"><?php echo $produit['palette_sortie']; ?></td>
+                        <td align="center"><?php echo $produit['colis_sortie']; ?></td>
+                        <td align="center"><?php echo $produit['palette_stock_secu']; ?></td>
+                        <td align="center"><?php echo $produit['palette_stock']; ?></td>
+                        <td align="center"><?php echo $produit['casier_stock_secu']; ?></td>
+                        <td align="center"><?php echo $produit['casier_stock']; ?></td>
+                    </tr>
+                <?php } ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script language="javascript">
+
+
+
+
+
+</script>

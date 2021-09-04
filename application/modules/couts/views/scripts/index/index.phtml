@@ -1,0 +1,466 @@
+<?php
+$this->title = $this->translate('Validation des coûts');
+$this->headTitle($this->title);
+?>
+<div id="actions-bar">
+    <div class="unit size1of5">
+        <h1 class="page-title"><?php echo $this->title; ?></h1>
+    </div>
+    <div class="unit size2of5">
+        <div class="search">
+            <form action="<?php echo $this->url() ?>" method="get">
+                <input type="text" name="findword" class="form-input" value="<?php if (isset($_REQUEST["findword"])) echo $_REQUEST["findword"]; ?>" placeholder="Rechercher" autocomplete="off" />
+                <input type="submit" value="OK" class="btn btn-orange" />
+                <input type="button" value="Recherche avancée" class="btn btn-big btn-adsearch" id="btn_adsearch" />
+            </form>
+        </div>
+    </div>
+</div>
+<div id="site-content">
+    <div class="content-list">
+        <div class="list-actions">
+            <div class="unit col">
+                <a class="icon icon-32 icon-excel" href="<?php echo $this->url(array('format' => 'csv'), null, false) . '?' . $_SERVER['QUERY_STRING'] ?>" title="Exporter au format Excel"><?php echo $this->translate('Exporter au format Excel'); ?></a>
+            </div>
+            <div class="unit">
+                <input id="validate_multiple_costs" type="button" class="btn btn-orange btn-big" value="<?php echo $this->translate('Valider les coûts') ?>" />
+            </div>
+            <div class="unit rightUnit">
+                <div class="unit col">
+                    <?php echo $this->NotifySearch()->link() ?>
+                </div>
+                <div class="unit">
+                    <?php echo $this->paginationControl($this->paginator, 'Sliding', '/partials/pagination.phtml'); ?>
+                </div>
+            </div>
+        </div>
+        <table class="list">
+            <thead>
+                <tr>
+                    <th class="check-column column-noborder"><input id="check_all_couts" type="checkbox" value="1"></th>
+                    <th width="26"></th>
+                    <th width="26"></th>
+                    <th width="40"><?php echo My_View_Helper_Html::UrlOrderBy('op_number', $this->translate('N° OP')); ?></th>
+                    <th width="40"><?php echo My_View_Helper_Html::UrlOrderBy('cl_libelle', $this->translate('Client')); ?></th>
+                    <th  width="270"><?php echo My_View_Helper_Html::UrlOrderBy('op_prest_libelle_devis', $this->translate('Intitulé commercial de la prestation')); ?></th>
+                    <th><?php echo My_View_Helper_Html::UrlOrderBy('r_p_type_validation_libelle', $this->translate('Type')); ?></th>
+                    <th width="90"><span class="notsortable"><?php echo $this->translate('Prix vente'); ?></span></th>
+                    <th colspan="2" style="text-align:center;"><span class="notsortable"><?php echo $this->translate('Coût interne'); ?></span></th>
+                    <th colspan="2" style="text-align:center;"><span class="notsortable"><?php echo $this->translate('Coût externe'); ?></span></th>
+                    <th colspan="2" style="text-align:center;"><span class="notsortable"><?php echo $this->translate('Coût total'); ?></span></th>
+                    <th width="70" style="text-align:center;"><span class="notsortable"><?php echo $this->translate('Écart'); ?></span></th>
+                    <th style="text-align:center;"><span class="notsortable"><?php echo $this->translate('NPR'); ?></span></th>
+                    <th style="text-align:center;"><span class="notsortable"><?php echo $this->translate('NPA'); ?></span></th>
+                    <th style="text-align:center;"><span class="notsortable"><?php echo $this->translate('Cout finalisé'); ?></span></th>
+                </tr>
+                <tr class="sub-head">
+                    <td colspan="8"></td>
+                    <td width="90" align="center" class="column-border"><?php echo $this->translate('Estimé'); ?></td>
+                    <td width="90" align="center"><b><?php echo $this->translate('Réalisé'); ?></b></td>
+                    <td width="90" align="center" class="column-border"><?php echo $this->translate('Estimé'); ?></td>
+                    <td width="90" align="center"><b><?php echo $this->translate('Réalisé'); ?></b></td>
+                    <td width="90" align="center" class="column-border"><?php echo $this->translate('Estimé'); ?></td>
+                    <td width="90" align="center"><b><?php echo $this->translate('Réalisé'); ?></b></td>
+                    <td colspan="3"></td>
+                    <td></td>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                foreach ($this->paginator as $aCost) {
+                    $isBloquant = ($aCost['nb_factures_en_attente'] > 0) && (!$aCost['op_prest_couts_valides']);
+
+                    $iEstimatedTotalCost = $aCost['op_prest_ciestim'] + $aCost['op_prest_ceestim'];
+                    $iReelTotalCost = $aCost['op_prest_cireel'] + $aCost['op_prest_cereel'];
+
+                    $sGap = Phoenix_Data_Convert::formatMoney($aCost['ecart']);
+                    ?>
+                    <tr class="<?php echo $this->cycle(array('', 'alt'))->next() ?> class_form_cout_update" id="id_form_cout_<?php echo $aCost['op_prest_id']; ?>" action="<?php echo $this->url(array('module' => 'couts', 'controller' => 'index', 'action' => 'updatecout')) ?>" model_name="OperationPrestations" primary_value="<?php echo $aCost['op_prest_id']; ?>">
+                        <td class="check-column">
+                            <?php
+                            // Only the manual costs type could be automated
+                            // 33369 Making the following process also availble for "soldé" status
+                            if (($aCost['op_status_id'] == Operations::STATUS_ACCEPTE || $aCost['op_status_id'] == Operations::STATUS_SOLDE) && $aCost['r_p_validation_id'] == RPTypeValidation::MANUELLE) {
+                                echo '<input value="' . $aCost['op_prest_id'] . '" class="checkbox_cout no_update" type="checkbox" />';
+                            }
+                            ?>
+                        </td>
+                        <td>
+                            <?php
+                            if (($aCost['op_status_id'] == Operations::STATUS_ACCEPTE) || ($aCost['op_status_id'] == Operations::STATUS_SOLDE && Phoenix_Auth_User::getInstance()->isAllowed(AclFonctionnalites::VALIDATION_COUTS_OP_SOLDE)) || ($aCost['op_status_id'] == Operations::STATUS_CLOTURE && Phoenix_Auth_User::getInstance()->isAllowed(AclFonctionnalites::VALIDATION_COUTS_OP_CLOTURE))) {
+                                echo '<a href="#edit" class="icon-list icon-edit" op_prest_id="' . $aCost['op_prest_id'] . '" type="' . $aCost['r_p_validation_id'] . '" title="' . $this->translate('Gestion de la prestation') . '"';
+                                echo $this->translate('Gestion de la prestation') . '</a>';
+                            }
+                            ?>
+                        </td>
+                        <td><?php echo Phoenix_View_Helper_Html::getCoutStatusIcon($isBloquant); ?></td>
+                        <td><span title="<?php echo $aCost['op_libelle']; ?>"><a href="<?php echo $this->url(array('module' => 'operation', 'controller' => 'prestations', 'op_id' => $aCost['op_id'])) ?>" target="_blanck"><?php echo $aCost['op_number']; ?></a></span></td>
+                        <td><a href="<?php echo $this->url(array('module' => 'client', 'controller' => 'fiche', 'cl_id' => $aCost['op_cl_id'])) ?>" target="_blanck"><?php echo $aCost['cl_libelle']; ?></a></td>
+                        <td class="tip <?php echo ($aCost['op_prest_couts_valides'] == 0 ? 'text-ko' : '') ?>" title="<?php echo $this->translate('Libellé prestation') . ' : ' . $aCost['r_p_libelle']; ?>"><?php echo '[' . $aCost['r_prestation_id'] . '] ' . $aCost['op_prest_libelle_devis']; ?></td>
+                        <td align="right"><?php echo $aCost['r_p_type_validation_libelle'] ?></td>
+                        <td align="right" class="column-border"><?php echo Phoenix_Data_Convert::formatMoney($aCost['op_prest_pv']); ?> </td>
+                        <td align="right"><?php echo Phoenix_Data_Convert::formatMoney($aCost['op_prest_ciestim']); ?> </td>
+                        <td align="right" class="column-border">
+                            <b>
+                                <?php
+                                echo $aCost['op_prest_cireel'] == '' ? 'N.C' : Phoenix_Data_Convert::formatMoney($aCost['op_prest_cireel']);
+                                ?>
+                            </b>
+                        </td>
+                        <td align="right"><?php echo Phoenix_Data_Convert::formatMoney($aCost['op_prest_ceestim']); ?> </td>
+                        <td align="right" class="column-border">
+                            <b>
+                                <?php
+                                echo $aCost['op_prest_cereel'] == '' ? 'N.C' : Phoenix_Data_Convert::formatMoney($aCost['op_prest_cereel']);
+                                ?>
+                            </b>
+                        </td>
+                        <td align="right"><?php echo Phoenix_Data_Convert::formatMoney($iEstimatedTotalCost); ?></td>
+                        <td align="right" class="column-border"><span style="font-weight: bold" id="id_op_prest_ctotalreel_<?php echo $aCost['op_prest_id'] ?>"><?php echo ($iReelTotalCost == '') ? 'N.C' : Phoenix_Data_Convert::formatMoney($iReelTotalCost); ?></span></td>
+                        <td align="right"><?php echo $sGap; ?></td>
+                        <td  align="center">
+                            <input type="checkbox" name="op_prest_npr" onclick="return false;" <?php echo !$aCost['op_prest_npr']? '':'checked';?> >
+                        </td>
+                        <td  align="center">
+                            <input type="checkbox" name="op_prest_npa" onclick="return false;" <?php echo !$aCost['op_prest_npa']? '': 'checked';?> >
+                        </td>
+                        <td  align="center">
+                            <input type="checkbox" name="op_prest_npa" onclick="return false;" <?php echo !$aCost['op_prest_couts_valides']? '': 'checked';?> >
+                        </td>
+                    </tr>
+                <?php } ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div id="id_dialog_search" title="<?php echo $this->translate('Recherche avancée'); ?>" style="display:none;">
+    <form action="<?php echo $this->BaseUrl() ?>/couts/index" method="get">
+        <div class="line">
+            <div class="unit size1of2">
+                <div class="section col">
+                    <div class="section-hd">
+                        <h2 class="section-title"><?php echo $this->translate('Références opération/client'); ?></h2>
+                    </div>
+                    <div class="section-bd">
+                        <div class="line form-line">
+                            <label class="unit size1of3 form-label" for="id_autocomplete_op_id"><?php echo $this->translate('Numéro d\'opération:'); ?></label>
+                            <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_op_id', 'type' => 'hidden')); ?>
+                            <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'autocomplete_op_id', 'class' => 'unit size2of3 form-input input-autocomplete lastUnit')) ?>
+                        </div>
+
+                        <div class="line form-line">
+                            <label class="unit size1of3 form-label" for="id_autocomplete_op_cl_id"><?php echo $this->translate('Nom du client'); ?> :</label>
+                            <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_op_cl_id', 'type' => 'hidden')); ?>
+                            <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'autocomplete_op_cl_id', 'class' => 'unit size2of3 form-input input-autocomplete lastUnit')) ?>
+                        </div>
+                    </div>
+
+                    <div class="section-hd">
+                        <h2 class="section-title"><?php echo $this->translate('Statut'); ?></h2>
+                    </div>
+                    <div class="section-bd">
+                        <div class="line form-line">
+                            <!-- 32655 : Migration phoenix/migration modules -->
+                            <?php echo My_View_Helper_Html::selectFromTable('r_operation_status', array('name' => 'find_op_status_id', 'class' => 'unit size1of2 form-select'), array('value' => 'os_id', 'name' => 'os_libelle'), array('default_label' => 'Tout statut', 'clause_where' => 'os_id NOT IN ('.Operations::STATUS_REFUS.','. Operations::STATUS_EN_VALIDATION.')' )) ?>
+                        </div>
+
+                        <div class="line form-line">
+                            <div class="unit size1of2 date">
+                                Date min. :
+                            </div>
+                            <div class="unit size1of2 date">
+                                <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_op_date_status_min', 'value' => $this->getParam('find_op_date_status_min'), 'class' => 'date-input', 'placeholder' => 'JJ/MM/AAAA', 'maxlenght' => '10')); ?>
+                            </div>
+                        </div>
+                        <div class="line form-line">
+                            <div class="unit size1of2 date">
+                                Date max. :
+                            </div>
+                            <div class="unit  date">
+                                <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_op_date_status_max', 'value' => $this->getParam('find_op_date_status_max'), 'class' => 'date-input', 'placeholder' => 'JJ/MM/AAAA', 'maxlenght' => '10')); ?>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="section-hd">
+                        <h2 class="section-title"><?php echo $this->translate('Entrepôt envisagé'); ?></h2>
+                    </div>
+                    <div class="section-bd">
+                        <div class="line form-line">
+                            <?php echo My_View_Helper_Html::select(array('value' => $this->getParam('entrepot_type'), 'id' => 'find_entrepot_type', 'name' => 'find_entrepot_type'), ROperationOptions::getEntrepotCategories(), array('default_label' => $this->translate('Choisir') . ' ...')) ?>
+                        </div>
+                    </div>
+
+                    <div class="section-hd">
+                        <h2 class="section-title"><?php echo $this->translate('Dates opération'); ?></h2>
+                    </div>
+                    <div class="section-bd">
+                        <div class="line form-line">
+                            <label class="unit size1of2 form-label" for="find_op_stamp_start"><?php echo $this->translate('Début de gestion'); ?> :</label>
+                            <div class="unit size1of2">
+                                <div class="unit size1of4">
+                                    <?php echo Phoenix_View_Helper_Html_Select::selectComparateur(array('name' => 'find_op_stamp_start_comp', 'class' => 'form-select')) ?>
+                                </div>
+                                <div class="unit size3of4 date">
+                                    <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_op_stamp_start', 'value' => $this->getParam('find_op_stamp_start'), 'class' => 'date-input', 'placeholder' => 'JJ/MM/AAAA', 'maxlenght' => '10')); ?>
+                                </div>
+                            </div>
+                        </div>
+                        <?php if (Phoenix_Auth_User::getInstance()->isAllowed(AclFonctionnalites::END_DATE)) { ?>
+                        <div class="line form-line">
+                            <label class="unit size1of2 form-label" for="find_op_stamp_end_comp"><?php echo $this->translate('Fin de gestion'); ?> :</label>
+                            <div class="unit size1of2">
+                                <div class="unit size1of4">
+                                    <?php echo Phoenix_View_Helper_Html_Select::selectComparateur(array('name' => 'find_op_stamp_end_comp', 'class' => 'form-select')) ?>
+                                </div>
+                                <div class="unit size3of4 date">
+                                    <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_op_stamp_end', 'value' => $this->getParam('find_op_stamp_end'), 'class' => 'date-input', 'placeholder' => 'JJ/MM/AAAA', 'maxlenght' => '10')); ?>
+                                </div>
+                            </div>
+                        </div>
+                        <?php 
+                            } 
+                            if (Phoenix_Auth_User::getInstance()->isAllowed(AclFonctionnalites::CONSUMERING_DATES)) { 
+                        ?>
+                        <div class="line form-line">
+                            <label class="unit size1of2 form-label" for="find_op_dateConso_start_comp"><?php echo $this->translate('Début de conso'); ?> :</label>
+                            <div class="unit size1of2">
+                                <div class="unit size1of4">
+                                    <?php echo Phoenix_View_Helper_Html_Select::selectComparateur(array('name' => 'find_op_dateConso_start_comp', 'class' => 'form-select')) ?>
+                                </div>
+                                <div class="unit size3of4 date">
+                                    <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_op_dateConso_start', 'value' => $this->getParam('find_op_dateConso_start'), 'class' => 'date-input', 'placeholder' => 'JJ/MM/AAAA', 'maxlenght' => '10')); ?>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="line form-line">
+                            <label class="unit size1of2 form-label" for="find_op_dateConso_end_comp"><?php echo $this->translate('Fin de conso'); ?> :</label>
+                            <div class="unit size1of2">
+                                <div class="unit size1of4">
+                                    <?php echo Phoenix_View_Helper_Html_Select::selectComparateur(array('name' => 'find_op_dateConso_end_comp', 'class' => 'form-select')) ?>
+                                </div>
+                                <div class="unit size3of4 date">
+                                    <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_op_dateConso_end', 'value' => $this->getParam('find_op_dateConso_end'), 'class' => 'date-input', 'placeholder' => 'JJ/MM/AAAA', 'maxlenght' => '10')); ?>
+                                </div>
+                            </div>
+                        </div>
+                        <?php } if (Phoenix_Auth_User::getInstance()->isAllowed(AclFonctionnalites::END_POSTE_DATE)) { ?>
+                        <div class="line form-line">
+                            <label class="unit size1of2 form-label" for="find_op_datePoste_end_comp"><?php echo $this->translate('Fin de gestion postale:'); ?></label>
+                            <div class="unit size1of2">
+                                <div class="unit size1of4">
+                                    <?php echo Phoenix_View_Helper_Html_Select::selectComparateur(array('name' => 'find_op_datePoste_end_comp', 'class' => 'form-select')) ?>
+                                </div>
+                                <div class="unit size3of4 date">
+                                    <!-- 32655 : Migration phoenix/migration modules -->
+                                    <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_op_datePoste_end', 'value' => $this->getParam('find_op_datePoste_end'), 'class' => 'date-input', 'placeholder' => 'JJ/MM/AAAA', 'maxlenght' => '10')); ?>
+                                </div>
+                            </div>
+                        </div>
+                        <?php } ?>
+                    </div>
+                </div>
+            </div>
+            <div class="unit size1of2">
+                <div class="section col">
+                    <div class="section-hd">
+                        <h2 class="section-title"><?php echo $this->translate('Responsables'); ?></h2>
+                    </div>
+                    <div class="section-bd">
+                        <div class="line form-line">
+                            <label class="form-label unit size1of3" for="id_find_op_dc_id"><?php echo $this->translate('Directeur de clientèle'); ?> :</label>
+                            <?php echo Phoenix_View_Helper_Html_Select::selectUsersByuserType(RUserTypes::KEY_ACCOUNT_MANAGER_USER_TYPE, array('name' => 'find_op_dc_id', 'class' => 'form-select unit size2of3 lastUnit'), array('default_label' => $this->translate('Choisir') . '...'), $this->oldDcUsers); ?>
+                        </div>
+
+                        <div class="line form-line">
+                            <label class="form-label unit size1of3" for="id_find_op_cp_id"><?php echo $this->translate('Gestionnaire Projets Clients'); ?> :</label>
+                            <?php echo Phoenix_View_Helper_Html_Select::selectUsersByuserType(RUserTypes::PROJECT_MANAGER_USER_TYPE, array('name' => 'find_op_cp_id', 'class' => 'form-select unit size2of3 lastUnit'), array('default_label' => $this->translate('Choisir') . '...'), $this->oldCpUsers); ?>
+                        </div>
+                        <?php if (Phoenix_Auth_User::getInstance()->isAllowed(AclFonctionnalites::PROJECT_MANAGER)) { ?>
+                        <div class="line form-line">
+                            <label class="form-label unit size1of3" for="id_find_op_cdp_id"><?php echo $this->translate('label_project_manager'); ?> :</label>
+                            <?php echo Phoenix_View_Helper_Html_Select::selectUsersByuserType(RUserTypes::PROJECT_MANAGER_USER_TYPE, array('name' => 'find_op_cdp_id', 'class' => 'form-select unit size2of3 lastUnit'), array('default_label' => $this->translate('Choisir') . '...'), $this->oldCdpUsers); ?>
+                        </div>
+                        <?php } ?>
+                        <div class="line form-line">
+                            <label class="unit size1of3 form-label" for='id_find_r_p_groupe_validation_id'><?php echo $this->translate('Groupe Validation'); ?> :</label>
+                            <?php echo Phoenix_View_Helper_Html::selectFromTable('acl_groups', array('name' => 'find_r_p_groupe_validation_id', 'value' => $this->r_p_groupe_validation_id, 'class' => 'unit size2of3 form-select lastUnit'), array('name' => 'group_name', 'value' => 'group_id'), array('default_label' => 'Choisir ...')) ?>
+                        </div>
+
+                        <div class="line form-line">
+                            <label class="unit size1of3 form-label" for="id_find_sales_team"><?php echo $this->translate('Équipe de vente'); ?> :</label>
+                            <?php echo My_View_Helper_Html::selectFromTable('r_operation_sales_teams', array('name' => 'find_sales_team', 'class' => 'unit size2of3 form-select'), array('value' => 'r_ope_sales_team_id', 'name' => 'r_ope_sales_team_libelle'), array('default_label' => 'Toutes équipes')) ?>
+                        </div>
+
+                        <div class="line form-line">
+                            <label class="unit size1of3 form-label" for="id_find_op_user_couts_reel"><?php echo $this->translate('Validant'); ?> :</label>
+                            <?php echo Phoenix_View_Helper_Html_Select::selectUsers(array('name' => 'find_op_user_couts_reel', 'class' => 'unit size2of3 lastUnit form-select')) ?>
+                        </div>
+                    </div>
+
+                    <div class="section-hd">
+                        <h2 class="section-title"><?php echo $this->translate('Références prestations'); ?></h2>
+                    </div>
+                    <div class="section-bd">
+                        <div class="line form-line">
+                            <label class="unit size1of3 form-label" for='id_find_r_prestation_id'><?php echo $this->translate('ID Prestation'); ?> :</label>
+                            <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'find_r_prestation_id', 'class' => 'unit size2of3 form-input lastUnit')) ?>
+                        </div>
+
+                        <div class="line form-line">
+                            <label class="unit size1of3 form-label" for='id_find_r_p_libelle'><?php echo $this->translate('Libellé prestation'); ?> :</label>
+                            <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'find_r_p_libelle', 'class' => 'unit size2of3 form-input lastUnit')) ?>
+                        </div>
+
+                        <div class="line form-line">
+                            <label class="unit size1of3 form-label" for='id_find_op_prest_libelle_devis'><?php echo $this->translate('Intitulé commercial prestation'); ?> :</label>
+                            <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'find_op_prest_libelle_devis', 'class' => 'unit size2of3 form-input lastUnit')) ?>
+                        </div>
+
+                        <div class="line form-line">
+                            <div class="unit size1of3">
+                                <label class="form-label"><?php echo $this->translate('Afficher les écarts'); ?></label>
+                            </div>
+
+                            <div class="unit size2of3">
+                                <label class="form-label" for="id_find_ecart"><?php echo $this->translate('supérieur ou égal à'); ?> :</label>
+                                <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'find_ecart', 'class' => 'unit size2of5 form-input lastUnit')) ?>
+                            </div>
+                        </div>
+
+                        <div class="line form-line">
+                            <label class="unit size1of3"><?php echo $this->translate('Type'); ?></label>
+
+                            <div class="unit size2of3">
+                                <div class="line form-line">
+                                    <?php echo Phoenix_View_Helper_Html::checkbox(array('name' => 'find_r_p_validation_id[]', 'value' => RPTypeValidation::AUTOMATIQUE)); ?>
+                                    <label class="form-label" for="id_show_all_prestations"><?php echo $this->translate('automatique'); ?></label>
+                                </div>
+                                <div class="line form-line">
+                                    <?php echo Phoenix_View_Helper_Html::checkbox(array('name' => 'find_r_p_validation_id[]', 'value' => RPTypeValidation::MANUELLE)); ?>
+                                    <label class="form-label" for="id_show_all_prestations"><?php echo $this->translate('manuelle'); ?></label>
+                                </div>
+                                <div class="line form-line">
+                                    <?php echo Phoenix_View_Helper_Html::checkbox(array('name' => 'find_r_p_validation_id[]', 'value' => RPTypeValidation::ACHAT)); ?>
+                                    <label class="form-label" for="id_show_all_prestations"><?php echo $this->translate('achat'); ?></label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="line form-line">
+                            <label class="unit size1of3"><?php echo $this->translate('Validé'); ?></label>
+
+                            <div class="unit size2of3">
+                                <?php echo Phoenix_View_Helper_Html::checkbox(array('name' => 'find_op_prest_couts_valides[]', 'value' => 1)); ?>
+                                <label class="form-label" for="id_show_validated_prestations"><?php echo $this->translate('oui'); ?></label>
+                                <?php echo Phoenix_View_Helper_Html::checkbox(array('name' => 'find_op_prest_couts_valides[]', 'value' => 0)); ?>
+                                <label class="form-label" for="id_show_validated_prestations"><?php echo $this->translate('non'); ?></label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center">
+            <input type="submit" name="findbyfields" value="<?php echo $this->translate('Recherche'); ?>" class="btn btn-orange">
+        </div>
+    </form>
+</div>
+
+<script language="javascript">
+    $(document).ready(function() {
+        var sPurchaseServiceValidationPopUpTitle = '<?php echo $this->translate('Valider une prestation de type achat') ?>';
+        // Operation selection with autocomplete
+        $('#id_autocomplete_op_id').AjaxAutocomplete({
+            url: baseUrl + '/common/autocomplete/operation',
+            minLength: 3,
+            restrictive: true,
+            bindFieldId: 'id_find_op_id'
+        });
+        // Customer selection with autocomplete
+        $('#id_autocomplete_op_cl_id').AjaxAutocomplete({
+            url: baseUrl + '/common/autocomplete/client',
+            minLength: 3,
+            restrictive: true,
+            bindFieldId: 'id_find_op_cl_id'
+        });
+
+        $('#check_all_couts').change(function() {
+            Component.updateAllCheckboxs('checkbox_cout', $(this).is(':checked'));
+        });
+
+        // Autocheck validated checkbox when we select a specifc gap or select a validator
+        $('#id_find_op_user_couts_reel, #id_find_ecart').change(function() {
+            var sValidant = $('#id_find_op_user_couts_reel').val();
+            var sGap = $('#id_find_ecart').val();
+
+            if (sValidant != '' || sGap != '') {
+                $('#id_show_validated_prestations').attr('checked', 'checked');
+            } else {
+                $('#id_show_validated_prestations').removeAttr('checked');
+            }
+        });
+
+        $('.list .icon-edit').click(function() {
+            var sType = $(this).attr('type');
+            var sOperationServiceId = $(this).attr("op_prest_id");
+
+            if (sType != 3) {
+                // Manual or Automatic
+                AjaxComponent.ajaxDialog(baseUrl + '/couts/index/updateprestamanuelle', {op_prest_id: sOperationServiceId}, {width: '400', title: '<?php echo $this->translate('Valider une prestation classique') ?>', id: 'id_dialog_update_presta_manuelle', close: function() {
+                        Component.refreshPage();
+                    }});
+            }
+            else if (sType == 3) {
+                // Purchase
+                AjaxComponent.ajaxDialog(baseUrl + '/couts/index/updateprestaachat?<?php echo $_SERVER['QUERY_STRING'] ?>', {op_prest_id: sOperationServiceId}, {width: '400', title: sPurchaseServiceValidationPopUpTitle, id: 'id_dialog_update_presta_achat'});
+            }
+        });
+
+        // Validating multiple costs
+        $('#validate_multiple_costs').click(function() {
+            var sIdsList = '';
+            $('.checkbox_cout:checked').each(function() {
+                sIdsList += $(this).val() + ',';
+            });
+
+            if (sIdsList != '') {
+                sIdsList = sIdsList.slice(0, -1)
+                AjaxComponent.ajaxDialog(baseUrl + '/couts/index/updateprestamanuelle', {op_prest_id: sIdsList}, {width: '400', title: 'Validations multiples', id: 'id_dialog_update_presta_manuelle', close: function() {
+                        Component.refreshPage();
+                    }});
+            } else {
+                alert("<?php echo $this->translate('Aucune prestation n\'est sélectionnée') ?>");
+            }
+        });
+
+        // Advanced search
+        $('#btn_adsearch').click(function(e) {
+            $('#id_dialog_search').dialog({
+                width: 800,
+                modal: true,
+                resizable: false
+            });
+        });
+
+        $('.class_op_prest_cireel,.class_op_prest_cereel').updateField('/couts/index/updatecout',
+                {
+                    success: function(data) {
+                        ctotal = parseFloat($('#op_prest_cereel' + data.primaryValue).val()) + parseFloat($('#op_prest_cireel' + data.primaryValue).val());
+                        $('#id_op_prest_ctotalreel_' + data.primaryValue).html(ctotal.toFixed(2) + '&nbsp;€');
+                    }
+                });
+
+
+<?php
+$sOperationServiceId = $this->getParam('prest_achat');
+if (isset($sOperationServiceId)) {
+
+    parse_str($_SERVER['QUERY_STRING'], $aQueryData);
+    unset($aQueryData['prest_achat']);
+    unset($aQueryData['error']);
+    echo 'AjaxComponent.ajaxDialog(baseUrl+"/couts/index/updateprestaachat?"' . http_build_query($aQueryData) . '", {op_prest_id: " ' . $sOperationServiceId . '}, {width:"400", title:"Valider une prestation de type achat", id:"id_dialog_update_presta_achat"});';
+}
+?>
+    });
+</script>

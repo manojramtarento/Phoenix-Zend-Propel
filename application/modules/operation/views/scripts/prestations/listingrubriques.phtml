@@ -1,0 +1,36 @@
+<form method="post" action="<?php echo $this->target ?> ">
+    <div class="section">
+        <div class="section-hd">
+            <h2 class="section-title"><?php echo $this->translate('Résultat de votre recherche'); ?></h2>
+        </div>
+        <div class="section-bd" style="height:220px;overflow:auto;">
+            <?php if (count($this->prestations) > 0) { ?>
+                <table class="list list-main">
+                    <thead>
+                        <tr>
+                            <th width="40" class="check-column"><input type="checkbox" /></th>
+                            <th width="40"><span class="notsortable"><?php echo $this->translate('ID'); ?></span></th>
+                            <th><span class="notsortable"><?php echo $this->translate('Libellé Prestation'); ?></span></th>
+                            <th width="15%"><span class="notsortable"><?php echo $this->translate('Coût total'); ?></span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($this->prestations as $prestation) { ?>
+                            <tr class="<?php echo $this->cycle(array('', 'alt'))->next() ?>">
+                                <td class="check-column"><input type="checkbox" name="r_prestation_id[]" value="<?php echo $prestation['r_prestation_id']; ?>"></td>
+                                <td align="left"><?php echo $prestation['r_prestation_id']; ?></td>
+                                <td><?php echo $prestation['r_p_libelle']; ?></td>
+                                <td align="right" class="column-secondary"><?php echo number_format($prestation['r_p_prix_vente'], 2, ',', ' '); ?>&euro;<input type="hidden" name="r_p_prix_vente[<?php echo $prestation['r_prestation_id']; ?>]" value="<?php echo $prestation['r_p_prix_vente'] ?>"></td>
+                            </tr>
+                        <?php } ?>
+                    </tbody>
+                </table>
+            <?php } else { ?>
+                <?php echo $this->translate('Aucun résultat'); ?>
+            <?php } ?>
+        </div>
+    </div>
+    <div class="text-center">
+        <input type="submit" class="btn btn-orange btn-big" value="<?php echo $this->translate('Ajouter'); ?>" name="submit_ajouter_prestation">
+    </div>
+</form>

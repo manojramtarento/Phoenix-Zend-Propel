@@ -1,0 +1,128 @@
+<?php
+$iInternalEstimationCost = $this->prestation->getOpPrestCiestim();
+$iExternalCostEstimation = $this->prestation->getOpPrestCeestim();
+if (!is_numeric($iInternalEstimationCost) || !is_numeric($iExternalCostEstimation)) {
+    $sEstimationCost = $this->translate('N.C');
+} else {
+    $sEstimationCost = $iInternalEstimationCost + $iExternalCostEstimation;
+}
+?>
+
+<input type="hidden" value="<?php echo $this->op_rubrique_id ?>" id="id_input_op_rubique_id">
+<input type="hidden" value="<?php echo $this->prestation->getOperations()->getOpClId() ?>" id="id_input_op_cl_id">
+<form method="post" id="id_form_prestationdescription">
+    <div class="line form-line">
+        <label class="form-label unit size2of5" for="presta_devis"><?php echo $this->translate('Nom de la prestation (dans le devis)'); ?> :</label>
+        <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'op_prest_libelle_devis', 'class' => 'form-input unit size3of5 lastUnit', 'value' => $this->prestation->getOpPrestLibelleDevis())) ?>
+    </div>
+
+    <div class="line form-line">
+        <label class="form-label unit size2of5" for="presta_devis"><?php echo $this->translate('Modifier les coûts estimés'); ?> :</label>
+        <div class="unit size3of5">
+            <div class="unit size1of3">
+                <center><?php echo $this->translate('Coût interne'); ?></center>
+                <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'op_prest_ciestim', 'class' => 'form-input unit size1of1 text-right', 'value' => $this->prestation->getOpPrestCiestim(), 'disabled' => $this->unupdatable_costs || $this->bDisableFields)) ?>
+            </div>
+
+            <div class="unit size1of3">
+                <center><?php echo $this->translate('Coût externe'); ?></center>
+                <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'op_prest_ceestim', 'class' => 'form-input unit size1of1 text-right lastUnit', 'value' => $this->prestation->getOpPrestCeestim(), 'disabled' => $this->unupdatable_costs)) ?>
+            </div>
+
+            <div class="unit size1of3">
+                <center>
+                    <?php echo $this->translate('Coût total'); ?>
+                    <br />
+                    <b><span id="cout_total"><?php echo $sEstimationCost; ?></span></b>
+                </center>
+            </div>
+        </div>
+    </div>
+
+    <div class="line form-line">
+        <div class="form-text unit size2of5" for="presta_id"><?php echo $this->translate('ID prestation'); ?> :</div>
+        <div class="form-text unit size3of5 lastUnit"><?php echo $this->prestation->getOpRPrestId() ?> </div>
+    </div>
+
+
+    <div class="line form-line">
+        <div class="form-text unit size2of5"><?php echo sprintf($this->translate('label_service_of_company'),$this->getSettingValue(Settings::SETTING_KEY_COMPANY_NAME)); ?> :</div>
+        <div class="form-text unit size3of5 lastUnit"><?php echo $this->prestation->getOpPrestLibelle() ?></div>
+    </div>
+
+    <div class="line form-line">
+        <div class="form-text unit size2of5"><?php echo sprintf($this->translate('label_service_of_company_english'),$this->getSettingValue(Settings::SETTING_KEY_COMPANY_NAME)); ?> :</div>
+        <div class="form-text unit size3of5 lastUnit"><?php echo $this->prestation->getRPrestations()->getRPLibelleTranslated(RLanguages::LANG_ENG) ?></div>
+    </div>
+    <div class="line form-line">
+        <label class="form-label unit size2of5" for="presta_custom"><?php echo sprintf($this->translate('label_update_service_of_company'),$this->getSettingValue(Settings::SETTING_KEY_COMPANY_NAME)); ?> :</label>
+        <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'id' => 'id_autocomplete_replace_prestation', 'name' => 'presta_custom', 'class' => 'form-input unit size3of5 lastUnit input-autocomplete', 'value' => '', 'placeholder' => $this->translate('Nom de la prestation'), 'disabled' => $this->bDisableFields)) ?>
+    </div>
+	
+    <div class="section">
+        <div class="section-hd">
+            <h2 class="section-title title-icon icon-text"><?php echo $this->translate('Description de la prestation'); ?></h2>
+        </div>
+        <div class="section-bd">
+            <div class='text-right'>
+                <a href="javascript:void(0)" onclick="javascript:Component.resetTextInput('id_op_prest_description')" ><img src="/img/icon_delete.png" title="<?php echo $this->translate('Supprimer la description'); ?>"></a>
+            </div>
+            <?php echo Phoenix_View_Helper_Html::textarea(array('class' => 'form-textarea size1of1', 'name' => 'op_prest_description', 'rows' => '6', 'cols' => '60', 'value' => $this->prestation->getOpPrestDescription())); ?>
+        </div>
+    </div>
+    <div class="section">
+        <div class="section-hd">
+            <h2 class="section-title title-icon icon-pin"><?php echo $this->translate('Commentaire interne'); ?></h2>
+        </div>
+        <div class="section-bd">
+            <div class='text-right'>
+                <a href="javascript://" onclick="javascript:Component.resetTextInput('id_op_prest_comment_interne');" ><img src="/img/icon_delete.png" title="<?php echo $this->translate('label_delete_service_internal_comment'); ?>"></a>
+            </div>
+            <?php echo Phoenix_View_Helper_Html::textarea(array('class' => 'form-textarea size1of1', 'name' => 'op_prest_comment_interne', 'rows' => '6', 'cols' => '60', 'value' => $this->prestation->getOpPrestCommentInterne())); ?>
+        </div>
+    </div>
+    <div class="text-center">
+        <input type="hidden" name="submit_form" value="submit_form">
+        <input type="hidden" id="id_input_op_prest_id" name="op_prest_id" value="<?php echo $this->prestation->getOpPrestId() ?>">
+        <input type="submit" id="id_modif_description" name="modif_description" value="<?php echo $this->translate('Modifier'); ?>" class="btn btn-orange" />
+    </div>
+</form>
+
+<script language="javascript">
+    $('#id_modif_description').click(function() {
+        AjaxComponent.ajaxQuery(baseUrl + '/operation/prestations/prestationdescription', $('#id_form_prestationdescription').serialize())
+                .success(function(data) {
+                    oUiManager.refreshRubriques();
+                });
+        $('#id_dialog_prestationdescription').dialog('close');
+    });
+
+    $('#id_autocomplete_replace_prestation').AjaxAutocomplete({
+        url: baseUrl + '/common/autocomplete/prestationclientwithnegoce/cl_id/' + $('#id_input_op_cl_id').val(),
+        minLength: 1,
+        restrictive: true,
+        select: function(event, ui) {
+            Component.confirm('<?php echo $this->translate('Confirmez-vous le remplacement de la prestation de référence'); ?>',
+                    function() {
+                        AjaxComponent.ajaxDiv(baseUrl + '/operation/prestations/replaceprestation', {op_prest_id: $('#id_input_op_prest_id').val(), r_prestation_id: ui.item.id}, "id_rubrique_" + $('#id_input_op_rubique_id').val());
+                        $('#id_dialog_prestationdescription').dialog('close');
+                    }
+            );
+        }
+    });
+
+    function updateCoutTotal() {
+        var iInternalCost = $('#id_op_prest_ciestim').val() || 0;
+        var iExternalCost = $('#id_op_prest_ceestim').val() || 0;
+        var iTotalCost = parseFloat(iInternalCost) + parseFloat(iExternalCost);
+        $('#cout_total').html(iTotalCost % 1 ? iTotalCost: parseInt(iTotalCost));
+    }
+
+    $(document).ready(function() {
+
+        $('#id_op_prest_ciestim').change(updateCoutTotal);
+
+        $('#id_op_prest_ceestim').change(updateCoutTotal);
+
+    });
+</script>

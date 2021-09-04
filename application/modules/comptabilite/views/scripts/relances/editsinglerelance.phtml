@@ -1,0 +1,69 @@
+<?php
+    $bDisplayReminderPdfIsAllowed = Phoenix_Auth_User::mvcActionIsAllowed('comptabilite','relances','displayrelancespdf');
+?>
+<form action="" method="get" id="id_form_edition">
+    <input type="hidden" name="cl_id" value="<?php echo $this->getParam('cl_id') ?>" />
+    <input type="hidden" name="rel_id" value="<?php echo $this->getParam('rel_id') ?>" />
+
+    <div class="line form-line">
+        <label class="unit size1of2 form-label" for=""><?php echo $this->translate('Nom du contact de facturation'); ?> :</label>
+        <?php echo Phoenix_View_Helper_Html::selectFromTable('contacts', array('name' => 'rel_ct_facturation', 'value' => $this->ct_id, 'class' => 'form-select unit size1of2 lastUnit'), array('name' => "CONCAT(COALESCE(ct_firstname, ''),' ',COALESCE(ct_lastname, ''))", 'value' => 'ct_id'), array('clause_where' => "cl_id=" . $this->getParam('cl_id') . " AND actif=1")); ?>
+    </div>
+    <div class="line form-line">
+        <label class="unit size1of2 form-label" for=""><?php echo $this->translate('Adresse  1 du site à facturer'); ?> :</label>
+        <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'rel_adresse1', 'value' => $this->rel_adresse1)) ?>
+    </div>
+    <div class="line form-line">
+        <label class="unit size1of2 form-label" for=""><?php echo $this->translate('Adresse  2 du site à facturer'); ?> :</label>
+        <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'rel_adresse2', 'value' => $this->rel_adresse2)) ?>
+    </div>
+    <div class="line form-line">
+        <label class="unit size1of2 form-label" for=""><?php echo $this->translate('Adresse  3 du site à facturer'); ?> :</label>
+        <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'rel_adresse3', 'value' => $this->rel_adresse3)) ?>
+    </div>
+    <div class="line form-line">
+        <label class="unit size1of2 form-label" for=""><?php echo $this->translate('Code postal du site à facturer'); ?> :</label>
+        <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'rel_code_postal', 'value' => $this->rel_code_postal)) ?>
+    </div>
+    <div class="line form-line">
+        <label class="unit size1of2 form-label" for=""><?php echo $this->translate('Ville du site à facturer'); ?> :</label>
+        <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'rel_ville', 'value' => $this->rel_ville)) ?>
+    </div>
+    <div class="line form-line">
+        <label class="unit size1of2 form-label" for=""><?php echo $this->translate('Pays du site à facturer'); ?> :</label>
+        <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'rel_pays', 'value' => $this->rel_pays)) ?>
+    </div>
+
+    <div class="text-center box-bd">
+        <input type="submit" value="<?php echo $this->translate('Valider'); ?>" class="btn btn-orange">
+        <input type="button" value="<?php echo $this->translate('Annuler'); ?>" id="id_btn_annuler" class="btn btn-orange">
+    </div>
+</form>
+
+
+<script language="javascript">
+    $(document).ready(function() {
+        var iRelanceId = $('#id_form_edition').find('input[name="rel_id"]').val();
+
+        $('#id_rel_ct_facturation').change(function() {
+            AjaxComponent.ajaxDiv('/comptabilite/relances/editsinglerelance/view_site/1/op_id/', $('#id_form_edition').serialize(), 'id_popup_edition');
+        })
+
+        $('#id_form_edition').ajaxForm({action: '/comptabilite/relances/editsinglerelance/submit/1', divId: 'id_popup_edition',
+            success: function() {
+                <?php if($bDisplayReminderPdfIsAllowed) { ?>
+                window.open('/comptabilite/relances/displayrelancespdf/single_relance_id/' + iRelanceId);
+                <?php } ?>
+                $("#id_popup_edition").dialog({close: function() {
+                        Component.refreshPage()
+                    }})
+            }
+        });
+
+        $('#id_btn_annuler').click(function() {
+            $('#id_popup_edition').dialog('close');
+        })
+
+    });
+
+</script>

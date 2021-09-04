@@ -1,0 +1,15 @@
+<div class="block-graph noborder-block">
+    <div class="top-10-title-bloc"><?php echo $this->sKpiTitle; ?></div>
+    <div class="participation-refund-content-bloc">
+        <table class="participation-refund-table">
+            <tr class="">
+                <td class="participation-refund-table-row-key participation-refund-first-record"><?php echo $this->translate('adf_estimated'); ?></td>
+                <td class="participation-refund-table-row-value participation-refund-first-record"><?php echo Phoenix_Data_Convert::formatNumber($this->iParticipationEstimatedRefundData, false, false); ?></td>
+            </tr>
+            <tr>
+                <td class="participation-refund-table-row-key"><?php echo $this->translate('label_raised'); ?></td>
+                <td class="participation-refund-table-row-value"><?php echo Phoenix_Data_Convert::formatNumber($this->iParticipationActualRefundData, false, false); ?></td>
+            </tr>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,56 @@
+<?php echo $this->FlashMessenger('error', 'inline'); ?>
+
+<div class="line">
+   <input id="btn_new" type="button" class="btn btn-orange btn-big" value="<?php echo $this->translate('Générer un devis'); ?>" />
+</div>
+
+<br />
+
+<div class="line">
+	<div class="box">
+		<div class="line box-hd">
+			<h2 class="box-title title-icon icon-attach"><?php echo $this->translate('Devis générés');?></h2>
+		</div>
+		<div class="box-bd">
+			<table class="list list-main">
+				<thead>
+					<tr>
+						<th width="26" class="column-noborder"></th>
+						<th width="150"><span class="notsortable"><?php echo $this->translate('Date');?></span></th>
+						<th><span class="notsortable"><?php echo $this->translate('Fichier');?></span></th>
+                                                <th width="150"><span class="notsortable"><?php echo $this->translate('Créé par');?></span></th>
+                                                <th width="16"><span class="notsortable"></span></th>
+					</tr>
+				</thead>
+				<tbody id="id_div_devisversions" >
+					<?php echo $this->partial('/description/devisversions.phtml', array('oQuotes' => $this->devis)); ?>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
+
+<script language="javascript">
+	$(document).ready(function(){
+        $('#id_form_devis_versions').ajaxForm({
+            divId:'id_dialog_devis_versions'
+        });
+
+        //-- DIALOG / AJOUT -->
+        $('#btn_new').click(function(e){
+            Component.confirm('<?php echo $this->translate('Confirmez-vous la génération du devis'); ?> ?',
+                function(){
+					AjaxComponent.ajaxDiv(baseUrl+'/operation/description/savegenerateddevis', {op_id: <?php echo $this->getParam('op_id'); ?>}, 'id_div_devisversions');
+                });
+        });
+	})
+	
+	//suppresion d'un fichier de devis
+	function deleteDevis(fileId){
+		Component.confirm('<?php echo $this->translate('Êtes vous sûre de vouloir supprimer ce devis'); ?>?',
+		function(){
+			AjaxComponent.ajaxDiv(baseUrl+'/operation/description/deletedevis', {file_id:fileId}, 'id_div_devisversions');
+		});
+	}
+</script>

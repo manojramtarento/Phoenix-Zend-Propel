@@ -1,0 +1,153 @@
+<!-- DIALOG / AJOUT / MODIFICATION -->
+<?php
+echo Phoenix_View_Helper_Html::getPropelFailures();
+?>
+<form id="id_form_update_contact" action="<?php echo $this->url(array('module' => 'client', 'controller' => 'contact', 'action' => 'update')) ?>" method="post">
+    <input type="hidden" name="submit_update_contact" value="1">
+    <?php echo Phoenix_View_Helper_Html::input(array('type' => 'hidden', 'name' => 'ct_id', 'class' => 'unit size2of3 form-input lastUnit')) ?>
+    <?php echo Phoenix_View_Helper_Html::input(array('type' => 'hidden', 'name' => 'cl_libelle', 'class' => 'unit size2of3 form-input lastUnit')) ?>
+
+    <div class="section">
+        <div class="section-hd">
+            <h2 class="section-title"><?php echo $this->translate('Coordonnées du contact'); ?></h2>
+        </div>
+
+        <div class="section-bd">
+            <div class="line form-line">
+                <label class="unit size1of3 form-label"><?php echo $this->translate('Client'); ?> :</label>
+                <?php echo Phoenix_View_Helper_Html::input(array('name' => 'cl_id', 'value' => $this->cl_id, 'type' => 'hidden'), array('show_error_msg' => false)); ?>
+                <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'autocomplete_cl_id', 'value' => $this->cl_libelle, 'class' => 'unit size2of3 form-input input-autocomplete lastUnit'), array('alias' => 'cl_id')) ?>
+                <?php //echo Phoenix_View_Helper_Html::getPropelFailures('cl_id',true)  ?>
+                <?php if (isset($this->cl_libelle)) { ?>
+                    <span id="id_cl_id_text">
+                        <b><?php echo $this->cl_libelle; ?></b>
+                        <a id="id_edit_client" href="#" class="icon-list icon-edit col" title="<?php echo $this->translate('Modifier'); ?>"><?php echo $this->translate('Modifier'); ?></a>
+                        <span>
+                        <?php } ?>
+                        </div>
+
+                        <div class="line form-line">
+                            <label class="unit size1of3 form-label" for="id_ct_lastname"><?php echo $this->translate('Nom du contact'); ?> :</label>
+                            <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'ct_lastname', 'class' => 'unit size2of3 form-input lastUnit')) ?>
+                        </div>
+
+                        <div class="line form-line">
+                            <label class="unit size1of3 form-label" for="id_ct_firstname"><?php echo $this->translate('Prénom du contact'); ?> :</label>
+                            <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'ct_firstname', 'class' => 'unit size2of3 form-input lastUnit')) ?>
+                        </div>
+
+                        <div class="line form-line">
+                            <label class="unit size1of3 form-label" for="id_ct_email"><?php echo $this->translate('Adresse email'); ?> :</label>
+                            <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'ct_email', 'class' => 'unit size2of3 form-input lastUnit')) ?>
+                        </div>
+
+                        <div class="line form-line">
+                            <label class="unit size1of3 form-label" for="id_ct_phone"><?php echo $this->translate('N° de téléphone'); ?>:</label>
+                            <?php echo Phoenix_View_Helper_Html_Select::selectIndicatifTel(array('name' => 'ct_phone_indicatif', 'value' => $this->ct_phone_indicatif, 'class' => 'unit form-select')) ?>
+                            <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'ct_phone', 'value' => $this->ct_phone, 'class' => 'unit size1of3 form-input lastUnit')) ?>
+                        </div>
+
+                        <div class="line form-line">
+                            <label class="unit size1of3 form-label" for="id_ct_fax"><?php echo $this->translate('N° de fax'); ?> :</label>
+                            <?php echo Phoenix_View_Helper_Html_Select::selectIndicatifTel(array('name' => 'ct_fax_indicatif', 'value' => $this->ct_fax_indicatif, 'class' => 'unit form-select')) ?>
+                            <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'ct_fax', 'value' => $this->ct_fax, 'class' => 'unit size1of3 form-input lastUnit')) ?>
+                        </div>
+
+                        <div class="line form-line">
+                            <label class="unit size1of3 form-label" for="id_ct_mobile"><?php echo $this->translate('N° de mobile'); ?> :</label>
+                            <?php echo Phoenix_View_Helper_Html_Select::selectIndicatifTel(array('name' => 'ct_mobile_indicatif', 'value' => $this->ct_mobile_indicatif, 'class' => 'unit form-select')) ?>
+                            <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'ct_mobile', 'value' => $this->ct_mobile, 'class' => 'unit size1of3 form-input lastUnit')) ?>
+                        </div>
+
+                        <div class="line form-line">
+                            <label class="unit size1of3 form-label" for=""><?php echo $this->translate('Titre ou fonction'); ?> :</label>
+                            <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'ct_title', 'class' => 'unit size2of3 form-input lastUnit')) ?>
+                        </div>
+
+                        <div class="line form-line">
+                            <label class="unit size1of3 form-label" for=""><?php echo $this->translate('Site de rattachement'); ?> :</label>
+                            <div id='div_cl_site_id'>
+                                <img src="<?php echo $this->baseUrl(); ?>/img/loader.gif" />
+                            </div>
+                        </div>
+
+                        <?php if (isset($this->ct_id)) { ?>
+                            <div class="line form-line">
+                                <label class="unit size1of3 form-label" for=""><?php echo $this->translate('Ajouté le'); ?> :</label>
+                                <?php echo Phoenix_Data_Convert::formatdateFromSqlServer($this->date_create) ?>
+                            </div>
+                        <?php } ?>
+                        </div>
+                        </div>
+
+                        <div class="section">
+                            <div class="section-hd">
+                                <h2 class="section-title"><?php echo $this->translate('Options de traitement'); ?></h2>
+                            </div>
+                            <?php                                                
+                            // Disable newsletter, not used at the moment                                                
+                            /**
+                            <div class="section-bd">
+                                <div class="line form-line">
+                                    <?php echo Phoenix_View_Helper_Html::checkbox(array('value' => 1, 'name' => 'ct_newsletter', 'class' => '')); ?>
+                                    <label for="id_ct_newsletter"><?php echo $this->translate('Inscription à la newsletter'); ?></label>
+                                </div>
+                            </div>
+                            **/ ?>
+                            <div class="section-bd">
+                                <div class="line form-line">
+                                    <?php echo Phoenix_View_Helper_Html::checkbox(array('value' => 1, 'name' => 'ct_receive_fact_by_email', 'class' => '')); ?>
+                                    <label for="id_ct_receive_fact_by_email"><?php echo $this->translate('Souhaite recevoir la facture par email'); ?></label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-center">
+                            <input type="submit" value="<?php echo $this->translate('Valider'); ?>" class="btn btn-orange">
+                        </div>
+                        </form>
+
+                        <script language="javascript">
+                            $(document).ready(function () {
+                                $('#id_form_update_contact').ajaxForm({
+                                    divId: 'id_dialog_update_contact'
+                                });
+
+
+<?php if (isset($this->cl_libelle)) { ?>
+                                    $('#id_autocomplete_cl_id').hide();
+<?php } ?>
+
+                                $('#id_edit_client').click(function () {
+                                    $('#id_autocomplete_cl_id').show();
+                                    $('#id_cl_id_text').hide();
+                                });
+
+                                // Init client sites
+                                AjaxComponent.ajaxQuery(baseUrl + '/client/contact/getselectforclientsites', {
+                                    cl_id: $("#id_cl_id").val(),
+                                    cl_site_id: '<?php echo $this->getParam('cl_site_id'); ?>'
+                                }).success(function (json_data) {
+                                    var data = eval('(' + json_data + ')');
+                                    $('#div_cl_site_id').html(data['html']);
+                                });
+
+                                //changement du client basé sur recherche avec autocompletion
+                                $('#id_autocomplete_cl_id').AjaxAutocomplete({
+                                    url: baseUrl + '/common/autocomplete/client',
+                                    minLength: 3,
+                                    restrictive: true,
+                                    bindFieldId: 'id_cl_id',
+                                    select:
+                                            function () {
+                                                // Update client sites
+                                                AjaxComponent.ajaxQuery(baseUrl + '/client/contact/getselectforclientsites', {
+                                                    cl_id: $('#id_cl_id').val()
+                                                }).success(function (json_data) {
+                                                    var data = eval('(' + json_data + ')');
+                                                    $('#div_cl_site_id').html(data['html']);
+                                                });
+                                            }
+                                });
+                            });
+                        </script>

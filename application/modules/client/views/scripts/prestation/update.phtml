@@ -1,0 +1,42 @@
+<!-- DIALOG / MODIFIER PRESTATION -->
+<form id="id_form_update_prestation" action="<?php echo $this->url(array('module' => 'client', 'controller' => 'prestation', 'action' => 'update')) ?>" method="post">
+    <input type="hidden" name="submit_update_prestation" value="1">
+    <input type="hidden" name="cl_id" value="<?php echo $this->cl_id; ?>">
+    <input type="hidden" name="cl_prest_id" value="<?php echo $this->cl_prest_id; ?>">
+
+    <div class="line form-line">
+        <label class="form-label unit size1of4" for=""><?php echo $this->translate('ID');?> :</label>
+        <span class="form-text unit size3of4"><?php echo $this->r_prest_id; ?></span>
+    </div>
+    
+    <div class="line form-line">
+        <label class="form-label unit size1of4" for=""><?php echo $this->translate('Libellé');?> :</label>
+        <?php echo Phoenix_View_Helper_Html::input(array('name' => 'r_p_client_libelle', 'value' => $this->r_p_libelle, 'class' => 'form-long-input unit size4of4 lastUnit text-left')); ?>
+    </div>
+    
+    <div class="line form-line">
+        <label class="form-label unit size1of4" for=""><?php echo $this->translate('Coût total');?> :</label>
+        <span class="form-text unit size3of4"><?php echo Phoenix_Data_Convert::formatMoney($this->r_p_cout_total); ?> </span>
+    </div>
+	
+    <div class="line form-line">
+        <label class="form-label unit size1of4" for=""><?php echo $this->translate('Prix de vente conseillé');?> :</label>
+        <span class="form-text unit size3of4"><?php echo Phoenix_Data_Convert::formatMoney($this->r_p_prix_vente); ?> </span>
+    </div>
+    
+    <div class="line form-section">
+        <label class="form-label unit size1of4" for=""><?php echo $this->translate('Prix de vente');?> :</label>
+        <?php echo Phoenix_View_Helper_Html::input(array('name' => 'cl_prest_pv', 'value' => $this->cl_prest_pv, 'class' => 'form-input unit size1of4 lastUnit text-right')); ?>
+        &nbsp;&euro;
+    </div>
+    
+    <input type="submit" value="<?php echo $this->translate('Valider');?>" class="btn btn-orange push1of4" />
+</form>
+
+<script language="javascript">
+    $(document).ready(function() {
+        $('#id_form_update_prestation').ajaxForm({
+            divId:'id_dialog_update_prestation'
+        });
+    });
+</script>

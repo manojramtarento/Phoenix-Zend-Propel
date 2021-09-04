@@ -1,0 +1,4 @@
+<?php
+
+echo Phoenix_View_Helper_Html::select(array('id' => 'id_operation_prime_currency_id_' . $this->reward->getOpPrimeId(), 'name' => 'operation_prime_currency_id', 'value' => $this->reward->getOperationPrimeCurrencyId(), 'default_value' => $this->reward->getOperationPrimeCurrencyId(), 'class' => 'form-select size4of5'), $this->rewardCurrenciesList, array('default_label' => $this->translate('choisir') . '...'));
+?>

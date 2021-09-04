@@ -1,0 +1,21 @@
+
+<table border="0" cellpadding="0" width="100%" style="width:100.0%;font-size:9pt;line-height: 1em;">
+    <tbody>
+        <tr>
+            <td width="140" style="width:105.0pt;padding:3.75pt 3.75pt 3.75pt 3.75pt;vertical-align: top">
+                <p class="MsoNormal" align="center" style="text-align:center">
+                    <a href="<?php echo $this->getSettingValue(Settings::SETTING_KEY_COMPANY_WEBSITE)?>" target="_blank"><span style="text-decoration:none"><img border="0" width="103" height="42" src="<?php echo $this->getSettingValue(Settings::SETTING_KEY_COMPANY_LOGO) ?>" alt="<?php echo $this->getSettingValue(Settings::SETTING_KEY_COMPANY_NAME) ?>" /></span></a><br />
+                    <span style="font-size:8.5pt;font-family:Calibri,sans-serif;color:#4c4c4c"><?php echo $this->getSettingValue(Settings::SETTING_KEY_COMPANY_ADDRESS)?><br /><a href="<?php echo $this->getSettingValue(Settings::SETTING_KEY_COMPANY_WEBSITE)?>" target="_blank"><?php echo preg_replace('/^(http|https)/','',$this->getSettingValue(Settings::SETTING_KEY_COMPANY_WEBSITE))?></a></span>
+                </p>
+            </td>
+            <td style="padding:3.75pt 3.75pt 3.75pt 3.75pt;vertical-align: top">
+                <p class="MsoNormal">
+                    <b><span lang="EN-US" style="font-family:Calibri,sans-serif;color:#4c4c4c"><?php echo $this->invoice_service_name ?></span></b>
+                    <span lang="EN-US" style="font-family:Calibri,sans-serif;color:#4c4c4c">
+                        <br /><u><a href="mailto:<?php echo $this->invoice_service_mail ?>" target="_blank"><?php echo $this->invoice_service_mail ?></a></u>
+                    </span>
+                </p>
+            </td>
+        </tr>
+    </tbody>
+</table>

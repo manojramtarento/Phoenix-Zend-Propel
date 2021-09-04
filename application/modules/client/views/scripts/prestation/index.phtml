@@ -1,0 +1,115 @@
+<?php
+$this->title = $this->translate('Prestations négociées');
+$this->headTitle($this->title);
+
+echo $this->FlashMessenger('error');
+?>
+<?php echo $this->partial('partials/actionsbar.phtml', array('cl_id' => $this->cl_id, 'cl_libelle' => $this->cl_libelle)); ?>
+<div id="site-content">
+    <?php echo $this->partial('partials/menu.phtml', array('cl_id' => $this->cl_id)); ?>
+    <div id="content-bd">
+        <div class="list-actions">
+            <div class="unit col">
+                <a class="icon icon-32 icon-excel" href="<?php echo $this->url(array('format' => 'csv'), null, false) . '?' . $_SERVER['QUERY_STRING'] ?>" title="Exporter au format Excel"><?php echo $this->translate('Exporter au format Excel'); ?></a>
+            </div>
+            <div class="unit size1of5">
+                <input type="button" class="btn btn-orange btn-big" id="id_btn_ajout_prestation" value="<?php echo $this->translate('Ajouter une prestation'); ?>" />
+            </div>
+            <div class="unit">
+                <div class="search">
+                    <form action="<?php echo $this->BaseUrl() ?>/client/prestation/index" method="get">
+                        <input type="text" name="findword" class="form-input" value="<?php if (isset($_REQUEST["findword"])) echo $_REQUEST["findword"]; ?>" placeholder="ID ou Libellé" autocomplete="off" />
+                        <input type="submit" value="OK" class="btn btn-orange" />
+                        <input type="hidden" name="cl_id" value="<?php echo $this->cl_id; ?>" />
+                    </form>
+                </div>
+            </div>
+            <div class="unit rightUnit">
+                <div class="unit col">
+                    <?php echo $this->NotifySearch()->link(array('cl_id' => $this->cl_id)) ?>
+                </div>
+                <div class="unit">
+                    <?php echo $this->paginationControl($this->paginator, 'Sliding', '/partials/pagination.phtml'); ?>
+                </div>
+            </div>
+        </div>
+        <table class="list list-main">
+            <thead>
+                <tr>
+                    <th width="26" class="column-noborder"></th>
+                    <th width="26" class="column-noborder"></th>
+                    <th width="5%">
+                        <?php echo My_View_Helper_Html::UrlOrderBy('r_prestation_id', $this->translate('ID')) ?>
+                    </th>
+                    <th>
+                        <?php echo My_View_Helper_Html::UrlOrderBy('r_p_libelle', $this->translate('Libellé')) ?>
+                    </th>
+                    <th width="10%">
+                        <?php echo My_View_Helper_Html::UrlOrderBy('cl_prest_pv', $this->translate('Prix de vente')) ?>
+                    </th>
+                    <th width="10%">
+                        <?php echo My_View_Helper_Html::UrlOrderBy('cl_prest_pv', $this->translate('Taux de marge')) ?>
+                    </th>
+                    <th width="10%">
+                        <?php echo My_View_Helper_Html::UrlOrderBy('cl_prest_pv', $this->translate('Remise')) ?>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                foreach ($this->paginator as $prestation) {
+                    $remise = 'N.C';
+                    ?>
+                    <tr class="class_form_update_prestation <?php echo $this->cycle(array('', 'alt'))->next() ?>">
+                        <td><a href="#delete" class="icon-list icon-delete" cl_prest_id="<?php echo $prestation['cl_prest_id']; ?>" title="<?php echo $this->translate('Supprimer la prestation négociée'); ?>"><?php echo $this->translate('Supprimer la prestation négociée'); ?></a></td>
+                        <td><a href="#edit" class="icon-list icon-edit" cl_prest_id="<?php echo $prestation['cl_prest_id']; ?>" title="<?php echo $this->translate('Editer la prestation'); ?>"><?php echo $this->translate('Editer la prestation'); ?></a></td>
+                        <td><?php echo $prestation['r_prestation_id']; ?></td>
+                        <td><?php echo ($prestation['r_p_client_libelle']) ? $prestation['r_p_client_libelle'] : $prestation['r_p_libelle']; ?></td>
+                        <td align="right"><?php echo Phoenix_Data_Convert::formatMoney($prestation['cl_prest_pv']); ?></td>
+                        <td align="right"><?php echo Phoenix_Data_Convert::formatPercent($prestation['marge']?:0); ?></td>
+                        <td align="right"><?php echo Phoenix_Data_Convert::formatPercent($prestation['remise']?:0); ?></td>
+                    </tr>
+<?php } ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<script language="javascript">
+    $(document).ready(function () {
+        /**
+         * DIALOG / AJOUTER PRESTATION
+         */
+        $('#id_btn_ajout_prestation').live('click', function (e) {
+            AjaxComponent.ajaxDialog(baseUrl + '/client/prestation/ajoutprestation', {cl_id: <?php echo $this->cl_id; ?>}, {width: '750', height: '500', title: 'Ajouter des prestations', id: 'id_dialog_ajout_prestation'});
+        });
+
+
+        /**
+         * DIALOG / MODIFIER PRESTATION
+         */
+        $('.list .icon-edit').live('click', function (e) {
+            cl_prest_id = $(this).attr("cl_prest_id");
+            AjaxComponent.ajaxDialog(baseUrl + '/client/prestation/update', {cl_prest_id: cl_prest_id}, {width: '500', title: 'Editer la prestation', id: 'id_dialog_update_prestation', close: function () {
+                    Component.refreshPage();
+                }});
+        });
+
+        /**
+         * DIALOG / SUPPRIMER PRESTATION
+         */
+        $('.list .icon-delete').live('click', function (e) {
+            cl_prest_id = $(this).attr("cl_prest_id");
+            Component.confirm('Confirmez-vous la suppression de cette prestation ?',
+                    function () {
+                        AjaxComponent.ajaxQuery(baseUrl + '/client/prestation/delete', 'cl_prest_id=' + cl_prest_id)
+                                .success(function (data) {
+                                    Component.refreshPage();
+                                });
+                    });
+        });
+
+        $('.class_form_update_prestation').formUpdate();
+    })
+</script>

@@ -1,0 +1,44 @@
+        <div class="list-actions">
+            <div class="unit size3of5">
+                <?php echo $this->translate('Affichage'); ?> : 
+                <form id='form_filtrage' action="" method="get">
+                    <input name="findbyfields" value="1" type="hidden" />
+                    <?php
+                    //echo $this->GetParam('controller');die;
+                    echo Phoenix_View_Helper_Html::select(array('name' => 'select_page','class'=>'form-select','value'=>$this->GetParam('action')), array(array('value' => $this->translate('etat'), 'label' => $this->translate('Etat des stocks')), array('value' => $this->translate('entree'), 'label' => $this->translate('Stock en entrée')), array('value' => $this->translate('sortie'), 'label' => $this->translate('Stock en sortie'))));
+                    ?>
+                    </select>
+                </form>
+            </div>
+
+            <div class="unit size2of5">
+                <fieldset class="stats-op-fieldset">
+                    <legend><span class="title-icon icon-chart"></span></legend>
+                    <table class="stats-op">
+                        <thead>
+                            <tr>
+                                <th class="op-encours size1of3"><?php echo $this->translate('Qté reçue');?></th>
+                                <th class="op-refuse size1of3"><?php echo $this->translate('Qté sortie');?></th>
+                                <th class="op-refuse size1of3"><?php echo $this->translate('Qté en stock');?></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="op-encours"><?php echo $this->total_qte['total_qte_entree'] ?></td>
+                                <td class="op-refuse"><?php echo $this->total_qte['total_qte_sortie'] ?></td>
+                                <td class="op-refuse"><?php echo $this->total_qte['total_qte_stock'] ?></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </fieldset>
+            </div>
+        </div>
+
+<script language="javascript">
+    $(document).ready(function(){
+        $('#id_select_page').change(function(){
+            document.location.href = baseUrl +'/operation/stock/'+$(this).val()+'/op_id/'+$('#id_input_op_id').val();
+        })
+        
+    })
+</script>

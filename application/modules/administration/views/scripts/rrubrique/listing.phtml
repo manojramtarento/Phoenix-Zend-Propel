@@ -1,0 +1,125 @@
+<?php
+$this->title = $this->translate('Listing des rubriques');
+$this->headTitle($this->title);
+?>
+<div id="actions-bar">
+    <div class="unit size1of5">
+        <h1 class="page-title"><?php echo $this->title; ?></h1>
+        <input href="#" id="btn_new" type="button" class="btn btn-orange btn-big" value="<?php echo $this->translate('Nouvelle rubrique'); ?>" />
+    </div>
+    <div class="unit size3of5">
+        <div class="search">
+            <form action="<?php echo $this->BaseUrl() ?>/administration/rrubrique/listing" method="get">
+                <input type="text" name="findword" class="form-input" value="<?php if (isset($_REQUEST["findword"])) echo $_REQUEST["findword"]; ?>" placeholder="<?php echo $this->translate('Rechercher'); ?>" autocomplete="off" />
+                <input type="submit" value="<?php echo $this->translate('OK'); ?>" class="btn btn-orange" />
+                <input type="button" value="<?php echo $this->translate('Recherche avancée'); ?>" class="btn btn-big btn-adsearch" id="btn_adsearch" />
+            </form>
+        </div>
+    </div>
+</div>
+<div id="site-content">
+    <div class="content-list">
+        <div class="list-actions">
+            <div class="unit col">
+                <a class="icon icon-32 icon-excel" href="<?php echo $this->url(array('format' => 'csv'), null, false) . '?' . $_SERVER['QUERY_STRING'] ?>" title="<?php echo $this->translate('Exporter au format Excel'); ?>"><?php echo $this->translate('Exporter au format Excel'); ?></a>
+            </div>
+            <div class="unit rightUnit">
+                <div class="unit col">
+                    <?php echo $this->NotifySearch()->link() ?>
+                </div>
+                <div class="unit">
+                    <?php echo $this->paginationControl($this->paginator, 'Sliding', '/partials/pagination.phtml'); ?>
+                </div>
+            </div>
+        </div>
+        <table class="list list-main">
+            <thead>
+                <tr>
+                    <th width="26" class="column-noborder"></th>
+                    <th>
+                        <?php echo My_View_Helper_Html::UrlOrderBy('r_rub_id', $this->translate('ID')) ?>
+                    </th>
+                    <th>
+                        <?php echo My_View_Helper_Html::UrlOrderBy('r_rub_libelle', $this->translate('Libellé Rubrique')) ?>
+                    </th>
+                    <th>
+                        <?php echo My_View_Helper_Html::UrlOrderBy('rubrique_type_libelle', $this->translate('Type de rubrique Rubrique')) ?>
+                    </th>
+                    <th>
+                        <?php echo My_View_Helper_Html::UrlOrderBy('r_tva_libelle', $this->translate('TVA')) ?>
+                    </th>
+            </thead>
+            <tbody>
+                <?php foreach ($this->paginator as $prestation) { ?>
+                    <tr class="<?php echo $this->cycle(array('', 'alt'))->next() ?>">
+                        <td><?php echo "<a href='#edit' class='icon-list icon-edit' r_rub_id='" . $prestation['r_rub_id'] . "' title='" . $this->translate('Éditer') . "'><?php echo $this->translate('Éditer');?></a>"; ?></td>
+                        <td align="left"><?php echo $prestation['r_rub_id']; ?></td>
+                        <td><?php echo $prestation['r_rub_libelle']; ?></td>
+                        <td class="column-secondary"><?php echo $prestation['rubrique_type_libelle']; ?></td>
+                        <td class="column-secondary"><?php echo $prestation['r_tva_libelle']; ?></td>
+                    </tr>
+                <?php } ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div id="id_dialog_search" title="<?php echo $this->translate('Recherche avancée'); ?>" style="display:none;">
+    <form action="<?php echo $this->BaseUrl() ?>/administration/rrubrique/listing" method="get" style="border:1px black">
+        <div class="line form-line">
+            <label class="unit size1of2 form-label" for='id_find_r_rub_id'><?php echo $this->translate('ID Rubrique'); ?> :</label>
+            <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'find_r_rub_id', 'class' => 'unit size1of2 form-input lastUnit')) ?>
+        </div>
+
+        <div class="line form-line">
+            <label class="unit size1of2 form-label" for='id_find_r_rub_libelle'><?php echo $this->translate('Intitulé'); ?> :</label>
+            <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'find_r_rub_libelle', 'class' => 'unit size1of2 form-input lastUnit')) ?>
+        </div>
+
+        <div class="line form-line">
+            <label class="unit size1of2 form-label" for='id_find_r_rub_type_id'><?php echo $this->translate('Type de rubrique'); ?> :</label>
+            <?php echo My_View_Helper_Html::selectFromTable('r_rubriques_type', array('name' => 'find_r_rub_type_id', 'class' => 'unit size1of2 form-select '), array('value' => 'rubrique_type_id', 'name' => 'rubrique_type_libelle'), array('default_label' => $this->translate('Tout type'))) ?>
+        </div>
+
+        <div class="line form-line">
+            <label class="unit size1of2 form-label" for='id_find_r_tva_type_id'><?php echo $this->translate('TVA Applicable'); ?> :</label>
+            <?php echo My_View_Helper_Html::selectFromTable('r_tva_type', array('name' => 'find_r_tva_type_id', 'class' => 'unit size1of2 form-select '), array('value' => 'r_tva_id', 'name' => 'r_tva_libelle'), array('default_label' => $this->translate('Tout type'))) ?>
+        </div>
+
+        <div class="line form-line">
+            <label class="unit size1of2 form-label" for='id_find_actif'><?php echo $this->translate('Actif'); ?> :</label>
+            <?php echo Phoenix_View_Helper_Html::checkbox(array('name' => 'find_actif', 'class' => 'unit size2of2 form-input','value'=>1)) ?>
+        </div>
+
+        <div class="text-center">
+            <input type="submit" name="findbyfields" value="<?php echo $this->translate('Recherche'); ?>" class="btn btn-orange">
+        </div>
+    </form>
+</div>
+
+<script language="javascript">
+    $(document).ready(function () {
+        $('#btn_adsearch').click(function (e) {
+            $('#id_dialog_search').dialog({
+                width: 400,
+                modal: true,
+                resizable: false
+            });
+        });
+
+        //-- DIALOG / CREATION -->
+        $('#btn_new').live('click', function (e) {
+            AjaxComponent.ajaxDialog(baseUrl + '/administration/rrubrique/update', {}, {width: '500', title: '<?php echo $this->translate('Créer une nouvelle rubrique'); ?>', id: 'id_dialog_update_rrubrique', close: function () {
+                    Component.refreshPage();
+                }});
+        });
+
+        //-- DIALOG / MODIFICATION -->
+        $('.list .icon-edit').live('click', function (e) {
+            r_rub_id = $(this).attr("r_rub_id");
+            AjaxComponent.ajaxDialog(baseUrl + '/administration/rrubrique/update', {r_rub_id: r_rub_id}, {width: '500', title: '<?php echo $this->translate('Modifier la rubrique N°'); ?>' + r_rub_id, id: 'id_dialog_update_rrubrique', close: function () {
+                    Component.refreshPage();
+                }});
+        });
+    })
+</script>

@@ -1,0 +1,65 @@
+<?php
+$this->title = "Reporting";
+$this->headTitle($this->title);
+?>
+<div id="site-content">
+	<div id="content-bd">
+		<div class="form-section">
+			<h1 class="page-title title-icon icon-chart"><?php echo $this->title; ?></h1>
+		</div>
+		<div class="line">
+			<div class="unit size1of1 lastUnit">
+				<div class="box">
+					<div class="box-bd">
+						<div class="line">
+							<div class="unit size2of5 gutter20">
+								<h2 class="box-title form-section"><?php echo $this->translate('Configuration');?></h2>
+								<form method="post" action="">
+									<div class="line form-line">
+										<label class="form-label unit size1of4" for=""><?php echo $this->translate('Indicateur :');?></label>
+										<?php //echo Phoenix_View_Helper_Html::select(array('name' => '', 'class' => 'form-select unit size3of4 lastUnit'), array(), array('default_label' => 'Choisir...')); ?>
+										<?php echo $this->Kpi()->getSelect() ?>
+									</div>
+									<div class="section-separator"></div>
+									<div class="form-section">
+										<div class="text-color form-line">
+											<?php echo $this->KpiDefinition ?>
+										</div>
+										<div class="section-separator"></div>
+									</div>
+									<div class="line form-line">
+										<label class="form-label unit size1of4" for=""><?php echo $this->translate('Date de début :');?></label>
+										<div class="unit size3of4 date">
+											<?php echo Phoenix_View_Helper_Html::input(array('name' => 'date_debut', 'class' => 'date-input', 'placeholder' => 'JJ/MM/AAAA', 'maxlenght' => '10')); ?>
+										</div>
+									</div>
+									<div class="line form-section">
+										<label class="form-label unit size1of4" for=""><?php echo $this->translate('Date de fin :');?></label>
+										<div class="unit size3of4 date">
+											<?php echo Phoenix_View_Helper_Html::input(array('name' => 'date_fin', 'class' => 'date-input', 'placeholder' => 'JJ/MM/AAAA', 'maxlenght' => '10')); ?>
+										</div>
+									</div>
+									<div class="line">
+										<input type="submit" value="Afficher" class="btn btn-orange push1of4" />
+										<a href="<?php echo $this->url(array('module'=>'reporting','controller'=>'index','action'=>$this->getParam('select_kpi'),'format'=>'csv','dispatch'=>'exportdetail','date_debut'=>urlencode($this->getParam('date_debut')),'date_fin'=>  urlencode($this->getParam('date_fin')) )) ?>" class="btn"><?php echo $this->translate('Export de données détaillées');?></a>
+									</div>
+								</form>
+							</div>
+							<div class="unit size3of5 lastUnit">
+								<div class="line form-section">
+								<div class="unit gutter10">
+									<a class="icon icon-32 icon-excel" href="<?php echo $this->url(array('module'=>'reporting','controller'=>'index','action'=>$this->getParam('select_kpi'),'format'=>'csv','dispatch'=>'exportsimple','date_debut'=>urlencode($this->getParam('date_debut')),'date_fin'=>  urlencode($this->getParam('date_fin')) )) ?>" title="Exporter au format Excel"><?php echo $this->translate('Exporter au format Excel');?></a>
+								</div>
+								<div class="unit" style="font-size:14px;font-weight: bold;line-height: 50px;">
+									<?php echo $this->KpiTitle ?>
+								</div>
+								<!--<img src="/img/exemple_reporting.jpg" width="100%" />-->
+									<img src="<?php echo $this->url(array('module'=>'reporting','controller'=>'index','action'=>$this->getParam('select_kpi'),'dispatch'=>'graph','date_debut'=>urlencode($this->getParam('date_debut')),'date_fin'=>  urlencode($this->getParam('date_fin')) ))  ?>"  />
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

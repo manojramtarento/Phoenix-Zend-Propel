@@ -1,0 +1,16 @@
+Madame/Monsieur<?php if (Phoenix_Auth_User::getInstance()->isAllowed(AclFonctionnalites::INVOICE_DISPLAY_CLIENT_CONTACT_DATA)) { echo ' '.$this->sContactName; }?>
+<br />
+<br />
+Comme convenu, veuillez trouver ci-attachée votre facture<?php if (Phoenix_Auth_User::getInstance()->isAllowed(AclFonctionnalites::INVOICE_DISPLAY_OPERATION_DATA)) { ?>  correspondant au devis N° <?php echo $this->sOpNumber ?>, relative à l’offre <?php echo $this->sOpLibelle; }?>.
+<br />
+<br />
+Vous en souhaitant bonne réception, nous restons à votre entière disposition pour vous apporter tout complément d’informations nécessaires.
+<br />
+<br />
+Cordialement,
+<br />
+<br />
+Service Facturation <?php echo $this->getSettingValue(Settings::SETTING_KEY_COMPANY_NAME) ?>
+<br />
+<br />
+<?php echo $this->sSignature; ?>

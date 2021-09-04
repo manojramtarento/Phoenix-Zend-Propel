@@ -1,0 +1,33 @@
+<table class="list list-simple">
+    <thead>
+        <tr>
+            <th ><span class="notsortable"><?php echo $this->translate('Total'); ?></span></th>
+            <th ><span class="notsortable"><?php echo $this->translate('Estimé'); ?></span></th>
+            <th ><span class="notsortable"><?php echo $this->translate('réalisé'); ?></span></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><?php echo $this->translate('Marge'); ?></td>
+            <td><?php echo Phoenix_Data_Convert::formatMoney($this->montants['estim']['marge'], $required = false, $bNowrap = true, $bCurrency = true) ?> </td>
+            <td><?php echo Phoenix_Data_Convert::formatMoney($this->montants['reel']['marge'], $required = false, $bNowrap = true, $bCurrency = true) ?> </td>
+        </tr>
+        <?php foreach ($this->montants['estim']['montant_for_tva'] as $tva => $montant_for_tva) { ?>
+            <tr>
+                <td><?php echo $montant_for_tva['libelle'] ?></td>
+                <td><?php echo Phoenix_Data_Convert::formatMoney($montant_for_tva['montant'], $required = false, $bNowrap = true, $bCurrency = true) ?> </td>
+                <td><?php echo Phoenix_Data_Convert::formatMoney($this->montants['reel']['montant_for_tva'][$tva]['montant'], $required = false, $bNowrap = true, $bCurrency = true) ?> </td>
+            </tr>
+        <?php } ?>
+        <tr>
+            <td><?php echo $this->translate('HT'); ?></td>
+            <td><?php echo Phoenix_Data_Convert::formatMoney($this->montants['estim']['total_ht'], $required = false, $bNowrap = true, $bCurrency = true) ?> </td>
+            <td><?php echo Phoenix_Data_Convert::formatMoney($this->montants['reel']['total_ht'], $required = false, $bNowrap = true, $bCurrency = true) ?> </td>
+        </tr>
+        <tr>
+            <td><?php echo $this->translate('TTC'); ?></td>
+            <td><?php echo Phoenix_Data_Convert::formatMoney($this->montants['estim']['total_ttc'], $required = false, $bNowrap = true, $bCurrency = true) ?> </td>
+            <td><?php echo Phoenix_Data_Convert::formatMoney($this->montants['reel']['total_ttc'], $required = false, $bNowrap = true, $bCurrency = true) ?> </td>
+        </tr>
+    </tbody>
+</table>

@@ -1,0 +1,62 @@
+<div class = "unit col">
+    <a class = "icon icon-32 icon-excel" href = "<?php echo $this->url(array('format' => 'csv', 'kpi_month' => $this->kpi_month, 'kpi_year' => $this->kpi_year, 'activites_id' => $this->activites_id, 'status_taux_id' => $this->status_taux_id), null, false) ?>" title = "<?php echo $this->translate('Exporter au format Excel'); ?>"><?php echo $this->translate('Exporter au format Excel'); ?></a>
+</div>
+</br>
+<table class="list">
+    <?php if (count($this->dataBackLogs)) { ?>
+        <thead>
+            <tr>
+                <th width="100"></th>
+                <?php for ($iMonthIncrement = 1; $iMonthIncrement <= 5; $iMonthIncrement++) { ?>
+                    <th width="100"><?php echo $this->translate('Mois'); ?>+<?php echo $iMonthIncrement; ?> </th>
+                    <th width="40"></th>
+                <?php } ?>
+            </tr>
+        </thead>
+    <?php } ?>
+    <tr>
+        <td><?php echo $this->translate('Nombre d\'opérations'); ?></td>
+        <?php for ($iMonthIncrement = 1; $iMonthIncrement <= 5; $iMonthIncrement++) { ?>
+            <td>
+                <span style="white-space:nowrap;text-align:right;display:inline-block;width:100%">
+                    <?php
+                    echo $this->dataBackLogs['Nombre d\'opérations']['Mois+' . $iMonthIncrement]['value'];
+                    $fDeltaNbOpMonth = $this->dataBackLogs['Charge prévisionnelle']['Mois+' . $iMonthIncrement]['delta'];
+                    ?>
+                </span>
+            </td>
+            <td>
+                <?php if ($fDeltaNbOpMonth > 0) { ?>
+                    <span style="color:green;font-size:20px;font-weight:bold;">↑</span>
+                <?php } elseif ($fDeltaNbOpMonth < 0) { ?>
+                    <span style="color:red;font-size:20px;font-weight:bold;">↓</span>
+                <?php } else { ?>
+                    <span style="color:orange;font-size:20px;font-weight:bold;">←→</span>
+                <?php } ?>
+            </td>
+        <?php } ?>
+    </tr>
+    <tr>
+        <td><?php echo $this->translate('CA prévisionnel'); ?></td>
+        <?php for ($iMonthIncrement = 1; $iMonthIncrement <= 5; $iMonthIncrement++) { ?>
+            <td>
+                <span style="white-space: nowrap;text-align : right;display:inline-block;width:100%">
+                    <?php
+                    echo $this->dataBackLogs['Charge prévisionnelle']['Mois+' . $iMonthIncrement]['value'];
+
+                    $fDeltaPrevisionExpensesMonth = $this->dataBackLogs['Charge prévisionnelle']['Mois+' . $iMonthIncrement]['delta'];
+                    ?>
+                </span>
+            </td>
+            <td>
+                <?php if ($fDeltaPrevisionExpensesMonth > 0) { ?>
+                    <span style="color:green;font-size:20px;font-weight:bold;">↑</span>
+                <?php } elseif ($fDeltaPrevisionExpensesMonth < 0) { ?>
+                    <span style="color:red;font-size:20px;font-weight:bold;">↓</span>
+                <?php } else { ?>
+                    <span style="color:orange;font-size:20px;font-weight:bold;">←→</span>
+                <?php } ?>
+            </td>
+        <?php } ?>
+    </tr>
+</table>

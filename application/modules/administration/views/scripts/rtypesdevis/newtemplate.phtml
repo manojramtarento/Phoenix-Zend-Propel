@@ -1,0 +1,16 @@
+<!-- DIALOG / AJOUT / MODIFICATION -->
+<form id="id_form_new_template" action="<?php echo $this->url(array('module' => 'administration', 'controller' => 'rtypesdevis', 'action' => 'newtemplate')) ?>" method="post">
+    <input type="hidden" name="submit_new_template" value="1">
+    <input type="hidden" name="op_subtype_id" value="<?php echo $this->op_subtype_id; ?>">
+    <input type="hidden" name="template_universes" value='<?php echo implode(',', $this->template_universes) ?>'>
+    <input type="hidden" name="template_medias" value='<?php echo implode(',', $this->template_medias) ?>'>
+
+    <div class="line form-line">
+        <label class="unit size1of3 form-label" for='id_template_name'><?php echo $this->translate('Label_label'); ?> :</label>
+        <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'template_name', 'class' => 'unit size2of3 form-input lastUnit')) ?>
+    </div>
+
+    <div class="text-center">
+        <input type="submit" value="<?php echo $this->translate('Valider'); ?>" class="btn btn-orange">
+    </div>
+</form>

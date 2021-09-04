@@ -1,0 +1,44 @@
+<form id="role-update-form" action="<?php echo $this->url(array('module' => 'administration', 'controller' => 'roles', 'action' => 'saverole')) ?>" method="post">
+    <?php if (isset($this->roleId)) { ?>
+        <input type="hidden" name="roleId" value="<?php echo $this->roleId; ?>">
+    <?php } ?>
+    <div class="line form-line">
+        <label class="unit size1of3 form-label" for='id-role-name'><?php echo $this->translate('label_listing_roles_name'); ?> :</label>
+        <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'id' => 'id-role-name', 'name' => 'roleName', 'class' => 'unit size2of3 form-input lastUnit', 'value' => $this->roleName)) ?>
+    </div>
+    <div class="line form-line">
+
+        <div class="unit size2of5">
+            <div class="section-hd">
+                <h3 class="section-title"> <?php echo $this->translate('label_others_users') ?> :</h3>
+            </div>
+            <div class="unit size1of1">
+                <?php echo My_View_Helper_Html::select(array('id' => 'users-lacking-role', 'name' => 'userslackingrole[]', 'multiple' => 'multiple', 'size' => 10, 'class' => 'role-select unit col'), $this->usersLackingRole) ?>
+            </div>
+        </div>
+
+        <div class="unit size1of5">
+            <div class="unit bloc-switchers">
+                <br />
+                <br />
+                <br />
+                <input class="btn btn-orange button-right-role-switcher" type="button" value=">>">
+                <br />
+                <br />
+                <input class="btn btn-orange button-left-role-switcher" type="button" value="<<">
+            </div>
+        </div>
+        <div class="unit size2of5">
+            <div class="section-hd">
+                <h3 class="section-title"> <?php echo $this->translate('label_users_having_role') ?> :</h3>
+            </div>
+            <div class="unit size1of1">
+                <?php echo My_View_Helper_Html::select(array('id' => 'users-having-role', 'name' => 'usershavingrole[]', 'multiple' => 'multiple', 'size' => 10, 'class' => 'role-select unit col '), $this->usersHavingRole) ?>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center">
+        <input type="submit" value="<?php echo $this->translate('button_role_submit'); ?>" class="btn btn-orange">
+    </div>
+</form>

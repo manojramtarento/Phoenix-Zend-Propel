@@ -1,0 +1,414 @@
+<?php
+$this->title = $this->translate('Gestion des tâches');
+$this->headTitle($this->title);
+
+$datetime_now = new Datetime();
+$date_now = $datetime_now->format('d/m/Y');
+?>
+
+<div id="actions-bar">
+    <div class="unit size1of5">
+        <h1 class="page-title"><?php echo $this->title; ?></h1>
+        <input id="btn_new" type="button" class="btn btn-orange btn-big" value="<?php echo $this->translate('Nouvelle tâche'); ?>" />
+    </div>
+    <div class="unit size2of5">
+        <div class="search">
+            <form action="" method="get">
+                <input type="text" name="findword" class="form-input" value="<?php if (isset($_REQUEST["findword"])) echo $_REQUEST["findword"]; ?>" placeholder="<?php echo $this->translate('Rechercher'); ?>" autocomplete="off" />
+                <input type="submit" value="<?php echo $this->translate('OK'); ?>" class="btn btn-orange" />
+                <input type="button" value="<?php echo $this->translate('Recherche avancée'); ?>" class="btn btn-big btn-adsearch" id="btn_adsearch" />
+            </form>
+        </div>
+    </div>
+    <div class="unit size2of5">
+        <fieldset class="stats-op-fieldset large">
+            <legend><span class="title-icon icon-chart"></span></legend>
+            <table class="stats-op">
+                <thead>
+                    <tr>
+                        <th class="op-accepte size1of4"><?php echo $this->translate('En cours'); ?></th>
+                        <th class="op-refuse size1of4"><?php echo $this->translate('En alerte'); ?></th>
+                        <th class="op-refuse size1of4"><?php echo $this->translate('En retard'); ?></th>
+                        <th class="op-encours size1of4"><?php echo $this->translate('Terminé'); ?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="op-accepte">
+                            <a href="<?php echo $this->url(array('module' => 'operation', 'controller' => 'taches', 'action' => 'index')); ?>?findbyfields=1&find_op_task_done_comp=null">
+                                <?php echo $this->stats['nb_progress']; ?>
+                            </a>
+                        </td>
+                        <td class="op-refuse">
+                            <a href="<?php echo $this->url(array('module' => 'operation', 'controller' => 'taches', 'action' => 'index')); ?>?findbyfields=1&find_op_task_alerte_comp=infeql&find_op_task_alerte=<?php echo $date_now; ?>&find_op_task_done_comp=null">
+                                <?php echo $this->stats['nb_alerte']; ?>
+                            </a>
+                        </td>
+                        <td class="op-refuse">
+                            <a href="<?php echo $this->url(array('module' => 'operation', 'controller' => 'taches', 'action' => 'index')); ?>?findbyfields=1&find_op_task_retard_comp=infeql&find_op_task_retard=<?php echo $date_now; ?>&find_op_task_done_comp=null">
+                                <?php echo $this->stats['nb_late']; ?>
+                            </a>
+                        </td>
+                        <td class="op-encours">
+                            <a href="<?php echo $this->url(array('module' => 'operation', 'controller' => 'taches', 'action' => 'index')); ?>?findbyfields=1&find_op_task_done_comp=notnull">
+                                <?php echo $this->stats['nb_done']; ?>
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </fieldset>
+    </div>
+</div>
+<div id="site-content">
+    <div class="content-list">
+        <div class="list-actions">
+            <div class="unit col">
+                <a class="icon icon-32 icon-excel" href="<?php echo $this->url(array('format' => 'csv'), null, false) . '?' . $_SERVER['QUERY_STRING'] ?>" title="<?php echo $this->translate('Exporter au format Excel'); ?>"><?php echo $this->translate('Exporter au format Excel'); ?></a>
+            </div>
+            <div class="unit rightUnit">
+                <div class="unit col">
+                    <?php echo $this->NotifySearch()->link(array('disable_default_view' => 1)) ?>
+                </div>
+                <div class="unit">
+                    <?php echo $this->paginationControl($this->paginator, 'Sliding', '/partials/pagination.phtml'); ?>
+                </div>
+            </div>
+        </div>
+        <table class="list list-main">
+            <thead>
+                <tr>
+                    <th width="26" class="column-noborder"></th>
+                    <th width="26" class="column-noborder"></th>
+                    <th width="26" class="column-noborder"></th>
+                    <th width="26" class="column-noborder"></th>
+                    <th width=""><?php echo My_View_Helper_Html::UrlOrderBy('op_number', $this->translate('N° OP')); ?></th>
+                    <th width=""><?php echo My_View_Helper_Html::UrlOrderBy('r_op_task_type_libelle', $this->translate('Type')); ?></th>
+                    <th width=""><?php echo My_View_Helper_Html::UrlOrderBy('op_task_deadline', $this->translate('Deadline')); ?></th>
+                    <th width=""><?php echo My_View_Helper_Html::UrlOrderBy('op_task_duree_estim', $this->translate('Durée')); ?></th>
+                    <th colspan="2" width=""><?php echo My_View_Helper_Html::UrlOrderBy('op_task_alerte', $this->translate('Alerte')); ?></th>
+                    <th width=""><?php echo My_View_Helper_Html::UrlOrderBy('op_task_done', $this->translate('Réalisation')); ?></th>
+                    <th width=""><?php echo My_View_Helper_Html::UrlOrderBy('user_create_name', $this->translate('Créé par')); ?></th>
+                    <th colspan="2">
+                        <?php echo My_View_Helper_Html::UrlOrderBy('r_op_task_type_assign_to_cp', $this->translate('Assignée à')) ?>
+                    </th>
+                    <th colspan="2">
+                        <?php echo My_View_Helper_Html::UrlOrderBy('assign_to_group', $this->translate('Notifié à')) ?>
+                    </th>
+                </tr>
+                <tr class="sub-head">
+                    <td colspan="8"></td>
+                    <td class="column-border" align="center"><?php echo $this->translate('rappel'); ?></td>
+                    <td class="column-border" align="center"><?php echo $this->translate('retard'); ?></td>
+                    <td colspan="2"></td>
+                    <td class="column-border" align="center"><?php echo $this->translate('utilisateur'); ?></td>
+                    <td class="column-border" align="center"><?php echo $this->translate('groupe'); ?></td>
+                    <td class="column-border" align="center"><?php echo $this->translate('utilisateur'); ?></td>
+                    <td class="column-border" align="center"><?php echo $this->translate('groupe'); ?></td>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                foreach ($this->paginator as $task) {
+                    $isValidated = !empty($task['op_task_done']);
+
+                    $status = OperationTasks::STATUS_PROGRESS;
+                    if ($isValidated) {
+                        $status = OperationTasks::STATUS_FINISHED;
+                    } else {
+                        $datetime = new DateTime($task['op_task_retard']);
+                        if ($datetime_now > $datetime) {
+                            $status = OperationTasks::STATUS_LATE;
+                        } else {
+                            $datetime = new DateTime($task['op_task_alerte']);
+                            if ($datetime_now > $datetime) {
+                                $status = OperationTasks::STATUS_WARNING;
+                            }
+                        }
+                    }
+                    ?>
+                    <tr class="<?php echo $this->cycle(array('', 'alt'))->next() ?>">
+                        <td><?php if (!$isValidated) echo "<a href='javascript:void(0)' class='icon-list icon-delete' param_id='" . $task['op_task_id'] . "' title='" . $this->translate('Supprimer') . "'>" . $this->translate('Supprimer') . "</a>"; ?></td>
+                        <td><?php if (!$isValidated) echo "<a href='javascript:void(0)' class='icon-list icon-edit' param_id='" . $task['op_task_id'] . "' title='" . $this->translate('Éditer') . "'>" . $this->translate('Éditer') . "</a>"; ?></td>
+                        <td><?php if (!$isValidated) echo "<a href='javascript:void(0)' class='icon-list icon-validate' param_id='" . $task['op_task_id'] . "' title='" . $this->translate('Valider') . "'>" . $this->translate('Valider') . "</a>"; ?></td>
+                        <td align="center"><?php echo Phoenix_View_Helper_Html::getTaskStatusIcon($status); ?></td>
+                        <td><?php echo $task['op_number']; ?></td>
+                        <td><?php echo $task['r_op_task_type_libelle']; ?>
+                            <?php if (!empty($task['op_task_detail'])) { ?>
+                                <span class="icon-list icon-visible icon-text tip" title="<?php echo htmlentities($task['op_task_detail'], ENT_COMPAT, 'UTF-8'); ?>"></span>
+                            <?php } ?>
+                        </td>
+                        <td><?php echo Phoenix_Data_Convert::formatDateFromSqlServer2($task['op_task_deadline']); ?></td>
+                        <td><?php echo Phoenix_Data_Convert::formatDuree($task['op_task_duree_estim']); ?></td>
+
+                        <td><?php echo Phoenix_Data_Convert::formatDateFromSqlServer2($task['op_task_alerte']); ?></td>
+                        <td><?php echo Phoenix_Data_Convert::formatDateFromSqlServer2($task['op_task_retard']); ?></td>
+
+                        <td>
+                            <?php
+                            echo Phoenix_Data_Convert::formatDateFromSqlServer2($task['op_task_done']);
+                            echo '<br />' . Phoenix_Data_Convert::formatDuree($task['op_task_duree_reelle']);
+                            ?>
+                            <?php if (!empty($task['op_task_comments'])) { ?>
+                                <span class="icon-list icon-visible icon-text tip" title="<?php echo htmlentities($task['op_task_comments'], ENT_COMPAT, 'UTF-8'); ?>"></span>
+                            <?php } ?>
+                        </td>
+                        <td><?php echo $task['user_create_name']; ?></td>
+
+                        <td class="column-secondary"><?php echo $task['assign_to_user']; ?></td>
+                        <td class="column-secondary"><?php echo $task['assign_to_group']; ?></td>
+                        <td class="column-secondary"><?php echo $task['notify_to_user']; ?></td>
+                        <td class="column-secondary"><?php echo $task['notify_to_group']; ?></td>
+
+                    </tr>
+                <?php } ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- DIALOG / RECHERCHE AVANCEE -->
+<div id="id_dialog_search" title="<?php echo $this->translate('Recherche avancée'); ?>" style="display:none;">
+    <form action="" method="get">
+        <div class="line form-line">
+            <label class="unit size1of2 form-label" for="id_autocomplete_op_id"><?php echo $this->translate('Numéro d\'opération'); ?> :</label>
+            <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_op_id', 'type' => 'hidden')); ?>
+            <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'autocomplete_op_id', 'class' => 'unit size1of2 form-input input-autocomplete lastUnit')) ?>
+        </div>
+
+        <div class="line form-line">
+            <label class="unit size1of2 form-label" for="id_find_autocomplete_op_task_type_id"><?php echo $this->translate('Type de tâche'); ?> :</label>
+            <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_op_task_type_id', 'type' => 'hidden')) ?>
+            <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'find_autocomplete_op_task_type_id', 'class' => 'unit size1of2 form-input input-autocomplete lastUnit')) ?>
+        </div>
+
+        <div class="line form-line">
+            <label class="unit size1of2 form-label" for=""><?php echo $this->translate('Date de réalisation souhaitée'); ?> :</label>
+            <div class="unit size1of2">
+                <?php echo Phoenix_View_Helper_Html_Select::selectComparateur(array('name' => 'find_op_task_deadline_comp', 'class' => 'form-select unit size1of4 col')) ?>
+                <div class="unit date">
+                    <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_op_task_deadline', 'value' => $this->getParam('find_op_task_deadline'), 'class' => 'date-input', 'placeholder' => $this->translate('JJ/MM/AAAA'), 'maxlenght' => '10')); ?>
+                </div>
+            </div>
+        </div>
+
+        <div class="line form-line">
+            <label class="unit size1of2 form-label" for="id_find_op_task_done_comp"><?php echo $this->translate('Validée'); ?> ?</label>
+
+            <?php echo Phoenix_View_Helper_Html::select(array('name' => 'find_op_task_done_comp', 'class' => ''), array($this->translate('Tous') => array('value' => ''), $this->translate('Oui') => array('value' => 'notnull'), $this->translate('Non') => array('value' => 'null'))) ?>
+        </div>
+
+        <div class="line form-line">
+            <label class="unit size1of2 form-label" for="id_find_op_task_retard_deadline"><?php echo $this->translate('En retard'); ?></label>
+            <?php echo Phoenix_View_Helper_Html::checkbox(array('name' => 'find_op_task_retard_deadline', 'value' => date('d/m/Y'))) ?>
+        </div>
+
+        <div class="line form-line">
+            <label class="unit size1of2 form-label" for="id_find_my_tasks_only"><?php echo $this->translate('Mes tâches uniquement'); ?></label>
+            <?php echo Phoenix_View_Helper_Html::checkbox(array('name' => 'find_my_tasks_only', 'value' => '1')) ?>
+        </div>
+
+
+        <div class="line form-line">
+            <label class="unit size1of2 form-label" for='id_r_op_task_type_assign_to_user'><?php echo $this->translate('Assignée à l\'utilisateur'); ?> :</label>
+            <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_op_task_assign_to_user', 'type' => 'hidden')) ?>
+            <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'assign_to_user', 'id' => 'id_find_autocomplete_assign_to_user', 'class' => 'unit size1of2 form-input input-autocomplete lastUnit')) ?>
+        </div>
+
+        <div class="line form-line">
+            <label class="unit size1of2 form-label" for='id_r_op_task_type_notify_to_user'><?php echo $this->translate('Notifiée à l\'utilisateur'); ?> :</label>
+            <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_op_task_notify_to_user', 'type' => 'hidden')) ?>
+            <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'notify_to_user', 'id' => 'id_find_autocomplete_notify_to_user', 'class' => 'unit size1of2 form-input input-autocomplete lastUnit')) ?>
+        </div>
+
+        <div class="line form-line">
+            <label class="unit size1of2 form-label" for='id_r_op_task_type_assign_to_group'><?php echo $this->translate('Assignée au groupe'); ?> :</label>
+            <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_op_task_assign_to_group', 'type' => 'hidden')) ?>
+            <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'assign_to_group', 'id' => 'id_find_autocomplete_assign_to_group', 'class' => 'unit size1of2 form-input input-autocomplete lastUnit')) ?>
+        </div>
+
+        <div class="line form-line">
+            <label class="unit size1of2 form-label" for='id_r_op_task_type_notify_to_group'><?php echo $this->translate('Notifiée au groupe'); ?> :</label>
+            <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_op_task_notify_to_group', 'type' => 'hidden')) ?>
+            <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'notify_to_group', 'id' => 'id_find_autocomplete_notify_to_group', 'class' => 'unit size1of2 form-input input-autocomplete lastUnit')) ?>
+        </div>
+
+
+
+        <div class="line form-line">
+            <label class="unit size1of2 form-label" for="id_find_autocomplete_create_by"><?php echo $this->translate('Crée par'); ?> :</label>
+            <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_user_id', 'type' => 'hidden')) ?>
+            <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'find_autocomplete_create_by', 'class' => 'unit size1of2 form-input input-autocomplete lastUnit')) ?>
+        </div>
+
+        <div class="line form-line">
+            <label class="unit size1of2 form-label"><?php echo $this->translate('Alerte rappel'); ?> :</label>
+            <div class="unit size1of2">
+                <?php echo Phoenix_View_Helper_Html_Select::selectComparateur(array('name' => 'find_op_task_alerte_comp', 'class' => 'form-select unit size1of4 col')) ?>
+                <div class="unit date">
+                    <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_op_task_alerte', 'value' => $this->getParam('find_op_task_alerte'), 'class' => 'date-input', 'placeholder' => $this->translate('JJ/MM/AAAA'), 'maxlenght' => '10')); ?>
+                </div>
+            </div>
+        </div>
+
+        <div class="line form-section">
+            <label class="unit size1of2 form-label"><?php echo $this->translate('Alerte retard'); ?> :</label>
+            <div class="unit size1of2">
+                <?php echo Phoenix_View_Helper_Html_Select::selectComparateur(array('name' => 'find_op_task_retard_comp', 'class' => 'form-select unit size1of4 col')) ?>
+                <div class="unit date">
+                    <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_op_task_retard', 'value' => $this->getParam('find_op_task_retard'), 'class' => 'date-input', 'placeholder' => $this->translate('JJ/MM/AAAA'), 'maxlenght' => '10')); ?>
+                </div>
+            </div>
+        </div>
+
+        <div class="line form-section">
+            <label class="unit size1of2 form-label" for="id_find_op_task_comments"><?php echo $this->translate('Commentaire'); ?> :</label>
+            <?php echo Phoenix_View_Helper_Html::textarea(array('name' => 'find_op_task_comments', 'class' => 'form-textearea unit size1of2')) ?>
+        </div>
+
+        <div class="text-center">
+            <input type="submit" name="findbyfields" value="<?php echo $this->translate('Rechercher'); ?>" class="btn btn-orange">
+        </div>
+    </form>
+</div>
+
+
+<script language="javascript">
+    function updateFields() {
+        if ($('#id_find_my_tasks_only').is(':checked')) {
+            $('#id_find_autocomplete_assign_to_user').attr('disabled', 'disabled');
+            $('#find_op_task_assign_to_user').attr('disabled', 'disabled');
+            $('#id_find_autocomplete_assign_to_group').attr('disabled', 'disabled');
+            $('#find_op_task_assign_to_group').attr('disabled', 'disabled');
+            $('#id_find_autocomplete_notify_to_user').attr('disabled', 'disabled');
+            $('#find_op_task_notify_to_user').attr('disabled', 'disabled');
+            $('#id_find_autocomplete_notify_to_group').attr('disabled', 'disabled');
+            $('#find_op_task_notify_to_group').attr('disabled', 'disabled');
+            $('#id_find_autocomplete_create_by').attr('disabled', 'disabled');
+            $('#id_find_user_id').attr('disabled', 'disabled');
+        } else {
+            $('#id_find_autocomplete_assign_to_user').removeAttr('disabled');
+            $('#find_op_task_assign_to_user').removeAttr('disabled');
+            $('#id_find_autocomplete_assign_to_group').removeAttr('disabled');
+            $('#find_op_task_assign_to_group').removeAttr('disabled');
+            $('#id_find_autocomplete_notify_to_user').removeAttr('disabled');
+            $('#find_op_task_notify_to_user').removeAttr('disabled');
+            $('#id_find_autocomplete_notify_to_group').removeAttr('disabled');
+            $('#find_op_task_notify_to_group').removeAttr('disabled');
+            $('#id_find_autocomplete_create_by').removeAttr('disabled');
+            $('#id_find_user_id').removeAttr('disabled');
+        }
+    }
+
+
+    $(document).ready(function () {
+        updateFields();
+
+        //-- DIALOG / RECHERCHE AVANCEE -->
+        $('#btn_adsearch').click(function (e) {
+            e.preventDefault();
+            $('#id_dialog_search').dialog({
+                width: 500,
+                modal: true,
+                resizable: false
+            });
+        });
+
+        // -- Recherche "Mes tâches uniquement"
+        $('#id_find_my_tasks_only').live('click', updateFields);
+        updateFields();
+
+        // changement de l'opération basé sur recherche avec autocompletion
+        $('#id_autocomplete_op_id').AjaxAutocomplete({
+            url: baseUrl + '/common/autocomplete/operation',
+            minLength: 3,
+            restrictive: true,
+            bindFieldId: 'id_find_op_id'
+        });
+
+        // changement du user basé sur recherche avec autocompletion
+        $('#id_find_autocomplete_assign_to_user').AjaxAutocomplete({
+            url: baseUrl + '/common/autocomplete/user',
+            minLength: 3,
+            restrictive: true,
+            bindFieldId: 'id_find_op_task_assign_to_user'
+        });
+
+        // changement du user basé sur recherche avec autocompletion
+        $('#id_find_autocomplete_notify_to_user').AjaxAutocomplete({
+            url: baseUrl + '/common/autocomplete/user',
+            minLength: 3,
+            restrictive: true,
+            bindFieldId: 'id_find_op_task_notify_to_user'
+        });
+
+        // changement du user basé sur recherche avec autocompletion
+        $('#id_find_autocomplete_assign_to_group').AjaxAutocomplete({
+            url: baseUrl + '/common/autocomplete/groupad',
+            minLength: 3,
+            restrictive: true,
+            bindFieldId: 'id_find_op_task_assign_to_group'
+        });
+
+        // changement du user basé sur recherche avec autocompletion
+        $('#id_find_autocomplete_notify_to_group').AjaxAutocomplete({
+            url: baseUrl + '/common/autocomplete/groupad',
+            minLength: 3,
+            restrictive: true,
+            bindFieldId: 'id_find_op_task_notify_to_group'
+        });
+
+
+        // changement du user basé sur recherche avec autocompletion
+        $('#id_find_autocomplete_create_by').AjaxAutocomplete({
+            url: baseUrl + '/common/autocomplete/user',
+            minLength: 3,
+            restrictive: true,
+            bindFieldId: 'id_find_user_id'
+        });
+
+        // changement du type de tâche avec autocompletion
+        $('#id_find_autocomplete_op_task_type_id').AjaxAutocomplete({
+            url: baseUrl + '/operation/taches/autocompletetache',
+            minLength: 3,
+            restrictive: true,
+            bindFieldId: 'id_find_op_task_type_id'
+        });
+
+        //-- DIALOG / AJOUT -->
+        $('#btn_new').live('click', function (e) {
+            AjaxComponent.ajaxDialog(baseUrl + '/operation/taches/update', {}, {width: '500', title: '<?php echo $this->translate('Créer une nouvelle tâche'); ?>', id: 'id_dialog_update_task'});
+        });
+
+        //-- DIALOG / MODIFICATION -->
+        $('.list .icon-edit').live('click', function (e) {
+            task_id = $(this).attr("param_id");
+            AjaxComponent.ajaxDialog(baseUrl + '/operation/taches/update', {op_task_id: task_id}, {width: '500', title: '<?php echo $this->translate('Modifier la tâche N°'); ?>' + task_id, id: 'id_dialog_update_task'});
+        });
+
+        //-- DIALOG / DELETE -->
+        $('.list .icon-delete').live('click', function (e) {
+            task_id = $(this).attr("param_id");
+            Component.confirm('<?php echo $this->translate('Confirmez-vous la suppression de la tâche'); ?> ?',
+                    function () {
+                        AjaxComponent.ajaxQuery(baseUrl + '/operation/taches/delete', 'op_task_id=' + task_id)
+                                .success(function (data) {
+                                    Component.refreshPage();
+                                });
+                    });
+        });
+
+        //-- DIALOG / VALIDATION -->
+        $('.list .icon-validate').live('click', function (e) {
+            task_id = $(this).attr("param_id");
+            AjaxComponent.ajaxDialog(baseUrl + '/operation/taches/validate', {op_task_id: task_id}, {width: '500', title: '<?php echo $this->translate('Validation de la tâche N°'); ?>' + task_id, id: 'id_dialog_validate_task'});
+        });
+
+        //-- DIALOG / COMMENTAIRE -->
+        /*$('.list .icon-text').live('click', function(e){
+         task_id = $(this).attr("param_id");
+         AjaxComponent.ajaxDialog(baseUrl+'/operation/taches/view', {op_task_id: task_id}, {width:'500', title:'Commentaire (tâche N°'+task_id+")", id:'id_dialog_view_task'});
+         });*/
+
+    });
+</script>

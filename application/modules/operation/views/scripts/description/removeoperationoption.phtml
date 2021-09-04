@@ -1,0 +1,37 @@
+<div class="section">
+    <span><?php echo $this->translate('operation_options_removal_information_message_first_line'); ?> </span><br/>
+    <span><?php echo $this->translate('operation_options_removal_information_message_second_line'); ?> : </span>
+    <br/>
+    <br/>
+    <?php foreach ($this->activesServicesGroupedByRubric as $iRubricId => $aRelatedServices) { ?>
+        <div class="section">
+            <div class="section-hd">
+                <h2 class="section-title"><?php echo $aRelatedServices['r_rub_libelle']; ?></h2>
+            </div>
+            <div class="section-bd operation_option_related_service_table_style">
+                <table class="list list-main">
+                    <thead>
+                        <tr>
+                            <th width="40"><span class="notsortable"></span></th>
+                            <th width="500"><span class="notsortable"><?php echo $this->translate('label_service_name'); ?></span></th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <?php
+                        foreach ($aRelatedServices['services'] as $iServiceId => $aService) {
+                            $this->cycle(array('', 'alt'))->rewind();
+                            ?>
+                            <tr class="tr-check <?php echo $this->cycle(array('', 'alt'))->next() ?>">
+
+                                <td align="left"><?php echo $iServiceId; ?></td>
+                                <td><?php echo $aService['r_p_libelle']; ?></td>
+                            </tr>
+                        <?php } ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    <?php } ?>
+</div>
+

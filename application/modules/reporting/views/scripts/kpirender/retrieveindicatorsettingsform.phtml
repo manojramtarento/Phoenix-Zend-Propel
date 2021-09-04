@@ -1,0 +1,67 @@
+<div class="line form-line">
+    <label class="form-label unit size1of3"><?php echo $this->translate('Titre'); ?> :</label>
+    <div class="unit size2of3 date lastUnit">
+        <input type="text" value="<?php echo $this->indicatorName; ?>" name="indicatorName[<?php echo $this->indicatorId; ?>]" />
+    </div>
+</div>
+<div class="line form-line">
+    <label class="form-label unit size1of3"><?php echo $this->translate('Description'); ?> :</label>
+    <div class="unit size2of3 date lastUnit">
+        <p><?php echo $this->description ?></p>
+    </div>
+</div>
+
+<?php if (in_array('kpi_month', array_keys($this->filters))) { ?>
+    <div class = "unit size1of5">
+        <label class = "unit size1of3" ><?php echo $this->translate('Mois'); ?> :</label>
+        <select class="unit size1of3" type="text" name="filters[<?php echo $this->indicatorId; ?>][kpi_month]" id="kpi_month">
+            <?php for ($iMonth = 1; $iMonth <= 12; ++$iMonth) { ?>
+                <option value="<?php echo $iMonth; ?>" <?php echo ($iMonth == date('m')) ? 'selected' : ''; ?>><?php echo str_pad($iMonth, 2, '0', STR_PAD_LEFT); ?></option>
+            <?php } ?>
+        </select>
+    </div>
+<?php } ?>
+<?php if (in_array('kpi_year', array_keys($this->filters))) { ?>
+    <div class="unit size1of5">
+        <label class="unit size1of3" ><?php echo $this->translate('Année'); ?> :</label>
+        <select class="unit size1of3" type="text" name="filters[<?php echo $this->indicatorId; ?>][kpi_year]" id="kpi_year">
+            <?php for ($iYear = 1995; $iYear <= 2025; ++$iYear) { ?>
+                <option value="<?php echo $iYear; ?>" <?php echo ($iYear == date('Y')) ? 'selected' : ''; ?>><?php echo $iYear; ?></option>
+            <?php } ?>
+        </select>
+    </div>
+<?php } ?>
+<?php if (in_array('activites_id', array_keys($this->filters))) { ?>
+    <div class="unit size1of5">
+        <label class="unit size1of3" > <?php echo $this->translate('Activités'); ?>:</label>
+        <?php echo Phoenix_View_Helper_Html::selectFromTable('r_activity_kpi', array('name' => 'filters[' . $this->indicatorId . '][activites_id]', 'class' => 'unit size1of3'), array('name' => 'r_activity_kpi_libelle', 'value' => 'r_activity_kpi_id'), array('default_label' => $this->translate('choisir') . '...')) ?>
+    </div>
+<?php } ?>
+<?php if (in_array('status_taux_id', array_keys($this->filters))) { ?>
+    <div class="unit size1of5">
+        <label class="unit size1of3" > <?php echo $this->translate('Status'); ?> :</label>
+        <?php echo Phoenix_View_Helper_Html::select(array('name' => 'filters[' . $this->indicatorId . '][status_taux_id]', 'class' => 'unit size1of3'), $this->statusTaux, array('default_label' => $this->translate('Choisir') . '...')); ?>
+    </div>
+<?php } ?>
+<?php if (in_array('client', array_keys($this->filters))) { ?>
+    <div class="unit size2of3">
+        <label class="unit size2of4 form-label" for="id_autocomplete_client"><?php echo $this->translate('Nom du client'); ?> :</label>
+        <?php echo Phoenix_View_Helper_Html::input(array('name' => 'filters[' . $this->indicatorId . '][client]', 'id' => 'id_filters_' . $this->indicatorId . '_client', 'type' => 'hidden')); ?>
+        <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'autocomplete_filters_' . $this->indicatorId . '_client', 'class' => 'unit size2of4 form-input input-autocomplete lastUnit')) ?>
+
+        <script language="javascript">
+            $(function () {
+                // Changement du client basé sur recherche avec autocompletion
+                $('#id_<?php echo 'autocomplete_filters_' . $this->indicatorId . '_client'; ?>').AjaxAutocomplete({
+                    url: baseUrl + '/common/autocomplete/client',
+                    minLength: 3,
+                    restrictive: true,
+                    bindFieldId: '<?php echo 'id_filters_' . $this->indicatorId . '_client'; ?>'
+                });
+            });
+        </script>
+    </div>
+<?php } ?>
+<input id="IndicatorId" type="hidden" value="<?php echo $this->indicatorId; ?>" />
+<input id="IndicatorName" type="hidden" value="<?php echo $this->indicatorName; ?>" />
+<input class="IndicatorPosition" type="hidden" name="position[<?php echo $this->indicatorId; ?>]" value="" />

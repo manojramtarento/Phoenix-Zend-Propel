@@ -1,0 +1,56 @@
+<?php
+$this->title = $this->translate('title_import_clients');
+$this->headTitle($this->title);
+echo $this->FlashMessenger('error', 'popup');
+?>
+<div id="actions-bar">
+    <div class="unit size1of5">
+        <h1 class="page-title"><?php echo $this->title; ?></h1>
+    </div>
+</div>
+<div id="site-content">
+    <div id="content-bd">
+        <div class="box">
+            <div class="box-bd">
+                <div class="line">
+                    <div class="unit size1of1">
+                        <form enctype="multipart/form-data" action="<?php echo $this->url(array('module' => 'client', 'controller' => 'listing', 'action' => 'import', null, true)) ?>" method="POST">
+                            <label class="form-label"><?php echo $this->translate('Parcourir'); ?> :</label>
+                            <?php echo Phoenix_View_Helper_Html::input(array('type' => 'file', 'name' => 'clients')); ?>
+                            <input type="submit" value="<?php echo $this->translate('Importer'); ?>" class="btn" />
+                        </form>
+                    </div>
+                </div>
+                <?php if (!empty($this->errors)) { ?>
+                <div class="line">    
+                    <h3 class="page-title"><?php echo $this->translate('Erreurs'); ?></h3>
+                    <div class="unit size1of1">
+                        <ul>
+                            <?php foreach ($this->errors as $sError) { ?>
+                                <li><?php echo $this->translate($sError) ?></li>
+                            <?php 
+                        } ?>
+                        </ul>
+                    </div>
+                </div>
+                <?php 
+            } ?>
+                <?php if (!empty($this->createdClients)) { ?>
+                <hr/>
+                <div class="line">
+                    <h3 class="page-title"><?php echo $this->translate('Clients créés'); ?></h3>
+                    <div class="unit size1of1">
+                        <ul>
+                            <?php foreach ($this->createdClients as $oClient) { ?>
+                                <li><?php echo $oClient->getClLibelle() ?></li>
+                            <?php 
+                        } ?>
+                        </ul>
+                    </div>
+                </div>
+                <?php 
+            } ?>
+            </div>
+        </div>
+    </div>
+</div>

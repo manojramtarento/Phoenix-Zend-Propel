@@ -1,0 +1,26 @@
+<div class="simple-data-table <?php echo $this->sDataTableClass ?>">
+    <table>
+        <th colspan="2" <?php echo ($this->bTitleStyleBold) ? 'class="simple-data-table-title-bold"' : '' ?>><?php echo $this->sKpiTitle; ?></th>
+        <?php
+        $this->aDataByMonth['dataList'] = array_slice($this->aDataByMonth['dataList'], 0, 12, true);
+        end($this->aDataByMonth['dataList']);
+        $sLastElementKey = key($this->aDataByMonth['dataList']);
+        reset($this->aDataByMonth);
+        $iTotal = array_sum($this->aDataByMonth['dataList']);
+
+        foreach ($this->aDataByMonth['dataList'] as $sKey => $iMonthData) {
+            $bIsLastElement = $sKey === $sLastElementKey;
+            ?>
+            <tr>
+                <td class="row-key <?php echo ($bIsLastElement) ? 'last-row' : '' ?>"><?php echo $this->Translations()->getTranslatedMonthName($sKey, $this->sStatisticsLanguage); ?></td>
+                <td class="row-value <?php echo ($bIsLastElement) ? 'last-row' : '' ?>"><?php echo Phoenix_Data_Convert::formatNumber($iMonthData); ?></td>
+            </tr>
+        <?php } ?>
+        <tfoot>
+            <tr class="<?php echo $this->sTotalClass; ?>">
+                <td class="row-key last-td-element"><?php echo $this->translate('total'); ?></td>
+                <td class="row-value last-td-element"><?php echo Phoenix_Data_Convert::formatNumber($iTotal); ?></td>
+            </tr>
+        </tfoot>
+    </table>
+</div>

@@ -1,0 +1,44 @@
+<!-- DIALOG / CREATION CONTACT -->
+<?php
+echo Phoenix_View_Helper_Html::getPropelFailures();
+
+?>
+<form method="post" action="<?php echo $this->url(array('module' => 'operation', 'controller' => 'new', 'action' => 'ajoutcontact')) ?>" id="id_form_ajout_contact">
+	<div class="section">
+		<div class="section-hd">
+			<h2 class="section-title title-icon icon-user"><?php echo $this->translate('Contact commercial');?></h2>
+		</div>
+		<div class="section-bd">
+			<div class="form-section">
+				<div class="line form-line">
+					<label for="" class="form-label unit size1of3"><?php echo $this->translate('Nom');?> :</label>	
+					<?php echo Phoenix_View_Helper_Html::input(array('name' => 'ct_lastname', 'class' => 'form-input unit size2of3 lastUnit')); ?>
+				</div>
+				<div class="line form-line">
+					<label for="" class="form-label unit size1of3"><?php echo $this->translate('Prénom');?> :</label>	
+					<?php echo Phoenix_View_Helper_Html::input(array('name' => 'ct_firstname', 'class' => 'form-input unit size2of3 lastUnit')); ?>
+				</div>
+				<div class="line form-line">
+					<label for="" class="form-label unit size1of3"><?php echo $this->translate('e-mail');?> :</label>	
+					<?php echo Phoenix_View_Helper_Html::input(array('name' => 'ct_email',  'class' => 'form-input unit size2of3 lastUnit')); ?>
+				</div>
+			</div>
+		</div>
+	</div>
+	<input type="hidden" name="submit_ajout_contact" value="1" />
+	<input type="hidden" id="id_cl_id" name="cl_id" value="<?php echo $this->cl_id ?>" />
+	<input type="submit" value="<?php echo $this->translate('Valider'); ?>" class="btn btn-orange push1of3" />
+</form>
+
+
+<script language="javascript">
+	$(document).ready(function(){
+		$('#id_form_ajout_contact').ajaxForm({
+			divId:'id_dialog_ajout_contact',
+			success:function(){
+				refreshSelectContact(<?php echo $this->cl_id ?>);
+			}
+		});
+
+	})
+</script>

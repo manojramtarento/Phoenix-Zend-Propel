@@ -1,0 +1,44 @@
+<!--
+    See http://developer.yahoo.com/ypatterns/pattern.php?pattern=itempagination
+-->
+<div class="pagination">
+    <?php
+    if ($this->pageCount) {
+        // 34802 : adaptation les valeurs de pagination pour Mysql et sql server
+        $iLastItemNumber = ($this->lastItemNumber > $this->totalItemCount ? $this->totalItemCount : $this->lastItemNumber);
+
+        if (isset($this->isSqlServerPaginate) && $this->isSqlServerPaginate) {
+            $iFirstItemNumber = $iLastItemNumber - $this->itemCountPerPage;
+        } else {
+            $iFirstItemNumber = $this->firstItemNumber - 1;
+        }
+        $iFirstItemNumber = ($iFirstItemNumber >= 1) ? $iFirstItemNumber : 1;
+        ?>
+        <!-- First page link -->
+        <?php if (isset($this->previous)) { ?>
+            <a href="<?php echo $this->url(array('page' => $this->first)) . '?' . $_SERVER['QUERY_STRING']; ?>" class="page-first" title="Première page">
+                &lt;&lt;
+            </a>
+            <a href="<?php echo $this->url(array('page' => $this->previous)) . '?' . $_SERVER['QUERY_STRING']; ?>" class="page-prev" title="Page précédente">
+                &lt;
+            </a>
+        <?php } ?>
+
+        <span class="page-current"><?php echo $iFirstItemNumber; ?> à <?php echo $iLastItemNumber; ?></span>
+        <span class="page-total">sur <?php echo $this->totalItemCount; ?></span>
+
+        <!-- Next page link -->
+        <?php if (isset($this->next)) { ?>
+            <a href="<?php echo $this->url(array('page' => $this->next)) . '?' . $_SERVER['QUERY_STRING']; ?>" class="page-next" title="Page suivante">
+                &gt;
+            </a>
+            <a href="<?php echo $this->url(array('page' => $this->last)) . '?' . $_SERVER['QUERY_STRING']; ?>" class="page-last" title="Dernière page">
+                &gt;&gt;
+            </a>
+            <?php } ?>
+
+
+        <?php } else { ?>
+            Pas de résultat
+        <?php } ?>
+</div>

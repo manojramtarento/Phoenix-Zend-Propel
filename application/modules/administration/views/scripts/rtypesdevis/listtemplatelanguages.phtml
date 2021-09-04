@@ -1,0 +1,15 @@
+<table class="list list-simple">
+    <tbody>
+        <tr>
+            <th><span class="notsortable"><?php echo $this->translate('label_languages'); ?></span></th>
+        </tr>
+        <?php
+        foreach ($this->templateLanguages as $oLanguage):
+            ?>
+            <tr class="">
+                <td><?php echo $oLanguage->getRLangLibelle() ?></td>
+            </tr>
+        <?php endforeach; ?>
+
+    </tbody>
+</table>

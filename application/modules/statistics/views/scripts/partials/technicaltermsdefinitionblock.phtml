@@ -1,0 +1,50 @@
+<div class="definition-data-block">
+    <div class="simple-data-block-title">
+        <span><?php echo $this->translate('label_definitions'); ?>*</span>
+    </div>
+    <div class="definitions-container">
+        <div class="definition-block definition-block-first-element">
+            <div class="term-libelle"><?php echo $this->translate('label_participation_rate') . ' :'; ?></div>
+            <div class="term-definition"><?php echo $this->translate('text_definitions_participation_rate'); ?>.</div>
+        </div>
+        <div class="definition-block">
+            <div class="term-libelle"><?php echo $this->translate('label_not_compliant') . ' :'; ?></div>
+            <div class="term-definition"><?php echo $this->translate('text_definitions_participant_not_compliant'); ?>.</div>
+        </div>
+        <div class="definition-block">
+            <div class="term-libelle"><?php echo $this->translate('label_consumer_contacts') . ' :'; ?></div>
+            <div class="term-definition">
+                <?php echo $this->translate('text_definitions_consumer_contacts'); ?>.</div>
+        </div>
+        <div class="definition-block">
+            <div class="term-libelle"><?php echo $this->translate('label_estimated_funds') . ' :'; ?></div>
+            <div class="term-definition">
+                <?php echo $this->translate('text_definitions_estimated_funds'); ?>.</div>
+        </div>
+        <div class="definition-block">
+            <div class="term-libelle"><?php echo $this->translate('label_invoiced_funds') . ' :'; ?></div>
+            <div class="term-definition">
+                <?php echo $this->translate('text_definitions_invoiced_funds'); ?>.</div>
+        </div>
+        <div class="definition-block">
+            <div class="term-libelle"><?php echo $this->translate('label_cashed_funds') . ' :'; ?></div>
+            <div class="term-definition">
+                <?php echo sprintf($this->translate('text_definitions_cashed_funds'),$this->getSettingValue(Settings::SETTING_KEY_COMPANY_NAME)); ?>.</div>
+        </div>
+        <div class="definition-block">
+            <div class="term-libelle"><?php echo $this->translate('label_dedicated_funds') . ' :'; ?></div>
+            <div class="term-definition">
+                <?php echo $this->translate('text_definitions_dedicated_funds'); ?>.</div>
+        </div>
+        <div class="definition-block">
+            <div class="term-libelle"><?php echo $this->translate('label_available_funds') . ' :'; ?></div>
+            <div class="term-definition">
+                <?php echo $this->translate('text_definitions_available_funds'); ?>.</div>
+        </div>
+        <div class="definition-block definition-block-last-element">
+            <div class="term-libelle"><?php echo $this->translate('label_out_of_process') . ' :'; ?></div>
+            <div class="term-definition">
+                <?php echo $this->translate('text_definitions_out_of_process'); ?>.</div>
+        </div>
+    </div>
+</div>

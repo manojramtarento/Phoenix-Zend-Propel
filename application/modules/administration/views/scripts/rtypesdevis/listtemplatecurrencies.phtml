@@ -1,0 +1,15 @@
+<table class="list list-simple">
+    <tbody>
+        <tr>
+            <th><span class="notsortable"><?php echo $this->translate('label_currencies'); ?></span></th>
+        </tr>
+        <?php
+        foreach ($this->templateCurrencies as $oCurrency):
+            ?>
+            <tr class="">
+                <td><?php echo $oCurrency->getRCurrencyLabel() ?></td>
+            </tr>
+        <?php endforeach; ?>
+
+    </tbody>
+</table>

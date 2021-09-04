@@ -1,0 +1,50 @@
+<!-- DIALOG / CHOIX DESTINATAIRES -->
+<form method="post" action="<?php echo $this->url(array('module' => 'operation', 'controller' => 'description', 'action' => 'majstatdestinataires')) ?>" id="id_form_destinataires">
+    <div class="form-section" style="height:220px;overflow:auto;">
+        <table class="list list-main">
+            <thead>
+                <tr>
+                    <th width="40" class="check-column"><input id="check_all_dest" type="checkbox" /></th>
+                    <th><span class="notsortable"><?php echo $this->translate('Nom'); ?></span></th>
+                    <th><span class="notsortable"><?php echo $this->translate('Prénom'); ?></span></th>
+                    <th><span class="notsortable"><?php echo $this->translate('e-mail'); ?></span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($this->contacts as $contact) { ?>
+                    <tr class="tr-check <?php echo $this->cycle(array('', 'alt'))->next() ?>">
+                        <td class="check-column">
+                            <input class="checkbox_dest" type="checkbox" name="ct_id[]" value="<?php echo $contact['ct_id'] ?>" <?php echo ($contact['send_mail'] == true ? 'checked="checked"' : '') ?>>
+                        </td>
+                        <td><?php echo $contact['ct_lastname'] ?></td>
+                        <td><?php echo $contact['ct_firstname'] ?></td>
+                        <td><?php echo $contact['ct_email'] ?></td>
+                    </tr>
+                <?php } ?>
+            </tbody>
+        </table>
+    </div>
+    <div class="form-section">
+        <div class="line form-line">
+            <label for="" class="form-label unit size1of1 lastUnit"><?php echo $this->translate('Autres destinataires (séparés par des virgules)'); ?> :</label>
+            <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'op_mails_dest', 'class' => 'form-input size1of1')); ?>
+        </div>
+    </div>
+    <div class="text-center">
+        <input type="hidden" name="op_id" value="<?php echo $this->op_id ?>" />
+        <input type="hidden" name="op_cl_id" value="<?php echo $this->op_cl_id ?>" />
+        <input type="hidden" name="submit_destinataires" value="1" />
+        <input type="submit" value="<?php echo $this->translate('Valider'); ?>" class="btn btn-orange" />
+    </div>
+</form>
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $('#id_form_destinataires').ajaxForm({divId: 'id_dialog_destinataires', 'success': refreshBtnDest});
+
+        $('#check_all_dest').bindCheckboxes('checkbox_dest');
+    })
+
+</script>

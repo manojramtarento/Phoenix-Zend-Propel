@@ -1,0 +1,144 @@
+<?php
+$this->headScript()->appendFile($this->baseUrl() . '/js/operation/listing/index.js');
+$this->title = $this->translate('Listing des devis et opérations');
+$this->headTitle($this->title);
+$bInitGedelogIsAllowed = Phoenix_Auth_User::mvcActionIsAllowed('operation','description','initgedelog');
+$bConsumeringDatesAreAllowed = Phoenix_Auth_User::getInstance()->isAllowed(AclFonctionnalites::CONSUMERING_DATES);
+$bEndDateIsAllowed = Phoenix_Auth_User::getInstance()->isAllowed(AclFonctionnalites::END_DATE);
+
+echo $this->FlashMessenger('error', 'popup');
+
+?>
+
+<div id="actions-bar">
+    <div class="unit size1of5">
+        <h1 class="page-title"><?php echo $this->title; ?></h1>
+        <a href="<?php echo $this->url(array('controller' => 'new'), null, false); ?>" class="btn btn-orange btn-big"><?php echo $this->translate('Nouveau devis'); ?></a>
+        <?php if(Phoenix_Auth_User::mvcActionIsAllowed('operation','new','import')){ ?>
+            <a href="<?php echo $this->url(array('module' => 'operation', 'controller' => 'new', 'action' => 'import'), null, true) ?>" class="btn btn-default btn-big"><?php echo $this->translate('import_operations'); ?></a>
+        <?php } ?>
+    </div>
+    <div class="unit size2of5">
+        <div class="search">
+            <form action="/operation/listing/index" method="get">
+                <input type="text" name="findword" class="form-input" value="<?php if (isset($_REQUEST["findword"])) echo $_REQUEST["findword"]; ?>" placeholder="<?php echo $this->translate('Rechercher'); ?>" autocomplete="off" />
+                <input type="submit" value="<?php echo $this->translate('OK'); ?>" class="btn btn-orange" />
+                <input type="button" value="<?php echo $this->translate('Recherche avancée'); ?>" class="btn btn-big btn-adsearch" id="btn_adsearch" />
+            </form>
+        </div>
+    </div>
+    <div class="unit size2of5">
+        <fieldset class="stats-op-fieldset large">
+            <legend><span class="title-icon icon-chart"></span></legend>
+            <table class="stats-op">
+                <thead>
+                    <tr>
+                        <th class="op-accepte"><?php echo $this->translate('Acceptés'); ?></th>
+                        <th class="op-encours"><?php echo $this->translate('En cours'); ?></th>
+                        <th class="op-refuse"><?php echo $this->translate('Refusés'); ?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="op-accepte"><?php echo $this->nb_accepte ?></td>
+                        <td class="op-encours"><?php echo $this->nb_en_cours ?></td>
+                        <td class="op-refuse"><?php echo $this->nb_refuses ?></td>
+                    </tr>
+                </tbody>
+            </table>
+        </fieldset>
+    </div>
+</div>
+<div id="site-content">
+    <div class="content-list">
+        <div class="list-actions">
+            <div class="unit col">
+                <a class="icon icon-32 icon-excel" href="<?php echo $this->url(array('format' => 'csv'), null, false) . '?' . $_SERVER['QUERY_STRING'] ?>" title="<?php echo $this->translate('Exporter au format Excel'); ?>"><?php echo $this->translate('Exporter au format Excel'); ?></a> <?php echo $this->translate('Simple'); ?>
+            </div>
+
+            <div class="unit col">
+                <?php
+                if ($this->paginator->getTotalItemCount() > OperationsQuery::COMPLETE_LISTING_MAX_LINES) {
+                    $sUrl = '#';
+                    $sOnClick = "alert('" . $this->translate('Trop de résultats pour un export complet (limite') . " : " . OperationsQuery::COMPLETE_LISTING_MAX_LINES . ")')";
+                } else {
+                    $sUrl = $this->url(array('format' => 'csv', 'complete_csv' => '1'), null, false) . '?' . $_SERVER['QUERY_STRING'];
+                    $sOnClick = '';
+                }
+                ?>
+                <a class="icon icon-32 icon-excel" href="<?php echo $sUrl; ?>" onclick="<?php echo $sOnClick; ?>" title="<?php echo $this->translate('Exporter au format Excel'); ?>"><?php echo $this->translate('Exporter au format Excel'); ?></a> <?php echo $this->translate('Complet'); ?>
+            </div>
+
+            <div class="unit rightUnit">
+                <div class="unit col">
+                    <?php echo $this->NotifySearch()->link() ?>
+                </div>
+                <div class="unit">
+                    <?php echo $this->paginationControl($this->paginator, 'Sliding', '/partials/pagination.phtml'); ?>
+                </div>
+            </div>
+        </div>
+        <table class="list list-main">
+            <thead>
+                <tr>
+                    <th width="4%">
+                        <?php echo My_View_Helper_Html::UrlOrderBy('op_status_id', $this->translate('Statut')) ?>
+                    </th>
+                    <th width="6%">
+                        <?php echo My_View_Helper_Html::UrlOrderBy('op_number', $this->translate('Numéro')) ?>
+                    </th>
+                    <th width="<?php echo $bConsumeringDatesAreAllowed ? '29':'39' ?>%">
+                        <?php echo My_View_Helper_Html::UrlOrderBy('op_libelle', $this->translate('Description')) ?>
+                    </th>
+                    <th width="5%">
+                        <?php echo My_View_Helper_Html::UrlOrderBy('nb_contrats', $this->translate('Contrat')) ?>
+                    </th>
+                    <th width="22%">
+                        <?php echo My_View_Helper_Html::UrlOrderBy('cl_libelle', $this->translate('Client')) ?>
+                    </th>
+                    <?php if ($bConsumeringDatesAreAllowed) { ?>
+                    <th width="5%">
+                        <?php echo My_View_Helper_Html::UrlOrderBy('op_dateConso_start', $this->translate('Début conso')) ?>
+                    </th>
+                    <th width="5%">
+                        <?php echo My_View_Helper_Html::UrlOrderBy('op_dateConso_end', $this->translate('Fin conso')) ?>
+                    </th>
+                    <?php } ?>
+                    <th width="18%">
+                        <?php echo My_View_Helper_Html::UrlOrderBy('type', $this->translate('Typologie OP')) ?>
+                    </th>
+                    <th width="6%">
+                        <?php echo My_View_Helper_Html::UrlOrderBy('dc', $this->translate('DC')) ?>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($this->paginator as $operation) { ?>
+                    <tr class="<?php echo $this->cycle(array('', 'alt'))->next() ?>" data-href="<?php echo $this->url(array('module' => 'operation', 'controller' => 'description', 'action' => 'index', 'op_id' => $operation['op_id']), null, true) ?>">
+                        <td align="center"><?php echo Phoenix_View_Helper_Html::getOperationStatusIcon((int) $operation['op_status_id']); ?></td>
+                        <td align="center"><?php echo $operation['op_number']; ?></td>
+                        <td><?php echo $operation['op_libelle']; ?></td>
+                        <td align="center"><?php echo Phoenix_View_Helper_Html::getContratStatusIcon($operation['nb_contrats']) ?></td>
+                        <td class="column-secondary">
+                            <div class="media">
+                                <div class="media-img">
+                                    <?php echo Phoenix_View_Helper_Html::getClientLogo($operation['op_cl_id'], array('width' => 40)); ?>
+                                </div>
+                                <div class="media-bd">
+                                    <?php echo $operation['cl_libelle']; ?>
+                                </div>
+                            </div>
+                        </td>
+                        <?php if($bConsumeringDatesAreAllowed) { ?>
+                        <td class="column-secondary"><?php echo Phoenix_Data_Convert::formatDate($operation['op_dateConso_start']) ?></td>
+                        <td class="column-secondary"><?php echo Phoenix_Data_Convert::formatDate($operation['op_dateConso_end']) ?></td>
+                        <?php } ?>
+                        <td class="column-secondary"><?php echo $operation['type']; ?></td>
+                        <td class="column-secondary"><?php echo $operation['dc']; ?></td>
+                    </tr>
+                <?php } ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+<?php echo $this->partial('listing/advanced-search.phtml',$this) ?>

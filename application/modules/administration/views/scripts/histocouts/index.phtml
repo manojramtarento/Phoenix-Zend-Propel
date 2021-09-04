@@ -1,0 +1,205 @@
+<?php $this->title = $this->translate('Saisies des coûts'); ?>
+
+<div id="actions-bar">
+    <div class="unit size1of5">
+        <h1 class="page-title"><?php echo $this->title; ?></h1>
+    </div>
+    <div class="unit size2of5">
+        <div class="search">
+            <input type="button" value="<?php echo $this->translate('Recherche avancée'); ?>" class="btn btn-big btn-adsearch" id="btn_adsearch" />
+
+        </div>
+    </div>
+
+
+
+</div>
+
+
+<div id="site-content">
+    <div class="content-list">
+        <div class="list-actions">
+            <div class="unit col">
+                <a class="icon icon-32 icon-excel" href="<?php echo $this->url(array('format' => 'csv'), null, false) . '?' . $_SERVER['QUERY_STRING'] ?>" title="<?php echo $this->translate('Exporter au format Excel'); ?>"><?php echo $this->translate('Exporter au format Excel'); ?></a>
+            </div>
+
+            <div class="unit rightUnit">
+                <div class="unit col">
+                    <?php echo $this->NotifySearch()->link() ?>
+                </div>
+                <div class="unit">
+                    <?php echo $this->paginationControl($this->paginator, 'Sliding', '/partials/pagination.phtml'); ?>
+                </div>
+            </div>
+        </div>
+
+
+        <table class="list list-main">
+            <thead>
+                <tr>
+                    <th width="">
+                        <?php echo My_View_Helper_Html::UrlOrderBy('date_create', $this->translate('Date')) ?>
+                    </th>
+                    <th width="">
+                        <?php echo My_View_Helper_Html::UrlOrderBy('op_number', $this->translate('No Opération')) ?>
+                    </th>
+                    <th width="">
+                        <?php echo My_View_Helper_Html::UrlOrderBy('op_r_prest_id', $this->translate('ID Prestation')) ?>
+                    </th>
+                    <th width="">
+                        <?php echo My_View_Helper_Html::UrlOrderBy('op_prest_libelle', $this->translate('Nom Prestation')) ?>
+                    </th>
+                    <th width="">
+                        <?php echo My_View_Helper_Html::UrlOrderBy('r_couts_nature_name', $this->translate('Type coût')) ?>
+                    </th>
+                    <th width="">
+                        <?php echo My_View_Helper_Html::UrlOrderBy('histo_couts_value', $this->translate('Valeur')) ?>
+                    </th>
+                    <th width="">
+                        <?php echo My_View_Helper_Html::UrlOrderBy('user_name', $this->translate('Utilisateur')) ?>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($this->paginator as $cout) { ?>
+                    <tr class="<?php echo $this->cycle(array('', 'alt'))->next() ?>" >
+                        <td><?php echo $cout['date_create_fr'] ?></td>
+                        <td><?php echo $cout['op_number'] ?></td>
+                        <td><?php echo $cout['op_r_prest_id'] ?></td>
+                        <td><?php echo $cout['op_prest_libelle'] ?></td>
+                        <td><?php echo $cout['r_couts_nature_name'] ?></td>
+                        <td><?php echo $cout['histo_couts_value'] ?></td>
+                        <td><?php echo $cout['user_name'] ?></td>
+                    </tr>
+                <?php } ?>
+            </tbody>
+        </table>
+
+
+    </div>
+
+</div>
+
+
+
+<div id="id_dialog_search" title="<?php echo $this->translate('Recherche avancée'); ?>" style="display:none;">
+    <form action="" method="get" style="border:1px black">
+        <div class="line unit  size1of2">
+            <div class="col">
+                <div class="line form-line">
+                    <label class="unit size1of2 form-label" for="id_find_user_id_autocomplete"><?php echo $this->translate('Utilisateur'); ?> :</label>
+                    <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_user_id', 'type' => 'hidden')) ?>
+                    <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'find_user_id_autocomplete', 'class' => 'unit size2of5 form-input input-autocomplete lastUnit')) ?>
+                </div>
+
+                <div class="line form-line">
+                    <label class="unit size1of2 form-label" for="id_find_groups_autocomplete"><?php echo $this->translate('Groupe'); ?> :</label>
+                    <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_groups', 'type' => 'hidden')) ?>
+                    <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'find_groups_autocomplete', 'class' => 'unit size2of5 form-input input-autocomplete lastUnit')) ?>
+                </div>
+
+                <div class="line form-line">
+                    <label class="unit size1of2 form-label" for="id_find_op_number_autocomplete"><?php echo $this->translate('N° opération'); ?> :</label>
+                    <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_op_id', 'type' => 'hidden')) ?>
+                    <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'find_op_number_autocomplete', 'class' => 'unit size2of5 form-input input-autocomplete lastUnit')) ?>
+                </div>
+
+
+                <div class="section">
+                    <div class="section-hd">
+                        <h2 class="section-title"><?php echo $this->translate('Date d\'enregistrement'); ?></h2>
+                    </div>
+                    <div class="section-bd">
+                        <div class="line form-line">
+                            <div class="line form-line">
+                                <div class="unit size1of2 date">
+                                    <?php echo $this->translate('Date min'); ?>. :
+                                </div>
+                                <div class="unit size1of2 date">
+                                    <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_date_create_min', 'class' => 'date-input', 'placeholder' => $this->translate('JJ/MM/AAAA'), 'maxlenght' => '10')); ?>
+                                </div>
+                            </div>
+                            <div class="line form-line">
+                                <div class="unit size1of2 date">
+                                    <?php echo $this->translate('Date max'); ?>. :
+                                </div>
+                                <div class="unit  date">
+                                    <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_date_create_max', 'class' => 'date-input', 'placeholder' => $this->translate('JJ/MM/AAAA'), 'maxlenght' => '10')); ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="line unit lastunit size1of2">
+
+            <div class="section">
+                <div class="section-hd">
+                    <h2 class="section-title"><?php echo $this->translate('Nature du coût'); ?></h2>
+                </div>
+                <div class="section-bd">
+                    <div class="line form-line">
+                        <label class="unit size1of2 form-label" for="id_find_r_couts_nature_id"><?php echo $this->translate('Estimé interne'); ?> :</label>
+                        <?php echo Phoenix_View_Helper_Html::checkbox(array('name' => 'find_r_couts_nature_id[]', 'value' => RCoutsNature::ESTIM_INT, 'class' => 'unit size2of5 form-checkbox input-autocomplete lastUnit')) ?>
+                    </div>
+                    <div class="line form-line">
+                        <label class="unit size1of2 form-label" for="id_find_r_couts_nature_id"><?php echo $this->translate('Estimé externe'); ?> :</label>
+                        <?php echo Phoenix_View_Helper_Html::checkbox(array('name' => 'find_r_couts_nature_id[]', 'value' => RCoutsNature::ESTIM_EXT, 'class' => 'unit size2of5 form-checkbox input-autocomplete lastUnit')) ?>
+                    </div>
+                    <div class="line form-line">
+                        <label class="unit size1of2 form-label" for="id_find_r_couts_nature_id"><?php echo $this->translate('Réel interne'); ?> :</label>
+                        <?php echo Phoenix_View_Helper_Html::checkbox(array('name' => 'find_r_couts_nature_id[]', 'value' => RCoutsNature::REEL_INT, 'class' => 'unit size2of5 form-checkbox input-autocomplete lastUnit')) ?>
+                    </div>
+                    <div class="line form-line">
+                        <label class="unit size1of2 form-label" for="id_find_r_couts_nature_id"><?php echo $this->translate('Réel externe'); ?> :</label>
+                        <?php echo Phoenix_View_Helper_Html::checkbox(array('name' => 'find_r_couts_nature_id[]', 'value' => RCoutsNature::REEL_EXT, 'class' => 'unit size2of5 form-checkbox input-autocomplete lastUnit')) ?>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center">
+                <input type="submit" name="findbyfields" value="<?php echo $this->translate('Rechercher'); ?>" class="btn btn-orange">
+            </div>
+    </form>
+</div>
+
+
+<script language="javascript">
+
+    $(document).ready(function () {
+        $('#btn_adsearch').click(function (e) {
+            $('#id_dialog_search').dialog({
+                width: 900,
+                modal: true,
+                resizable: false
+            });
+        });
+
+        // changement du user basé sur recherche avec autocompletion
+        $('#id_find_user_id_autocomplete').AjaxAutocomplete({
+            url: baseUrl + '/common/autocomplete/user',
+            minLength: 3,
+            restrictive: true,
+            bindFieldId: 'id_find_user_id'
+        });
+
+        // changement du user basé sur recherche avec autocompletion
+        $('#id_find_groups_autocomplete').AjaxAutocomplete({
+            url: baseUrl + '/common/autocomplete/groupad',
+            minLength: 3,
+            restrictive: true,
+            bindFieldId: 'id_find_groups'
+        });
+
+        // changement du user basé sur recherche avec autocompletion
+        $('#id_find_op_number_autocomplete').AjaxAutocomplete({
+            url: baseUrl + '/common/autocomplete/operation',
+            minLength: 3,
+            restrictive: true,
+            bindFieldId: 'id_find_op_id'
+        });
+
+    })
+
+</script>

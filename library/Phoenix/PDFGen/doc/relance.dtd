@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!ELEMENT root (data, factures)>
+    <!ELEMENT data (first_page, last_page)>
+        <!ELEMENT first_page (contact_client, nom_client, adresse_1, adresse_2, adresse_3, code_postal,
+ville, pays, lieu_relance, date_relance, num_relance, ref_relance, title, lettre_recommandee)>
+            <!ELEMENT contact_client (#PCDATA) >
+            <!ELEMENT nom_client (#PCDATA) >
+            <!ELEMENT adresse_1 (#PCDATA) >
+            <!ELEMENT adresse_2 (#PCDATA) >
+            <!ELEMENT adresse_3 (#PCDATA) >
+            <!ELEMENT code_postal (#PCDATA) >
+            <!ELEMENT ville (#PCDATA) >
+            <!ELEMENT pays (#PCDATA) >
+            <!ELEMENT lieu_relance (#PCDATA) >
+            <!ELEMENT date_relance (#PCDATA) >
+            <!ELEMENT num_relance (#PCDATA) >
+            <!ELEMENT ref_relance (#PCDATA) >
+            <!ELEMENT title (#PCDATA) >
+			<!ELEMENT lettre_recommandee (#PCDATA) >
+
+        <!ELEMENT last_page (num_tva) >
+            <!ELEMENT num_tva (#PCDATA) >
+
+    <!ELEMENT factures (facture*)>
+        <!ELEMENT facture (num_facture, date_facture, echeance_facture, num_ope, libelle_ope, montant_facture_total, montant_facture_restant)>
+            <!ELEMENT num_facture (#PCDATA) >
+            <!ELEMENT date_facture (#PCDATA) >
+            <!ELEMENT echeance_facture (#PCDATA) >
+            <!ELEMENT num_ope (#PCDATA) >
+            <!ELEMENT libelle_ope (#PCDATA) >
+            <!ELEMENT montant_facture_total (#PCDATA) >
+            <!ELEMENT montant_facture_restant (#PCDATA) >

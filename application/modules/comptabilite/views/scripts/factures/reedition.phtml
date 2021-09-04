@@ -1,0 +1,82 @@
+<form action="" method="get" id="id_form_edition">
+    <input type="hidden" name="fact_id" value="<?php echo $this->getParam('fact_id') ?>" />
+    <input type="hidden" name="cl_id" value="<?php echo $this->getParam('cl_id') ?>" />
+    <input type="hidden" name="op_id" value="<?php echo $this->getParam('op_id') ?>" />
+
+    <div class="line form-line" >
+        <label class="unit size1of2 form-label" for=""><?php echo $this->translate('Facture'); ?> :</label>
+        <?php echo $this->fact_reference ?>
+    </div>
+    <div class="line form-line">
+        <label class="unit size1of2 form-label" for=""><?php echo $this->translate('Nom du contact de facturation'); ?> :</label>
+        <!-- //32655 MAJ de la syntaxe de concaténation nom prénom pour MySQL-->
+        <?php echo Phoenix_View_Helper_Html::selectFromTable('contacts', array('name' => 'ct_id', 'value' => $this->ct_id, 'class' => 'form-select unit size1of2 lastUnit'), array('name' => "CONCAT(COALESCE(ct_firstname, ''),' ',COALESCE(ct_lastname, ''))", 'value' => 'ct_id'), array('clause_where' => "cl_id='" . $this->getParam('cl_id') . "'")); ?>
+        <input type="hidden" name="fact_attention" value="<?php echo $this->fact_attention ?>">
+    </div>
+    <div class="line form-line">
+        <label class="unit size1of2 form-label" for=""><?php echo $this->translate('Adresse  1 du site à facturer'); ?> :</label>
+        <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'fact_adresse1', 'value' => $this->fact_adresse1)) ?>
+    </div>
+    <div class="line form-line">
+        <label class="unit size1of2 form-label" for=""><?php echo $this->translate('Adresse  2 du site à facturer'); ?> :</label>
+        <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'fact_adresse2', 'value' => $this->fact_adresse2)) ?>
+    </div>
+    <div class="line form-line">
+        <label class="unit size1of2 form-label" for=""><?php echo $this->translate('Adresse  3 du site à facturer'); ?> :</label>
+        <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'fact_adresse3', 'value' => $this->fact_adresse3)) ?>
+    </div>
+    <div class="line form-line">
+        <label class="unit size1of2 form-label" for=""><?php echo $this->translate('Code postal du site à facturer'); ?> :</label>
+        <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'fact_code_postal', 'value' => $this->fact_code_postal)) ?>
+    </div>
+    <div class="line form-line">
+        <label class="unit size1of2 form-label" for=""><?php echo $this->translate('Ville du site à facturer'); ?> :</label>
+        <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'fact_ville', 'value' => $this->fact_ville)) ?>
+    </div>
+    <div class="line form-line">
+        <label class="unit size1of2 form-label" for=""><?php echo $this->translate('Pays du site à facturer'); ?> :</label>
+        <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'fact_pays', 'value' => $this->fact_pays)) ?>
+    </div>
+    <div class="line form-line">
+        <label class="form-label" for=""><?php echo $this->translate('Mentions spécifiques à ajouter sur la facture'); ?> :</label>
+    </div>
+    <div class="line form-section">
+        <?php echo Phoenix_View_Helper_Html::textarea(array('name' => 'fact_mention_spec', 'value' => $this->fact_mention_spec, 'cols' => 60, 'rows' => 4, 'class' => 'form-textarea unit size1of1 lastUni')); ?>
+    </div>
+    <div class="line form-line">
+        <label class="unit size1of2 form-label" for="id_send_mail"><?php echo $this->translate('Envoi de la facture par mail à'); ?> <?php echo $this->ct_mail ?>:</label>
+
+        <?php if (!$this->has_contact_fact) { ?>
+            <?php echo Phoenix_View_Helper_Html::checkbox(array('name' => 'send_mail', 'disabled' => 'disabled')) ?>
+            <span class="error-msg"><?php echo $this->translate('Le contact de facturation n\'a pas d\'adresse mail renseigné'); ?></span>
+        <?php } else { ?>
+            <?php echo Phoenix_View_Helper_Html::checkbox(array('name' => 'send_mail'), array('checked' => $this->bAutoCheckSendEmail)) ?>
+        <?php } ?>
+    </div>
+    <div class="text-center">
+        <input type="submit" value="<?php echo $this->translate('Valider'); ?>" class="btn btn-orange">
+        <input type="button" value="<?php echo $this->translate('Annuler'); ?>" id="id_btn_annuler" class="btn btn-orange">
+    </div>
+</form>
+
+
+<script language="javascript">
+    $(document).ready(function(){
+
+        $('#id_ct_id').change(function(){
+            AjaxComponent.ajaxDiv('/comptabilite/factures/reedition/view_site/1', $('#id_form_edition').serialize(), 'id_popup_redition');
+        })
+
+    $('#id_form_edition').ajaxForm({action:'/comptabilite/factures/reedition/submit/1',divId:'id_popup_redition',
+            success:function(){
+                $("#id_popup_redition").dialog({close:function(){Component.refreshPage()}})
+            }
+        });
+
+            $('#id_btn_annuler').click(function(){
+            $('#id_popup_redition').dialog('close');
+        })
+
+    })
+
+</script>

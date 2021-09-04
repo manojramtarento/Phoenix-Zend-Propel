@@ -1,0 +1,45 @@
+<div>
+    <form id="id_form_jdv">
+        <div class="line">
+            <div class="unit size1of1">
+                <div class="section">
+                    <div class="section-hd">
+                        <h2 class="section-title"><?php echo $this->translate('Dates');?></h2>
+                    </div>
+                    <div class="section-bd">
+                        <div class="line form-line">
+                            <label class="unit size1of2 form-label" for="id_find_fact_date_min"><?php echo $this->translate('Date début');?> :</label>
+                            <div class="unit size1of2 date">
+                                <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_fact_date_min', 'class' => 'date-input', 'placeholder' => 'JJ/MM/AAAA', 'maxlenght' => '10')); ?>
+                            </div>
+                        </div>
+                        <div class="line form-line">
+                            <label class="unit size1of2 form-label" for="id_find_fact_date_max"><?php echo $this->translate('Date fin');?> :</label>
+                            <div class="unit size1of2 date">
+                                <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_fact_date_max', 'class' => 'date-input', 'placeholder' => 'JJ/MM/AAAA', 'maxlenght' => '10')); ?>
+                            </div>
+                        </div>
+                        <div class="line form-line">
+                            <div class="unit push2of3 size1of3 date">
+                                <input type="submit" class="btn btn-orange" name="submit_jdv">
+                            <div class="unit size1of3 date">
+                            <input type="hidden" value="1" name="export" >
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script language="javascript">
+    
+    $(document).ready(function(){
+        
+        Component.bindDatepickers();
+        
+        $('#id_form_jdv').ajaxForm({action:'/comptabilite/factures/genjdv',divId:'id_div_jdv'});
+        
+    })
+    
+</script>

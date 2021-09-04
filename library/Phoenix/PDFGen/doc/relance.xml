@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root SYSTEM "relance.dtd">
+<root>
+    <data>
+        <first_page>
+            <contact_client>Sophie CRISTOL</contact_client>
+            <nom_client>HASBRO</nom_client>
+            <adresse_1>FOURNISSEURS COMPTABILITE</adresse_1>
+            <adresse_2>Savoie Technolac</adresse_2>
+            <adresse_3></adresse_3>
+            <code_postal>73378</code_postal>
+            <ville>Le Bourget du Lac</ville>
+            <pays></pays>
+            <lieu_relance>Rousset</lieu_relance>
+			<date_relance>27/04/2011</date_relance>
+            <num_relance>2</num_relance>
+			<ref_relance>R2/2176</ref_relance>
+			<title>Première relance</title>
+			<lettre_recommandee>1</lettre_recommandee>
+        </first_page>
+        <last_page></last_page>
+    </data>
+    
+    <factures>
+        <facture>
+            <num_facture>312137</num_facture>
+            <date_facture>30/12/2003</date_facture>
+            <echeance_facture>29/01/2004</echeance_facture>
+            <num_ope>1717</num_ope>
+            <libelle_ope>JEU BP BIENVENUE FORD FOCUS CM</libelle_ope>
+            <montant_facture_total>169.39</montant_facture_total>
+            <montant_facture_restant>169.39</montant_facture_restant>
+        </facture>
+        <facture>
+            <num_facture>312137</num_facture>
+            <date_facture>30/12/2003</date_facture>
+            <echeance_facture>29/01/2004</echeance_facture>
+            <num_ope>1717</num_ope>
+            <libelle_ope>JEU BP BIENVENUE FORD FOCUS CM</libelle_ope>
+            <montant_facture_total>1284.50</montant_facture_total>
+            <montant_facture_restant>169.39</montant_facture_restant>
+        </facture>
+        <facture>
+            <num_facture>312137</num_facture>
+            <date_facture>30/12/2003</date_facture>
+            <echeance_facture>29/01/2004</echeance_facture>
+            <num_ope>1717</num_ope>
+            <libelle_ope>JEU BP BIENVENUE FORD FOCUS CM</libelle_ope>
+            <montant_facture_total>169.39</montant_facture_total>
+            <montant_facture_restant>169.39</montant_facture_restant>
+        </facture>
+        <facture>
+            <num_facture>312137</num_facture>
+            <date_facture>30/12/2003</date_facture>
+            <echeance_facture>29/01/2004</echeance_facture>
+            <num_ope>1717</num_ope>
+            <libelle_ope>JEU BP BIENVENUE FORD FOCUS CM</libelle_ope>
+            <montant_facture_total>1284.50</montant_facture_total>
+            <montant_facture_restant>500.00</montant_facture_restant>
+        </facture>
+        <facture>
+            <num_facture>312137</num_facture>
+            <date_facture>30/12/2003</date_facture>
+            <echeance_facture>29/01/2004</echeance_facture>
+            <num_ope>1717</num_ope>
+            <libelle_ope>JEU BP BIENVENUE FORD FOCUS CM</libelle_ope>
+            <montant_facture_total>169.39</montant_facture_total>
+            <montant_facture_restant>0</montant_facture_restant>
+        </facture>
+        <facture>
+            <num_facture>312137</num_facture>
+            <date_facture>30/12/2003</date_facture>
+            <echeance_facture>29/01/2004</echeance_facture>
+            <num_ope>1717</num_ope>
+            <libelle_ope>JEU BP BIENVENUE FORD FOCUS CM</libelle_ope>
+            <montant_facture_total>1284.50</montant_facture_total>
+            <montant_facture_restant>0</montant_facture_restant>
+        </facture>
+        <facture>
+            <num_facture>312137</num_facture>
+            <date_facture>30/12/2003</date_facture>
+            <echeance_facture>29/01/2004</echeance_facture>
+            <num_ope>1717</num_ope>
+            <libelle_ope>JEU BP BIENVENUE FORD FOCUS CM</libelle_ope>
+            <montant_facture_total>169.39</montant_facture_total>
+            <montant_facture_restant>169.39</montant_facture_restant>
+        </facture>
+        <facture>
+            <num_facture>312137</num_facture>
+            <date_facture>30/12/2003</date_facture>
+            <echeance_facture>29/01/2004</echeance_facture>
+            <num_ope>1717</num_ope>
+            <libelle_ope>JEU BP BIENVENUE FORD FOCUS CM</libelle_ope>
+            <montant_facture_total>1284.50</montant_facture_total>
+            <montant_facture_restant>1284.50</montant_facture_restant>
+        </facture>
+    </factures>
+</root>

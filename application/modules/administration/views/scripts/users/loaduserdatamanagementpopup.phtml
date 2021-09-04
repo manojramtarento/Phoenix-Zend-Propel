@@ -1,0 +1,53 @@
+<form id="user-form" action="<?php echo $this->url(array('module' => 'administration', 'controller' => 'users', 'action' => $this->user?'saveuserdata':'create')) ?>" method="post">
+    <?php 
+    if($this->user) {
+        echo Phoenix_View_Helper_Html::input(array('type' => 'hidden', 'name' => 'user_id', 'value' => $this->user->getUserId())); 
+    } ?>
+    <div class="line form-line">
+        <label class="unit size1of3 form-label" for='id-user-lastname'><?php echo $this->translate('label_user_login'); ?> :</label>
+        <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'id' => 'id-user-login', 'name' => 'user_login', 'disabled' => $this->userCreationAllowed?false:'true', 'class' => 'unit size2of3 form-input lastUnit', 'value' => $this->user?$this->user->getUserLogin():'')) ?>
+    </div>
+    <div class="line form-line">
+        <label class="unit size1of3 form-label" for='id-user-lastname'><?php echo $this->translate('label_user_lastname'); ?> :</label>
+        <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'id' => 'id-user-lastname', 'name' => 'user_nom', 'disabled' => $this->userCreationAllowed?false:'true', 'class' => 'unit size2of3 form-input lastUnit', 'value' => $this->user?$this->user->getUserNom():'')) ?>
+    </div>
+    <div class="line form-line">
+        <label class="unit size1of3 form-label" for='id-user-firstname'><?php echo $this->translate('label_user_firstname'); ?> :</label>
+        <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'id' => 'id-user-firstname', 'disabled' => $this->userCreationAllowed?false:'true', 'name' => 'user_prenom', 'class' => 'unit size2of3 form-input lastUnit', 'value' => $this->user?$this->user->getUserPrenom():'')) ?>
+    </div>
+
+    <div class="line form-line">
+        <label class="unit size1of3 form-label" for='id-user-mail'><?php echo $this->translate('label_user_email'); ?> :</label>
+        <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'id' => 'id-user-mail', 'disabled' => $this->userCreationAllowed?false:'true', 'name' => 'user_mail', 'class' => 'unit size2of3 form-input lastUnit', 'value' => $this->user?$this->user->getUserMail():'')) ?>
+    </div>
+
+    <div class="line form-line">
+        <label class="unit size1of3 form-label" for='id-user-phone'><?php echo $this->translate('label_user_phone'); ?> :</label>
+        <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'id' => 'id-user-phone', 'disabled' => $this->userCreationAllowed?false:'true', 'name' => 'user_phone', 'class' => 'unit size2of3 form-input lastUnit', 'value' => $this->user?$this->user->getUserPhone():'')) ?>
+    </div>
+
+    <div class="line form-line">
+        <label class="unit size1of3 form-label" for='id-user-mobile'><?php echo $this->translate('label_user_mobile'); ?> :</label>
+        <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'id' => 'id-user-mobile', 'name' => 'user_mobile', 'disabled' => $this->userCreationAllowed?false:'true', 'class' => 'unit size2of3 form-input lastUnit', 'value' => $this->user?$this->user->getUserMobile():'')) ?>
+    </div>
+
+    <div class="line form-line">
+        <label class="unit size1of3 form-label" for='id-user-language'><?php echo $this->translate('label_user_language'); ?> :</label>
+        <?php echo My_View_Helper_Html::select(array('id' => 'id-user-language', 'name' => 'user_language', 'value' => $this->user?$this->user->getUserLanguage():'', 'class' => 'unit size1of5 form-select lastUnit'), $this->selectListLanguages, array('default_label' => $this->translate('Choisir') . '...')) ?>
+    </div>
+    <div class="line form-line">
+        <label class="unit size1of3 form-label" for='id-user-r-user-type-id'><?php echo $this->translate('label_user_type'); ?> :</label>
+        <?php echo Phoenix_View_Helper_Html::selectFromTable('r_user_types', array('name' => 'r_user_type_id', 'id' => 'id-user-r-user-type-id', 'value' => $this->user?$this->user->getRUserTypeId():'', 'class' => 'unit size1of2 form-select lastUnit'), array('name' => 'r_user_type_full_name', 'value' => 'r_user_type_id'), array('default_label' => $this->translate('Choisir') . '...')) ?>
+    </div>
+    
+    <?php if($this->userCreationAllowed) { ?>
+    <div class="line form-line">
+        <label class="unit size1of3 form-label" for='id-user-mobile'><?php echo $this->translate('label_user_password'); ?> :</label>
+        <?php echo Phoenix_View_Helper_Html::input(array('type' => 'password', 'id' => 'id-user-password', 'name' => 'user_password','autocomplete' => 'off', 'class' => 'unit size2of3 form-input lastUnit', 'value' => '')) ?>
+    </div>
+    <?php } ?>
+
+    <div class="text-center">
+        <input type="submit" value="<?php echo $this->translate('Valider'); ?>" class="btn btn-orange">
+    </div>
+</form>

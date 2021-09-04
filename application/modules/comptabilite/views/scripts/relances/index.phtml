@@ -1,0 +1,262 @@
+<?php
+$this->title = $this->translate('Gestion des relances');
+$this->headTitle($this->title);
+echo $this->flashMessenger('error');
+echo $this->flashMessenger('default');
+?>
+<div id="actions-bar">
+    <div class="unit size1of5">
+        <h1 class="page-title"><?php echo $this->title; ?></h1>
+    </div>
+    <div class="unit size2of5">
+        <div class="search">
+            <form action="" method="get">
+                <input type="text" name="findword" class="form-input" value="<?php if (isset($_REQUEST["findword"])) echo $_REQUEST["findword"]; ?>" placeholder="<?php echo $this->translate('Rechercher'); ?>" autocomplete="off" />
+                <input type="submit" value="OK" class="btn btn-orange" />
+                <input type="button" value="<?php echo $this->translate('Recherche avancée'); ?>" class="btn btn-big btn-adsearch" id="btn_adsearch" />
+            </form>
+        </div>
+    </div>
+    <div class="unit size2of5">
+        <fieldset class="stats-op-fieldset large">
+            <legend><span class="title-icon icon-chart"></span></legend>
+            <table class="stats-op">
+                <thead>
+                    <tr>
+                        <th class="op-accepte size1of3"><?php echo $this->translate('Validée'); ?></th>
+                        <th class="op-encours size1of3"><?php echo $this->translate('Éditée'); ?></th>
+                        <th class="op-refuse size1of3"><?php echo $this->translate('Encaissée'); ?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="op-accepte"><?php echo Phoenix_Data_Convert::formatMoney($this->montant_valide); ?> </td>
+                        <td class="op-encours"><?php echo Phoenix_Data_Convert::formatMoney($this->montant_edite); ?> </td>
+                        <td class="op-refuse"><?php echo Phoenix_Data_Convert::formatMoney($this->montant_encaisse); ?> </td>
+                    </tr>
+                </tbody>
+            </table>
+        </fieldset>
+    </div>
+</div>
+<div id="site-content">
+    <div class="content-list">
+        <form method="post" action="<?php echo $this->url(array('action' => 'edition')) ?>">
+            <div class="list-actions">
+                <div class="unit col">
+                    <a class="icon icon-32 icon-excel" href="<?php echo $this->url(array('format' => 'csv'), null, false) . '?' . $_SERVER['QUERY_STRING'] ?>" title="<?php echo $this->translate('Exporter au format Excel'); ?>"><?php echo $this->translate('Exporter au format Excel'); ?></a>
+                </div>
+                <div class="unit col">
+                    <input type="submit" class="btn btn-orange btn-big" value="<?php echo $this->translate('Éditer'); ?>" />
+                </div>
+                <div class="unit col">
+                    <input type="button" class="btn btn-orange btn-big" id="id_submit_desedition" name="submit_desedition" value="<?php echo $this->translate('Déséditer'); ?>" />
+                </div>
+                <div class="unit col">
+                    <input type="button" id="btn_recalcul_relances" class="btn btn-orange btn-big" onclick="javascript:recalculateRelances()"  value="<?php echo $this->translate('Recalculer'); ?>" class="btn btn-orange"/>
+                </div>
+                <div class="unit rightUnit">
+                    <div class="unit col">
+                        <?php echo $this->NotifySearch()->link() ?>
+                    </div>
+                    <div class="unit">
+                        <?php echo $this->paginationControl($this->paginator, 'Sliding', '/partials/pagination.phtml'); ?>
+                    </div>
+                </div>
+            </div>
+            <table class="list">
+                <thead>
+                    <tr>
+                        <th class="check-column column-noborder"><input type="checkbox"  id="id_check_all_edit" /></th>
+                        <th width="26" class="column-noborder"></th>
+                        <th width="26" class="column-noborder"></th>
+                        <th width="80"><?php echo My_View_Helper_Html::UrlOrderBy('last_recalculation_date', $this->translate('Date de création')); ?></th>
+                        <th width="100"><?php echo My_View_Helper_Html::UrlOrderBy('date_edition', $this->translate('Date edition')); ?></th>
+                        <th width="100"><?php echo My_View_Helper_Html::UrlOrderBy('rel_echeance', $this->translate('Echeance')); ?></th>
+                        <th width="130"><?php echo My_View_Helper_Html::UrlOrderBy('rel_reference', $this->translate('N° Relance')); ?></th>
+                        <th width="150"><?php echo My_View_Helper_Html::UrlOrderBy('r_rel_type_libelle', $this->translate('Étape')); ?></th>
+                        <th><?php echo My_View_Helper_Html::UrlOrderBy('cl_libelle', $this->translate('Client')); ?></th>
+                        <th width="100"><?php echo My_View_Helper_Html::UrlOrderBy('montant_a_regler', $this->translate('Montant Relance TTC')); ?></th>
+                        <th width="100"><?php echo My_View_Helper_Html::UrlOrderBy('cl_solde_ttc', $this->translate('Solde client TTC')); ?></th>
+                        <th width="100"><?php echo My_View_Helper_Html::UrlOrderBy('r_rel_statut_libelle', $this->translate('Statut')); ?></th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    foreach ($this->paginator as $echeance) {
+                        // Display amounts to be paid less than 0 in red
+                        $sHighlightInRed = ($echeance['montant_a_regler'] < 0) ? 'class="text-ko"' : '';
+                        ?>
+                        <tr class="<?php echo $this->cycle(array('', 'alt'))->next() ?>">
+                            <td class="check-column"><input type="checkbox" name="check_edit[<?php echo $echeance['rel_id'] ?>]" class="class_check_edit" /></td>
+                            <td><a class="icon-list icon-zoom" onclick="javascript:getPdf(<?php echo $echeance['rel_id'] ?>)" title="Visualiser" href="javascript:void(0)<?php //echo $this->url(array('action' => 'relancepdf', 'rel_id' => $echeance['rel_id']))          ?>"><?php echo $this->translate('Visualiser'); ?></a></td>
+                            <td><?php if ($echeance['rel_statut_id'] == RRelanceStatuts::CREE) { ?><a href="javascript:void(0)" onclick="javascript:popupEdition(<?php echo $echeance['rel_id'] . ', ' . $echeance['cl_id']; ?>)" class="icon-list icon-edit" title="<?php echo $this->translate('Edition'); ?>"><?php echo $this->translate('Edition'); ?></a><?php } ?></td>
+                            <td><?php echo $echeance['last_recalculation_date_fr']; ?></td>
+                            <td><?php echo $echeance['date_edition_fr']; ?></td>
+                            <td><?php echo $echeance['rel_echeance_fr']; ?></td>
+                            <td <?php echo $sHighlightInRed ?>><?php echo $echeance['rel_reference']; ?></td>
+                            <td><?php echo $echeance['r_rel_type_libelle']; ?></td>
+                            <td><?php echo $echeance['cl_libelle']; ?></td>
+                            <td align="right"><?php echo Phoenix_Data_Convert::formatMoney($echeance['montant_a_regler']); ?></td>
+                            <td align="right"><?php echo Phoenix_Data_Convert::formatMoney($echeance['cl_solde_ttc']); ?></td>
+                            <td><?php echo $echeance['r_rel_statut_libelle']; ?></td>
+
+                        </tr>
+                    <?php } ?>
+                </tbody>
+            </table>
+        </form>
+    </div>
+</div>
+
+<!-- DIALOG / RECHERCHE AVANCEE -->
+<div id="id_dialog_search" title="<?php echo $this->translate('Recherche avancée'); ?>" style="display:none;">
+    <form action="" method="get">
+        <div class="line">
+            <div class="unit size1of2 gutter10">
+                <div class="section">
+                    <div class="section-hd">
+                        <h2 class="section-title"><?php echo $this->translate('Références d\'opération'); ?></h2>
+                    </div>
+                    <div class="section-bd">
+                        <div class="line form-line">
+                            <label class="unit size1of3 form-label" for="id_autocomplete_cl_id"><?php echo $this->translate('Nom du client'); ?> :</label>
+                            <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_cl_id', 'type' => 'hidden')); ?>
+                            <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'autocomplete_cl_id', 'class' => 'unit size2of3 form-input input-autocomplete lastUnit')) ?>
+                        </div>
+                    </div>
+                </div>
+                <div class="section">
+                    <div class="section-hd">
+                        <h2 class="section-title"><?php echo $this->translate('Dates'); ?></h2>
+                    </div>
+                    <div class="section-bd">
+                        <div class="line form-line">
+                            <label class="unit size1of3 form-label" for="id_find_date_create_min"><?php echo $this->translate('Date début'); ?> :</label>
+                            <div class="unit size2of3 date">
+                                <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_date_create_min', 'value' => $this->getParam('find_date_create_min'), 'class' => 'date-input', 'placeholder' => $this->translate('JJ/MM/AAAA'), 'maxlenght' => '10')); ?>
+                            </div>
+                        </div>
+                        <div class="line form-line">
+                            <label class="unit size1of3 form-label" for="id_find_date_create_max"><?php echo $this->translate('Date fin'); ?> :</label>
+                            <div class="unit size2of3 date">
+                                <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_date_create_max', 'value' => $this->getParam('find_date_create_max'), 'class' => 'date-input', 'placeholder' => $this->translate('JJ/MM/AAAA'), 'maxlenght' => '10')); ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="unit size1of2 lastUnit">
+                <div class="section">
+                    <div class="section-hd">
+                        <h2 class="section-title"><?php echo $this->translate('Montant'); ?></h2>
+                    </div>
+                    <div class="section-bd">
+                        <div class="line form-line">
+                            <label class="form-label unit"><?php echo $this->translate('Montant TTC entre'); ?> :</label>
+                            <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_montant_a_regler_min', 'class' => 'form-input size1of4')); ?>
+                            &nbsp;&nbsp;et&nbsp;&nbsp;
+                            <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_montant_a_regler_max', 'class' => 'form-input size1of4')); ?>
+                        </div>
+                    </div>
+                </div>
+                <div class="section">
+                    <div class="section-hd">
+                        <h2 class="section-title"><?php echo $this->translate('Filtres'); ?></h2>
+                    </div>
+                    <div class="section-bd">
+                        <div class="line form-line">
+                            <label class="unit size1of2 form-label" for="id_find_rel_type_id"><?php echo $this->translate('Étape'); ?> :</label>
+                            <?php echo Phoenix_View_Helper_Html::selectFromTable('r_relance_types', array('name' => 'find_rel_type_id', 'class' => 'form-select unit size1of2 lastUnit'), array('value' => 'r_rel_type_id', 'name' => 'r_rel_type_libelle'), array('default_label' => $this->translate('choisir') . '...', 'clause_where' => 'actif = 1')); ?>
+                        </div>
+                        <div class="line form-line">
+                            <label class="unit size1of2 form-label" for="id_find_rel_statut_id"><?php echo $this->translate('Statut'); ?> :</label>
+                            <?php echo Phoenix_View_Helper_Html::selectFromTable('r_relance_statuts', array('name' => 'find_rel_statut_id', 'class' => 'form-select unit size1of2 lastUnit'), array('value' => 'r_rel_statut_id', 'name' => 'r_rel_statut_libelle'), array('default_label' => $this->translate('choisir') . '...')); ?>
+                        </div>
+                        <div class="line form-line">
+                            <label class="unit size1of2 form-label" for="id_find_rel_reference"><?php echo $this->translate('Numéro de relance'); ?> :</label>
+                            <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_rel_reference', 'class' => 'form-input unit size1of2 lastUnit')); ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="text-center">
+            <input type="submit" name="findbyfields" value="<?php echo $this->translate('Rechercher'); ?>" class="btn btn-orange">
+        </div>
+    </form>
+</div>
+
+
+
+<script language="javascript">
+
+    function getPdf(relanceId) {
+        AjaxComponent.ajaxQuery('/comptabilite/relances/relancepdf', {rel_id: relanceId}).success(function(data) {
+            if (data.action != 1) {
+                window.open('/comptabilite/relances/relancepdf/rel_id/' + relanceId);
+            }
+
+        });
+    }
+
+    function getSerializedCheckboxes() {
+        return $('.class_check_edit').serialize();
+    }
+
+    $(document).ready(function() {
+        //-- DIALOG / RECHERCHE AVANCEE -->
+        $('#btn_adsearch').click(function(e) {
+            $('#id_dialog_search').dialog({
+                width: 800,
+                modal: true,
+                resizable: false
+            });
+        });
+
+        $('#id_check_all_edit').bindCheckboxes('class_check_edit');
+
+        //changement du client basé sur recherche avec autocompletion
+        $('#id_autocomplete_cl_id').AjaxAutocomplete({
+            url: baseUrl + '/common/autocomplete/client',
+            minLength: 3,
+            restrictive: true,
+            bindFieldId: 'id_find_cl_id'
+        });
+
+        /**
+         * désédition des relances sélectionnées
+         */
+        $('#id_submit_desedition').click(function() {
+            Component.confirm("<?php echo $this->translate('Confirmez-vous la désédition des relances sélectionnées'); ?> ?",
+                    function() {
+                        AjaxComponent.ajaxQuery('/comptabilite/relances/desedition', getSerializedCheckboxes());
+                    }
+            )
+        })
+    });
+
+    function recalculateRelances() {
+        Component.confirm('<?php echo $this->translate('Voulez-vous recalculer les relances'); ?>?',
+                function() {
+                    AjaxComponent.ajaxQuery('/comptabilite/relances/recalculaterelance')
+                            .success(function(data) {
+                                setTimeout(function() {
+                                    window.location.reload(1);
+                                }, 3000);
+                            });
+                });
+    }
+
+
+    function popupEdition(rel_id, cl_id) {
+        AjaxComponent.ajaxDialog('/comptabilite/relances/editsinglerelance', {rel_id: rel_id, cl_id: cl_id},
+        {id: 'id_popup_edition', width: 400,
+            modal: true,
+            title: '<?php echo $this->translate('Edition'); ?>',
+            resizable: false
+        });
+    }
+
+</script>

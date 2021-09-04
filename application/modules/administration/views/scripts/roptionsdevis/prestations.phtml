@@ -1,0 +1,38 @@
+<?php foreach ($this->rubriques as $rubrique) { ?>
+    <table class="list list-simple">
+        <tr>
+            <th width="22"></th>
+            <th><?php echo $rubrique['id'] . ' ' . $rubrique['libelle']; ?></th>
+            <th><?php echo $this->translate('Obligatoire'); ?></th>
+        </tr>
+        <?php foreach ($rubrique['prestations'] as $prestation) { ?>
+            <tr class="<?php echo $this->cycle(array('', 'alt'))->next() ?>">
+                <td width="22"><a href="#delete" class="icon-list icon-delete" tpl_id="<?php echo $prestation['tpl_id']; ?>" title="<?php echo $this->translate('Supprimer'); ?>"><?php echo $this->translate('Supprimer'); ?></a></td>
+                <td><?php echo $prestation['id'] . ' ' . $prestation['libelle']; ?></td>
+                <td>
+                    <?php echo Phoenix_View_Helper_Html::checkbox(array('name' => 'r_op_option_tpl_is_mandatory', 'id' => 'id_tpl_mandatory_id_' . $prestation['id'], 'value' => 1, 'default_value' => $prestation['is_mandatory'], 'primary_value' => $prestation['tpl_id'], 'class' => 'form-select size1of1 class_check_mandatory')); ?>
+                </td>
+            </tr>
+        <?php } ?>
+    </table>
+<?php } ?>
+<script language="javascript">
+    $(document).ready(function () {
+        //-- DIALOG / DELETE -->
+        $('.list .icon-delete').click(function (e) {
+            tpl_id = $(this).attr('tpl_id');
+
+            Component.confirm('<?php echo $this->translate('Êtes vous sûre de vouloir supprimer cette liaison'); ?>?',
+                    function () {
+                        AjaxComponent.ajaxDiv(
+                                baseUrl + '/administration/roptionsdevis/prestations',
+                                {tpl_id: tpl_id,
+                                    r_op_option_id: <?php echo $this->r_op_option_id; ?>},
+                        'id_div_liste_tpl'
+                                );
+                    });
+        });
+
+        $('.class_check_mandatory').updateField('/administration/roptionsdevis/updatefield', {model_name: 'ROperationOptionsTpl'});
+    });
+</script>

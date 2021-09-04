@@ -1,0 +1,21 @@
+<table class="list list-simple">
+    <thead>
+        <tr>
+            <th><span class="notsortable"><?php echo $this->translate('Date demande'); ?></span></th>
+            <th style="text-align:center;"><span class="notsortable"><?php echo $this->translate('Statut'); ?></span></th>
+            <th><span class="notsortable"><?php echo $this->translate('Montant demandé'); ?></span></th>
+            <th><span class="notsortable"><?php echo $this->translate('Montant accordé'); ?></span></th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($this->decouverts as $decouvert) { ?>
+            <tr>
+                <td><?php echo Phoenix_Data_Convert::formatdateFromSqlServer($decouvert->getDateCreate()) ?></td>
+                <td align="center"><?php echo Phoenix_View_Helper_Html::getDecouvertStatusIcon($decouvert->getOpDecStatutId(), 'icon-statut') ?></td>
+                <td><?php echo Phoenix_Data_Convert::formatMoney($decouvert->getOpDecMontDemande()) ?> </td>
+                <td><?php echo Phoenix_Data_Convert::formatMoney($decouvert->getOpDecMontAccord()) ?> </td>
+            </tr>
+        <?php } ?>
+
+    </tbody>
+</table>

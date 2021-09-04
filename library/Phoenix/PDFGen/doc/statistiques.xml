@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root SYSTEM "statistiques.dtd">
+<root>
+    <data>
+        <first_page>
+			<contact_dc>
+				<nom_contact>FINET Pierric</nom_contact>
+				<email_contact>pierric.finet@customsolutions.fr</email_contact>
+				<tel_contact>+33(0) 4 86 91 42 35</tel_contact>
+				<fax_contact>+33(0) 4 86 91 42 30</fax_contact>
+            </contact_dc>
+			<contact_cp>
+				<nom_contact>BAZAN Pauline</nom_contact>
+				<email_contact>pauline.bazan@customsolutions.fr</email_contact>
+				<tel_contact>+33(0) 4 86 91 42 35</tel_contact>
+				<fax_contact>+33(0) 4 86 91 42 30</fax_contact>
+            </contact_cp>
+            <nom_offre>Philips Airfryer 201</nom_offre>
+            <num_operation>17321</num_operation>
+            <date_stats>27/04/2011</date_stats>
+            <duree_operation>du 23 mars 2012 au 31 mai 2012</duree_operation>
+            <date_fin_postale>11 juin 2012</date_fin_postale>
+            <date_fin_gestion>11 octobre 2012</date_fin_gestion>
+        </first_page>
+        <last_page>
+        </last_page>
+    </data>
+    
+    <indicators>
+
+		<tx_remontee>98</tx_remontee>
+
+        <graph title="Participations / Support"  type="barc" size="large">
+			<plot x="02/12" >
+				<segment label="web">657</segment>
+				<segment label="sms">200</segment>
+			</plot>
+			<plot x="03/12" >
+				<segment label="web">657</segment>
+				<segment label="sms">20</segment>
+			</plot>
+			<plot x="04/12" >
+				<segment label="web">67</segment>
+				<segment label="sms">200</segment>
+			</plot>
+			<plot x="05/12" >
+				<segment label="web">657</segment>
+				<segment label="sms">200</segment>
+			</plot>
+        </graph>
+		<nb_demandes>885</nb_demandes>
+
+
+        <graph title="Remboursement de participation"  type="table-pie" size="mini">
+			<plot x="Conformes" y="6486" />
+			<plot x="Non conformes" y="540" />
+        </graph>
+
+        <graph title="Remboursement de communication" type="barh" size="mini">
+			<plot x="Estimée" y="60" />
+			<plot x="Réalisée" y="80" />
+        </graph>
+
+
+		<nb_participations>1885</nb_participations>
+
+        <graph title="Mon titre" type="barh" size="large">
+			<plot x="MEDIA MARKT POLSKA SP.Z 0.0" y="4174" />
+			<plot x="(AUTRE)" y="3390" />
+			<plot x="EURO-NET SP. Z O.O." y="2645" />
+			<plot x="SATURN PLANET SP. Z O.O." y="1541" />
+			<plot x="SATURN PLANET SP. Z O.O.a" y="1214" />
+			<plot x="SATURN PLANET SP. Z O.O.b" y="1116" />
+			<plot x="SATURN PLANET SP. Z O.O.c" y="933" />
+			<plot x="SATURN PLANET SP. Z O.O.d" y="409" />
+			<plot x="SATURN PLANET SP. Z O.O.e" y="309" />
+			<plot x="SATURN PLANET SP. Z O.O.f" y="296" />
+        </graph>
+
+        <graph title="Remontées / Enseigne - TOP 10" type="barh" size="mini">
+			<plot x="MEDIA MARKT POLSKA SP.Z 0.0" y="4174" />
+			<plot x="(AUTRE)" y="3390" />
+			<plot x="EURO-NET SP. Z O.O." y="2645" />
+			<plot x="SATURN PLANET SP. Z O.O." y="1541" />
+			<plot x="SATURN PLANET SP. Z O.O.a" y="1214" />
+			<plot x="SATURN PLANET SP. Z O.O.b" y="1116" />
+			<plot x="SATURN PLANET SP. Z O.O.c" y="933" />
+			<plot x="SATURN PLANET SP. Z O.O.d" y="409" />
+			<plot x="SATURN PLANET SP. Z O.O.e" y="309" />
+			<plot x="SATURN PLANET SP. Z O.O.f" y="296" />
+        </graph>
+
+        <graph title="Remboursement de participation"  type="pie" size="mini">
+			<plot x="Web" y="6000" />
+			<plot x="Autre" y="2000" />
+			<plot x="test" y="3000" />
+        </graph>
+
+		<bilan_financier>
+			<bline>
+				<libelle>Expédition des sacs de sport
+- collissimo expert base 500g</libelle>
+				<qte_estimee>60</qte_estimee>
+				<qte_realisee>0</qte_realisee>
+				<pourcentage_realisation>98.40</pourcentage_realisation>
+				<montant_estime>393.00</montant_estime>
+				<montant_realise></montant_realise>
+				<montant_encaisse>393.00</montant_encaisse>
+				<montant_disponible>393.00</montant_disponible>
+			</bline>
+			<bline>
+				<libelle>Affranchissement règlement - Ecopli 20g-</libelle>
+				<qte_estimee>6</qte_estimee>
+				<qte_realisee>0</qte_realisee>
+				<pourcentage_realisation>0</pourcentage_realisation>
+				<montant_estime>3.30</montant_estime>
+				<montant_realise></montant_realise>
+				<montant_encaisse>3.30</montant_encaisse>
+				<montant_disponible>3.30</montant_disponible>
+			</bline>
+			<bline>
+				<libelle>Affranchissement règlement - Ecopli 20g-</libelle>
+				<qte_estimee>6</qte_estimee>
+				<qte_realisee>0</qte_realisee>
+				<pourcentage_realisation>0</pourcentage_realisation>
+				<montant_estime>3.30</montant_estime>
+				<montant_realise></montant_realise>
+				<montant_encaisse>3.30</montant_encaisse>
+				<montant_disponible>3.30</montant_disponible>
+			</bline>			<bline>
+				<libelle>Affranchissement règlement - Ecopli 20g-</libelle>
+				<qte_estimee>6</qte_estimee>
+				<qte_realisee>0</qte_realisee>
+				<pourcentage_realisation>0</pourcentage_realisation>
+				<montant_estime>3.30</montant_estime>
+				<montant_realise></montant_realise>
+				<montant_encaisse>3.30</montant_encaisse>
+				<montant_disponible>3.30</montant_disponible>
+			</bline>			<bline>
+				<libelle>Affranchissement règlement - Ecopli 20g-</libelle>
+				<qte_estimee>6</qte_estimee>
+				<qte_realisee>0</qte_realisee>
+				<pourcentage_realisation>0</pourcentage_realisation>
+				<montant_estime>3.30</montant_estime>
+				<montant_realise></montant_realise>
+				<montant_encaisse>3.30</montant_encaisse>
+				<montant_disponible>3.30</montant_disponible>
+			</bline>			<bline>
+				<libelle>Affranchissement règlement - Ecopli 20g-</libelle>
+				<qte_estimee>6</qte_estimee>
+				<qte_realisee>0</qte_realisee>
+				<pourcentage_realisation>0</pourcentage_realisation>
+				<montant_estime>3.30</montant_estime>
+				<montant_realise></montant_realise>
+				<montant_encaisse>3.30</montant_encaisse>
+				<montant_disponible>3.30</montant_disponible>
+			</bline>			<bline>
+				<libelle>Affranchissement règlement - Ecopli 20g-</libelle>
+				<qte_estimee>6</qte_estimee>
+				<qte_realisee>0</qte_realisee>
+				<pourcentage_realisation>0</pourcentage_realisation>
+				<montant_estime>3.30</montant_estime>
+				<montant_realise></montant_realise>
+				<montant_encaisse>3.30</montant_encaisse>
+				<montant_disponible>3.30</montant_disponible>
+			</bline>			<bline>
+				<libelle>Affranchissement règlement - Ecopli 20g-</libelle>
+				<qte_estimee>6</qte_estimee>
+				<qte_realisee>0</qte_realisee>
+				<pourcentage_realisation>0</pourcentage_realisation>
+				<montant_estime>3.30</montant_estime>
+				<montant_realise></montant_realise>
+				<montant_encaisse>3.30</montant_encaisse>
+				<montant_disponible>3.30</montant_disponible>
+			</bline>			<bline>
+				<libelle>Affranchissement règlement - Ecopli 20g-</libelle>
+				<qte_estimee>6</qte_estimee>
+				<qte_realisee>0</qte_realisee>
+				<pourcentage_realisation>0</pourcentage_realisation>
+				<montant_estime>3.30</montant_estime>
+				<montant_realise></montant_realise>
+				<montant_encaisse>3.30</montant_encaisse>
+				<montant_disponible>3.30</montant_disponible>
+			</bline>			<bline>
+				<libelle>Affranchissement règlement - Ecopli 20g-</libelle>
+				<qte_estimee>6</qte_estimee>
+				<qte_realisee>0</qte_realisee>
+				<pourcentage_realisation>0</pourcentage_realisation>
+				<montant_estime>3.30</montant_estime>
+				<montant_realise></montant_realise>
+				<montant_encaisse>3.30</montant_encaisse>
+				<montant_disponible>3.30</montant_disponible>
+			</bline>			<bline>
+				<libelle>Affranchissement règlement - Ecopli 20g-</libelle>
+				<qte_estimee>6</qte_estimee>
+				<qte_realisee>0</qte_realisee>
+				<pourcentage_realisation>0</pourcentage_realisation>
+				<montant_estime>3.30</montant_estime>
+				<montant_realise></montant_realise>
+				<montant_encaisse>3.30</montant_encaisse>
+				<montant_disponible>3.30</montant_disponible>
+			</bline>
+		</bilan_financier>
+
+        <graph title="Mon titre" type="barh" size="mini">
+			<plot x="1" y="3" />
+			<plot x="2" y="3" />
+			<plot x="3" y="3" />
+			<plot x="4" y="3" />
+			<plot x="5" y="3" />
+			<plot x="6" y="3" />
+			<plot x="7" y="3" />
+			<plot x="8" y="3" />
+        </graph>
+
+		<stocks>
+			<sline>
+				<libelle>Sony Dongle</libelle>
+				<qte_estimee>16417</qte_estimee>
+				<qte_affectee>12364</qte_affectee>
+				<qte_entree>12926</qte_entree>
+				<qte_stock>0</qte_stock>
+			</sline>
+			<sline>
+				<libelle>Sony Skype Cameras</libelle>
+				<qte_estimee>2680</qte_estimee>
+				<qte_affectee>2340</qte_affectee>
+				<qte_entree>2337</qte_entree>
+				<qte_stock>-4</qte_stock>
+			</sline>
+			<sline>
+				<libelle>Sony Tablet</libelle>
+				<qte_estimee>2293</qte_estimee>
+				<qte_affectee>1249</qte_affectee>
+				<qte_entree>1249</qte_entree>
+				<qte_stock>0</qte_stock>
+			</sline>
+		</stocks>
+    </indicators>
+</root>

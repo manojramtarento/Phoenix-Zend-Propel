@@ -1,0 +1,199 @@
+<?php
+echo $this->FlashMessenger('error');
+echo $this->FlashMessenger('default');
+?>
+<!-- DIALOG / AJOUT / MODIFICATION -->
+<form id="id_form_update_roption" action="<?php echo $this->url(array('module' => 'administration', 'controller' => 'roptionsdevis', 'action' => 'update')) ?>" method="post">
+    <?php
+    if (isset($this->updated)) {
+        echo "<div id='updated'>" . $this->translate('Mis à jour') . "<br /></div>";
+    }
+    ?>
+
+
+      
+    <input type="hidden" name="submit_update_roption" value="1">
+    <?php if (isset($this->r_op_option_id)) { ?>
+        <input type="hidden" name="r_op_option_id" value="<?php echo $this->r_op_option_id; ?>">
+    <?php } ?>
+
+    <input type="hidden" name="r_operation_option_r_activity_kpi_id" value="<?php echo $this->r_operation_option_r_activity_kpi_id; ?>">
+
+    <div class="line form-line">
+        <label class="unit size1of3 form-label" for='id_r_op_option_libelle'><?php echo $this->translate('Libellé'); ?> :</label>
+        <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'r_op_option_libelle', 'value' => $this->r_op_option_libelle, 'class' => 'unit size2of3 form-input lastUnit')) ?>
+    </div>
+    <div class="line form-line">
+        <label class="unit size1of3 form-label" for='id_r_op_option_libelle_en'><?php echo $this->translate('Libellé (anglais)'); ?> :</label>
+        <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'r_op_option_libelle_en', 'value' => $this->id_r_op_option_libelle_en, 'class' => 'unit size2of3 form-input lastUnit')) ?>
+    </div>
+
+    <div class="line form-line">
+        <label class="unit size1of3 form-label" for='id_r_op_option_type'><?php echo $this->translate('Type d\'option'); ?> :</label>
+        <?php echo My_View_Helper_Html::selectFromTable('r_operation_options_type', array('name' => 'r_op_option_type', 'value' => $this->r_op_option_type, 'class' => 'unit size2of3 form-select '), array('value' => 'r_op_option_type_id', 'name' => 'r_op_option_type_libelle')); ?>
+    </div>
+
+    <div class="line form-line">
+        <label class="unit size1of3 form-label" for='id_r_operation_type_required_options'><?php echo $this->translate('mandatory_operations_types_label'); ?> :</label>
+        <?php  
+        echo My_View_Helper_Html::select(array('name' => 'r_operation_type_required_options[]', 'id' => 'id_r_operation_type_required_options', 'value' => $this->r_operation_type_required_options, 'class' => 'unit size2of3 ', 'multiple' => 'multiple'), $this->availableROperationTypesForSelect);
+        ?>
+    </div>
+    
+    <div class="line form-line">
+        <label class="unit size1of3 form-label" for='id_r_operation_status_required_options'><?php echo $this->translate('operation_status_label'); ?> :</label>
+          
+         <?php echo My_View_Helper_Html::select(array('name' => 'r_operation_status_required_options[]', 'id' => 'id_r_operation_type_required_options', 'value' => $this->r_operation_status_required_options, 'class' => 'unit size2of3 ', 'multiple' => 'multiple'), $this->availableROperationStatusForSelect);
+         ?>
+                
+        
+    </div>
+
+    <div class = "line form-line">
+        <label class = "unit size1of3 form-label" for = 'id_actif'><?php echo $this->translate('Actif');
+        ?></label>
+        <?php echo My_View_Helper_Html::checkbox(array('name' => 'actif', 'value' => 1, 'default_value' => $this->actif)); ?>
+    </div>
+
+    <?php if ($this->r_op_option_type == ROperationOptionsType::TYPE_CHILDREN) { ?>
+        <div class="unit lastUnit">
+            <div class="box">
+                <div class="line box-hd">
+                    <h2 class="box-title title-icon icon-layers"><?php echo $this->translate('Gestion des prestations liées'); ?></h2>
+                </div>
+                <div class="box-bd">
+
+                    <div class="section">
+                        <div class="section-hd">
+                            <h2 class="section-title"><?php echo $this->translate('Lier de nouvelles prestations'); ?></h2>
+                        </div>
+                        <div class="section-bd">
+                            <div class="line form-line">
+                                <?php echo Phoenix_View_Helper_Html::input(array('name' => 'rub_id', 'type' => 'hidden')) ?>
+                                <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'autocomplete_rub_id', 'value' => '', 'placeholder' => $this->translate('Indiquez ici la rubrique à utiliser'), 'class' => 'unit size1of1 form-input input-autocomplete lastUnit')) ?>
+                            </div>
+
+                            <div class="line form-line">
+                                <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'prestation_ids', 'value' => '', 'placeholder' => $this->translate('Indiquez ici les ids des prestations à ajouter (séparées par un espace)'), 'class' => 'unit size1of1 form-input lastUnit')) ?>
+                            </div>
+                            <div class="line form-line">
+                                <input type="submit" value="<?php echo $this->translate('Ajouter'); ?>" class="btn btn-orange push4of5">
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                    <div class="section">
+                        <div class="section-hd">
+                            <h2 class="section-title">
+                                <?php echo $this->translate('Prestations actives'); ?>
+                                <span id="delete_all" style="float:right"><?php echo $this->translate('Tout effacer'); ?></span>
+                            </h2>
+                        </div>
+                        <div class="section-bd">
+                            <div id="id_div_liste_tpl" style="overflow:auto;max-height:200px;margin-top:20px;">
+                                <?php echo $this->translate('En cours de chargement'); ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <?php } elseif (!empty($this->r_op_option_id)) { ?>
+        <div class="unit lastUnit">
+            <div class="box">
+                <div class="line box-hd">
+                    <h2 class="box-title title-icon icon-users"><?php echo $this->translate('Gestion des enfants (niveau 1)'); ?></h2>
+                </div>
+                <div class="box-bd">
+                    <div class="line form-line">
+                        <label class="form-label unit size1of3" for='id_new_child_name'><?php echo $this->translate('Ajouter un nouvel enfant'); ?></label>
+                        <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'new_child_name', 'value' => '', 'class' => 'unit size1of2 form-input lastUnit')) ?>
+
+                    </div>
+
+                    <div class="line form-line">
+                        <label class="form-label unit size1of3" for='id_new_child_name_en'><?php echo $this->translate('Libelle enfant (Anglais)'); ?></label>
+                        <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'new_child_name_en', 'value' => '', 'class' => 'unit size1of2 form-input lastUnit')) ?>
+                    </div>
+
+                    <div class="text-center">
+                        <input type="submit" value="<?php echo $this->translate('Ajouter'); ?>" class="btn btn-orange">
+                    </div>
+
+                    <div style="overflow:auto;max-height:200px;margin-top:20px;">
+                        <table class="list list-simple">
+                            <?php foreach ($this->childrens as $children) { ?>
+                                <tr class="<?php echo $this->cycle(array('', 'alt'))->next() ?>">
+                                    <td><?php echo $children->getTranslatedOptionLibelle(Phoenix_Auth_User::getInstance()->getLanguage()); ?></td>
+                                </tr>
+                            <?php } ?>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <?php } ?>
+
+
+</form>
+
+
+<script language="javascript">
+    function refreshPrestations() {
+        AjaxComponent.ajaxDiv(baseUrl + '/administration/roptionsdevis/prestations',
+                {r_op_option_id:<?php echo isset($this->r_op_option_id) ? $this->r_op_option_id : 0; ?>},
+        'id_div_liste_tpl');
+    }
+
+    function hideMsg() {
+        $('#updated').hide();
+    }
+
+    $(document).ready(function() {
+        $('#id_form_update_roption').ajaxForm({
+            divId: 'id_dialog_update_roption'
+        });
+
+        refreshPrestations();
+
+        $('#id_actif').click(function(e) {
+            if ($('#id_actif').is(':checked') == false) {
+                alert('<?php echo $this->translate('Attention cela rendra cette option et toute sa descendance inactive'); ?>');
+            }
+        });
+
+        $('#delete_all').hover(
+                function() {
+                    document.body.style.cursor = 'pointer';
+                },
+                function() {
+                    document.body.style.cursor = 'auto';
+                }
+        );
+
+<?php if (isset($this->r_op_option_id)) { ?>
+            $('#delete_all').click(function(e) {
+                r_op_option_id = <?php echo $this->r_op_option_id; ?>;
+                Component.confirm('<?php echo $this->translate('Confirmez-vous la suppression de toutes les prestations liées'); ?> ?',
+                        function() {
+                            AjaxComponent.ajaxDiv(
+                                    baseUrl + '/administration/roptionsdevis/deleteall',
+                                    {'r_op_option_id': r_op_option_id},
+                            'id_dialog_update_roption');
+                        });
+            });
+<?php } ?>
+
+        // changement de la rubrique basé sur recherche avec autocompletion
+        $('#id_autocomplete_rub_id').AjaxAutocomplete({
+            url: baseUrl + '/common/autocomplete/rubrique',
+            minLength: 3,
+            restrictive: true,
+            bindFieldId: 'id_rub_id'
+        });
+
+        setTimeout('hideMsg()', 2000);
+    });
+</script>

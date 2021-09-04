@@ -1,0 +1,50 @@
+<?php
+$this->title = $this->translate('Gestion des droits');
+$this->headTitle($this->title);
+$this->headScript()->appendFile($this->baseUrl() . '/js/administration/acl/acl.js');
+?>
+<div id="actions-bar">
+    <div class="unit size1of5">
+        <h1 class="page-title"><?php echo $this->title; ?></h1>
+    </div>
+</div>
+<div id="site-content">
+
+    <div class="line">
+        <div class="line">
+            <div class="unit size1of1">
+                <div class="box">
+                    <div class="box-hd">
+                        <h2 class="box-title title-icon icon-user"><?php echo $this->translate('Interfaces'); ?></h2>
+                    </div>
+                    <div class="box-bd size1of2">
+                        <div class="line form-line">
+                            <label class="unit size1of2 form-label"><?php echo $this->translate('Module'); ?>:</label>
+                            <?php echo Phoenix_View_Helper_Html::selectFromTable('acl_modules', array('name' => 'select_module', 'class' => 'form-select'), array('name' => 'module_name', 'value' => 'module_id'), array('default_label' => $this->translate('choisir') . '...')) ?>
+                        </div>
+                        <div class="line form-line">
+                            <label class="unit size1of2 form-label"><?php echo $this->translate('Interface'); ?>:</label>
+                            <?php echo Phoenix_View_Helper_Html::selectFromTable('acl_interfaces_controllers', array('name' => 'select_controller', 'class' => 'form-select'), array('name' => 'interface_name', 'value' => 'int_cont_id', 'class' => 'module_id'), array('default_label' => $this->translate('choisir') . '...')) ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="line">
+            <div class="unit size1of1">
+                <div class="box">
+                    <div class="box-hd">
+                        <h2 class="box-title title-icon icon-user"><?php echo $this->translate('Droits'); ?></h2>
+                    </div>
+                    <div class="box-bd">
+                        <div id="id_div_acl" class="acl_management_container">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

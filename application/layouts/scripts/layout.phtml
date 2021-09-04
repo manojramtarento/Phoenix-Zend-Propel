@@ -1,0 +1,134 @@
+<?php
+$this->headMeta()->appendHttpEquiv('Content-Type', 'text/html;charset=utf-8');
+$this->headTitle()->setSeparator(' - ');
+$this->headTitle('Phoenix');
+
+echo $this->doctype() . PHP_EOL;
+
+// -- récupère les infos de l'utilisateur
+$oAuth = zend_Auth::getInstance()->getStorage();
+$oUserData = $oAuth->read();
+
+$aMenu = array(
+    array('module' => 'default','controller' => 'accueil','action' => 'index','label' => 'ACCUEIL'),
+    array('module' => 'operation','controller' => 'listing','action' => 'index','params' => array('find_actif' => '1','findbyfields' => 'Recherche'),'label' => 'OPÉRATIONS','subitems' => array(
+        array('module' => 'operation','controller' => 'listing','action' => 'index','params' => array('find_actif' => '1','findbyfields' => 'Recherche'),'label' => $this->translate('Listing des devis').' / '.$this->translate('opérations')),
+        array('module' => 'operation','controller' => 'new','action' => 'index','label' => 'Nouveau devis'),
+        array('module' => 'operation','controller' => 'taches','action' => 'index','label' => 'Gestion des tâches'),
+    )),
+    array('module' => 'client','controller' => 'listing','action' => 'index','label' => 'CLIENTS','subitems' => array(
+        array('module' => 'client','controller' => 'listing','action' => 'index','label' => 'Listing des clients'),
+        array('module' => 'client','controller' => 'new','action' => 'index','label' => 'Nouveau client'),
+        array('module' => 'client','controller' => 'contact','action' => 'listing','label' => 'Listing de tous les contacts'),
+    )),
+    array('module' => 'reporting','controller' => 'pilotage','action' => 'index','label' => 'REPORTING','subitems' => array(
+        array('module' => 'reporting','controller' => 'pilotage','action' => 'index','label' => 'Pilotage'),
+        array('module' => 'reporting','controller' => 'kpirender','action' => 'index','label' => 'KPI'),
+    )),
+    array('module' => 'comptabilite','controller' => 'relances','action' => 'index','label' => 'COMPTABILITÉ','subitems' => array(
+        array('module' => 'comptabilite','controller' => 'relances','action' => 'index','label' => 'Gestion des relances'),
+        array('module' => 'comptabilite','controller' => 'factures','action' => 'index','label' => 'Gestion des factures'),
+        array('module' => 'comptabilite','controller' => 'decouverts','action' => 'index','label' => 'Gestion des découverts'),
+    )),
+    array('module' => 'couts','controller' => 'index','action' => 'index','label' => 'COÛTS','params' => array('find_op_status_id' => Operations::STATUS_ACCEPTE, 'find_r_p_validation_id' => array(2, 3), 'find_op_prest_couts_valides' => 0, 'findbyfields' => 'recherche'),'subitems' => array(
+        array('module' => 'couts','controller' => 'index','action' => 'index','label' => 'COÛTS','params' => array('find_op_status_id' => Operations::STATUS_ACCEPTE, 'find_r_p_validation_id' => array(2, 3), 'find_op_prest_couts_valides' => 0, 'findbyfields' => 'recherche'),'label' => 'Validation des coûts'),
+    )),
+    array('module' => 'administration','controller' => 'generalsettings','action' => 'index','label' => 'ADMINISTRATION','subitems' => array(
+        array('module' => 'administration','controller' => 'generalsettings','action' => 'index','label' => 'title_general_settings'),
+        array('module' => 'administration','controller' => 'rprestation','action' => 'listing','params' => array('find_actif' => '1','findbyfields' => 'Recherche'),'label' => 'Référentiel prestations'),
+        array('module' => 'administration','controller' => 'rtaches','action' => 'listing','label' => 'Référentiel tâches'),
+        array('module' => 'administration','controller' => 'rrubrique','action' => 'listing','params' => array('find_actif' => '1','findbyfields' => 'Recherche'),'label' => 'Référentiel rubriques'),
+        array('module' => 'administration','controller' => 'rscenario','action' => 'listing','params' => array('find_r_scenario_actif' => '1','findbyfields' => 'Recherche'),'label' => 'Référentiel scenarios'),
+        array('module' => 'administration','controller' => 'rclienttypes','action' => 'listing','label' => 'Référentiel types client'),
+        array('module' => 'administration','controller' => 'rtypesdevis','action' => 'listing','label' => 'Référentiel devis (types)'),
+        array('module' => 'administration','controller' => 'roptionsdevis','action' => 'listing','label' => 'Référentiel devis (options)'),
+        array('module' => 'administration','controller' => 'histocouts','action' => 'index','label' => 'Enregistrements des Coûts'),
+        array('module' => 'administration','controller' => 'axes','action' => 'index','label' => 'Référentiel axes'),
+        array('module' => 'administration','controller' => 'acl','action' => 'index','label' => 'Gestion des droits'),
+        array('module' => 'administration','controller' => 'roles','action' => 'index','label' => 'Référentiel des rôles'),
+        array('module' => 'administration','controller' => 'users','action' => 'index','label' => 'label_users_management'),
+        array('module' => 'administration','label' => 'label_countries_and_cultures','subitems' => array(
+            array('module' => 'administration','controller' => 'rcountriescallingcodes','action' => 'index','label' => 'label_r_countries_calling_codes_management'),
+            array('module' => 'administration','controller' => 'rcurrencies','action' => 'index','params' => array('find_r_currency_actif' => '1', 'findbyfields' => 'Recherche',),'label' => 'label_r_currencies_management'),
+            array('module' => 'administration','controller' => 'rlanguages','action' => 'index','label' => 'label_r_languages_management'),
+            array('module' => 'administration','controller' => 'rcultures','action' => 'index','params' => array('find_r_currency_actif' => '1', 'findbyfields' => 'Recherche',),'label' => 'label_r_cultures_management'),
+            array('module' => 'administration','controller' => 'rcountries','action' => 'index','params' => array('find_r_currency_actif' => '1', 'findbyfields' => 'Recherche',),'label' => 'label_r_countries_management'),
+        )),
+    )),
+);
+?>
+<html lang="fr">
+    <head>
+        <link rel="shortcut icon" type="image/x-icon" href="<?php echo $this->baseUrl(); ?>/favicon.ico" />
+        <?php echo $this->headMeta(); ?>
+        <?php echo $this->headTitle(); ?>
+        <link rel="stylesheet" type="text/css" href="<?php echo $this->baseUrl(); ?>/css/phoenix-theme/jquery-ui-1.8.21.custom.css">
+        <link rel="stylesheet" type="text/css" href="<?php echo $this->baseUrl(); ?>/css/styles.css">
+        <link rel="stylesheet" type="text/css" href="<?php echo $this->baseUrl(); ?>/css/c3.css">
+        <script type="text/javascript" src="<?php echo $this->baseUrl() . '/js/plugin/jsapi.js' ?>" ></script>
+        <script type="text/javascript" src="<?php echo $this->baseUrl() . '/js/jquery-1.7.2.min.js' ?>" ></script>
+        <script type="text/javascript" src="<?php echo $this->baseUrl() . '/js/jquery-ui-1.8.21.custom.min.js' ?>" ></script>
+        <script type="text/javascript" src="<?php echo $this->baseUrl() . '/js/jquery.tipTip.minified.js' ?>" ></script>
+        <script type="text/javascript" src="<?php echo $this->baseUrl() . '/js/jquery.ui.datepicker-fr.js' ?>" ></script>
+        <script type="text/javascript" src="<?php echo $this->baseUrl() . '/js/plugin/jquery.chained.mini.js' ?>" ></script>
+        <script type="text/javascript" src="<?php echo $this->baseUrl() . '/js/plugin/jquery.loader.js' ?>" ></script>
+        <script type="text/javascript" src="<?php echo $this->baseUrl() . '/js/plugin/jquery.ba-outside-events.min.js' ?>" ></script>
+        <script type="text/javascript" src="<?php echo $this->baseUrl() . '/js/plugin/jquery.equalHeight.js' ?>" ></script>
+        <script type="text/javascript" src="<?php echo $this->baseUrl() . '/js/plugin/ckeditor/ckeditor.js' ?>" ></script>
+        <script type="text/javascript" src="<?php echo $this->baseUrl() . '/js/Components.js' ?>" ></script>
+        <script type="text/javascript" src="<?php echo $this->baseUrl() . '/js/AjaxComponents.js' ?>" ></script>
+        <script type="text/javascript" src="<?php echo $this->baseUrl() . '/js/base.js' ?>" ></script>
+        <script type="text/javascript" src="<?php echo $this->baseUrl() . '/js/Graphs.js' ?>" ></script>
+        <script type="text/javascript" src="<?php echo $this->baseUrl() . '/js/c3.min.js' ?>" ></script>
+        <script type="text/javascript" src="<?php echo $this->baseUrl() . '/js/d3.min.js' ?>" ></script>
+        <?php echo $this->headScript(); ?>
+        <script language="javascript">
+            var baseUrl = '<?php echo $this->baseUrl() ?>';
+            var queryString = '<?php echo $_SERVER['QUERY_STRING'] ?>';
+            Component.setLocale(<?php echo json_encode(Phoenix_View_Helper_Html::getUserLanguage()); ?>);
+        </script>
+    </head>
+    <body>
+        <?php
+            if(My_Env::getInstance()->getName() !== 'prod'){
+                echo $this->partial('partials/devbar.phtml');
+            }
+        ?>
+        <div id="site">
+            <div id="site-hd">
+                <div id="site-logo"><img class="application-logo" src="<?php echo $this->getSettingValue(Settings::SETTING_KEY_APPLICATION_LOGO) ?>"></div>
+                <div id="site-nav">
+                    <ul class="nav">
+                    <?php foreach($aMenu as $aItem){
+                        echo $this->renderMenu($aItem);
+                    }
+                    ?>
+                    </ul>
+                    <div class="unit rightUnit perso">
+                    <form method = "post" action='/auth/organisation'> 
+                        <select name="currentOrganisationId" id="currentOrganisation" class="form-label unit size2of3">
+                        <?php   
+                         foreach($oUserData->getOrganisationModel() as $oOrganisation){?>
+                           <option value="<?php echo $oOrganisation->getOrganisations()->getOrganisationId();?>"
+                           <?php echo $oOrganisation->getOrganisations()->getOrganisationId() === $oUserData->getCurrentOrganisation()->getOrganisationId()?'selected=selected' : '' ?> >
+                           <?php echo $oOrganisation->getOrganisations()->getOrganisationName();?>
+                           </option>
+                         <?php  }   ?>
+                         </select>
+                        </form>
+                        <input type="button" value="<?php echo $oUserData->getLastName() . ' ' . substr($oUserData->getFirstName(), 0, 1) . '.'; ?>" class="btn" />
+                        <div class="nav-perso" style="display:none;">
+                            <ul>
+                                <li><a href="<?php echo $this->url(array('controller' => 'auth', 'action' => 'logout'), null, true) ?>" class="icon-lockopen"><?php echo $this->translate('Se déconnecter'); ?></a></li>
+                                <li><a href="<?php echo $this->url(array('controller' => 'user', 'action' => 'index'), null, true) ?>" class="icon-user"><?php echo $this->translate('Paramètrage'); ?></a></li>
+                            </ul>
+                            <div class="arrow"></div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+            <?php echo $this->layout()->content; ?>
+        </div>
+    </body>
+</html>

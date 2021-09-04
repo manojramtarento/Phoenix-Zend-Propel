@@ -1,0 +1,109 @@
+<form method="post" id="id_form_add_plan_factu">
+    <?php echo $this->FlashMessenger('error', 'inline'); ?>
+    <div class="line form-line">
+        <label class="form-label unit size2of5" for="id_pfd_date_planif"><?php echo $this->translate('Date facture'); ?> :</label>
+        <div class="unit size3of5 date">
+            <?php echo Phoenix_View_Helper_Html::input(array('name' => 'pfd_date_planif', 'value' => Phoenix_Data_Convert::formatdateFromSqlServer($this->plan_facturation_detail->getPFDDatePlanif()), 'class' => 'date-input ', 'placeholder' => $this->translate('JJ/MM/AAAA'), 'maxlenght' => '10')); ?>
+        </div>
+    </div>
+
+    <div class="line form-line">
+        <label class="form-label unit size2of5" for="id_pfd_type_fact_id"><?php echo $this->translate('Type de facture'); ?> :</label>
+        <?php echo Phoenix_View_Helper_Html::selectFromTable('r_facture_types', array('name' => 'pfd_type_fact_id', 'value' => $this->plan_facturation_detail->getPFDTypeFactId(), 'class' => 'form-select unit size1of2 lastUnit'), array('name' => 'r_fact_type_libelle', 'value' => 'r_fact_type_id'), array('default_label' => $this->translate('Choisir') . '...')); ?>
+    </div>
+
+    <div class="line form-line">
+        <label class="form-label unit size2of5" for="id_pfd_taux_adf">% <?php echo $this->translate('ADF'); ?> :</label>
+        <div class="unit size1of5 gutter10">
+            <?php echo Phoenix_View_Helper_Html::input(array('name' => 'pfd_taux_adf', 'value' => $this->plan_facturation_detail->getPFDTauxAdf(), 'class' => 'form-input size1of1 text-right')); ?>
+        </div>
+        <span class="form-text unit size1of5">%</span>
+    </div>
+
+    <div class="line form-line">
+        <label class="form-label unit size2of5" for="id_pfd_taux_partiel">% <?php echo $this->translate('Facture partielle'); ?> :</label>
+        <div class="unit size1of5 gutter10">
+            <?php echo Phoenix_View_Helper_Html::input(array('name' => 'pfd_taux_partiel', 'value' => $this->plan_facturation_detail->getPFDTauxPartiel(), 'class' => 'form-input size1of1 text-right')); ?>
+        </div>
+        <span class="form-text unit size1of5">%</span>
+    </div>
+
+    <div class="line form-section">
+        <label class="form-label unit size2of5" for="id_pfd_id_to_cancel"><?php echo $this->translate('Remboursement ADF'); ?>:</label>
+        <?php echo $this->Facturation()->selectAfdToCancel($this->plan_facturation_detail->getOpId(), $this->plan_facturation_detail->getPfdIdToCancel()) ?>
+    </div>
+
+    <div class="line form-section">
+        <label class="form-label unit size2of5" for="id_pfd_fact_annul"><?php echo $this->translate('Facture annulée'); ?> :</label>
+        <?php echo $this->Facturation()->selectFacturesTocancel($this->plan_facturation_detail) ?>
+    </div>
+    <div class="line form-section">
+        <label class="form-label unit size2of5" for="id_pfd_fact_annul_motif_id"><?php echo $this->translate('Motif d\'annulation'); ?> :</label>
+        <?php echo $this->Facturation()->selectActiveInvoiceCancellationMotives((int) $this->plan_facturation_detail->getPfdFactAnnulMotifId()) ?>
+    </div>
+    <div class="line form-line">
+        <label class="form-label unit size2of5" for="id_pfd_fact_annul_autre_motif"><?php echo $this->translate('Autre motif'); ?> :</label>
+        <?php echo Phoenix_View_Helper_Html::textarea(array('name' => 'pfd_fact_annul_autre_motif', 'value' => $this->plan_facturation_detail->getPfdFactAnnulAutreMotif(), 'class' => 'unit size1of2 form-textarea lastUnit other_invoice_cancellation_motive', 'rows' => '3', 'cols' => '60')) ?>
+    </div>
+    <div class="text-center">
+        <input type="hidden" name="pfd_id" value="<?php echo $this->plan_facturation_detail->getPfdId() ?>">
+        <input type="hidden" name="op_id" value="<?php echo $this->plan_facturation_detail->getOpId() ?>">
+        <input type="submit" value="<?php echo $this->translate('Valider'); ?>" class="btn btn-orange" />
+    </div>
+</form>
+<script language="javascript">
+
+    AjaxComponent.ajaxForm(
+            '/operation/facturation/addplanfactudetail',
+            'id_form_add_plan_factu',
+            'id_popup_add_plan_factu',
+            function() {
+                refreshPlanfacturation();
+            }
+    );
+
+    $(document).ready(function() {
+        $('#id_pfd_date_planif').datepicker({
+            showOn: "button",
+            buttonText: "",
+            altFormat: "yyyy-mm-dd"
+        });
+
+        $('#id_pfd_type_fact_id').change(function() {
+            // Activating ADF selection when invoice type is ADF
+            if ($(this).val() != '2') {
+                $('#id_pfd_id_to_cancel').attr('disabled', 'disabled');
+                $('#id_pfd_id_to_cancel').val('');
+            } else {
+                $('#id_pfd_id_to_cancel').removeAttr('disabled');
+            }
+
+            // Activating edited invoice selection when selected invoice type is invoice cancellation
+            if ($.inArray(parseInt($(this).val()), [<?php echo implode(',', RFactureTypes::getEstimTypes()) ?>]) == -1) {
+                $('#id_pfd_taux_partiel').attr('disabled', 'disabled');
+                $('#id_pfd_taux_partiel').val('');
+            } else {
+                $('#id_pfd_taux_partiel').removeAttr('disabled');
+            }
+        })
+
+        // Enabeling the other motif textarea only when 'other' element is selected
+        $('#id_pfd_fact_annul_motif_id').change(function() {
+            if ($('option:selected', this).val() != <?php echo RFactureAnnulationMotifs::OTHER_MOTIVE ?>) {
+                $('#id_pfd_fact_annul_autre_motif').attr('disabled', 'disabled');
+                $('#id_pfd_fact_annul_autre_motif').val('');
+            } else {
+                $('#id_pfd_fact_annul_autre_motif').removeAttr('disabled');
+            }
+        });
+
+        // Invoice selection restriction based on cancellation type
+        $('#id_pfd_fact_annul').chained('#id_pfd_type_fact_id');
+
+        // Enabeling the selection of the motives only when the cancellation invoice type is selected
+        $('#id_pfd_fact_annul_motif_id').chained('#id_pfd_type_fact_id');
+
+    });
+
+
+</script>

@@ -1,0 +1,113 @@
+<table class="list" id='invoiceslist' display-invoice-warning-message="<?php echo $this->translate('Le(s) contact(s) de facturation est/sont inactif(s)'); ?>">
+    <thead>
+        <tr>
+            <th width="26" class="column-noborder"></th>
+            <th width="26" class="column-noborder"></th>
+            <th width="26" class="column-noborder"></th>
+            <th width="26"></th>
+            <th style="text-align:center;
+                "><span class="notsortable"><span class="icon-list icon-lock" title="<?php echo $this->translate('Facture verrouillée'); ?>"><?php echo $this->translate('Facture verrouillée'); ?></span></span></th>
+            <th><span class="notsortable"><?php echo $this->translate('SPE'); ?></span></th>
+            <th><span class="notsortable"><?php echo $this->translate('Date de création'); ?></span></th>
+            <th><span class="notsortable"><?php echo $this->translate('N° facture'); ?></span></th>
+            <th><span class="notsortable"><?php echo $this->translate('N° commande'); ?></span></th>
+            <th><span class="notsortable"><?php echo $this->translate('Type de facture'); ?></span></th>
+            <th><span class="notsortable"><?php echo $this->translate('Montant HT'); ?></span></th>
+            <th><span class="notsortable"><?php echo $this->translate('Montant TTC'); ?></span></th>
+            <th><span class="notsortable"><?php echo $this->translate('Statut'); ?></span></th>
+            <th><span class="notsortable"><?php echo $this->translate('Échéance'); ?></span></th>
+            <th><span class="notsortable"><?php echo $this->translate('Édition'); ?></span></th>
+            <th><span class="notsortable"><?php echo $this->translate('Encaissée'); ?></span></th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php
+        foreach ($this->factures as $oFacture) {
+            $iInvoiceId = $oFacture->getFactId();
+            ?>
+            <tr class="<?php echo $this->cycle(array('', 'alt'), 'factu')->next() ?>">
+                <td><a href="<?php echo $this->url(array('action' => 'facturepdf', 'fact_id' => $iInvoiceId)) ?>" class="display-invoice icon-list icon-zoom" invoice_id="<?php echo $iInvoiceId ?>" title="<?php echo $this->translate('Visualiser la facture'); ?>" ><?php echo $this->translate('Visualiser la facture'); ?></a></td>
+                <td><a href="<?php echo $this->url(array('action' => 'factureexcel', 'fact_id' => $iInvoiceId)) ?>" class="icon-list icon-excel" title="<?php echo $this->translate('Exporter la facture au format tableur'); ?>" ><?php echo $this->translate('Visualiser la facture'); ?></a></td>
+                <td>
+                    <?php
+                    if ($oFacture->getFactStatusId() == RFactureStatuts::CREATED) {
+                        echo "<a href='#validate' onclick='javascript:validateFacture(" . $iInvoiceId . ")' class='icon-list icon-validate' title='" . $this->translate('Valider la facture') . "'><?php echo $this->translate('Valider la facture');?></a></td>";
+                    }
+                    ?>
+                    <?php
+                    if ($oFacture->getFactStatusId() == RFactureStatuts::VALIDATED) {
+                        echo "<a href='#validate' onclick='javascript:unvalidateFacture(" . $iInvoiceId . ")' class='icon-list icon-unvalidate' title='" . $this->translate('Dévalider la facture') . "'><?php echo $this->translate('Dévalider la facture');?></a></td>";
+                    }
+                    ?>
+                </td>
+                <td><a href="javascript:void(0)" onclick="javascript:deleteFacture(<?php echo $iInvoiceId ?>)" class="icon-list icon-delete" title="<?php echo $this->translate('Supprimer la facture'); ?>"><?php echo $this->translate('Supprimer la facture'); ?></a></td>
+                <td class="check-column"><?php echo Phoenix_View_Helper_Html::checkbox(array('primary_value' => $iInvoiceId, 'value' => '1', 'default_value' => $oFacture->getFactVerrou(), 'name' => 'fact_verrou', 'id' => 'id_fact_verrou_' . $iInvoiceId, 'class' => 'class_fact_verrou' ,'msg_confirm' => $this->translate('Confirmez-vous la modification?'))); ?></td>
+                <?php
+                $bDisabledFactSPE = in_array($oFacture->getRFactureStatuts()->getRfactStatId(), array(RFactureStatuts::EDITED, RFactureStatuts::ENCAISSE, RFactureStatuts::ENCAISSE_PARTIEL)) ? true : false;
+                ?>
+
+                <td class="tip check-column" title="<?php echo $oFacture->getFactMotifsLibelle(); ?>"><?php echo Phoenix_View_Helper_Html::checkbox(array('primary_value' => $iInvoiceId, 'class' => 'facture_motif_checkbox', 'name' => 'fact_motif', 'disabled' => $bDisabledFactSPE), array('checked' => $oFacture->hasFactMotifs())); ?></td>
+
+                <td><?php echo Phoenix_Data_Convert::formatdateFromSqlServer($oFacture->getDateCreate()); ?></td>
+				
+				<?php $aCurrentInvoiceStatusResult = $this->Facturation()->getInvoiceStatusWithUsers($iInvoiceId);?>
+                <td class="tip" title="<?php if($aCurrentInvoiceStatusResult){
+					foreach( $aCurrentInvoiceStatusResult as $aStatusResult)
+					{
+                        $sUsername = $aStatusResult['username']?? 'Phoenix';
+						echo $this->translate($aStatusResult['r_fact_stat_libelle']).' : '.$sUsername."<br>";
+					}
+				}
+				?>">
+				<?php echo $oFacture->getFactReference(); ?>
+				</td>
+                <td><?php echo Phoenix_View_Helper_Html::input(array('name' => 'fact_num_cmd', 'id' => 'id_fact_num_cmd_' . $iInvoiceId, 'class' => 'class_fact_num_cmd', 'value' => $oFacture->getFactNumCmd(), 'model_name' => 'Factures', 'primary_value' => $iInvoiceId)) ?></td>
+                <td><?php echo $oFacture->getRFactureTypes()->getRFactTypeLibelle(); ?></td>
+                <td><?php echo Phoenix_Data_Convert::formatMoney($oFacture->getFactMontantHt()); ?></td>
+                <td><?php echo Phoenix_Data_Convert::formatMoney($oFacture->getFactMontantTtc()); ?></td>
+                <td><?php echo $oFacture->getRFactureStatuts()->getRFactStatLibelle() ?></td>
+                <td><?php echo $oFacture->getFactDateEcheance("d/m/Y"); ?></td>
+                <td><?php echo Phoenix_Data_Convert::formatDateFromSqlServer2($oFacture->getFactDateStatutEffective(RFactureStatuts::EDITED)); ?></td>
+                <td><?php echo Phoenix_Data_Convert::formatDateFromSqlServer2($oFacture->getFactDateStatutEffective(RFactureStatuts::ENCAISSE)); ?></td>
+            </tr>
+        <?php } ?>
+    </tbody>
+</table>
+<?php $this->headScript()->appendFile($this->baseUrl() . '/js/commonFeatures.js'); ?>
+
+<script language="javascript">
+
+    $(document).ready(function () {
+        $('.class_fact_verrou').each(function () {
+            $(this).updateField('/operation/facturation/verroufacture',
+                    {
+                        model_name: 'Factures',
+                        confirm: true,
+                    }
+            );
+        });
+
+        // Specific reasons management
+        $('.facture_motif_checkbox').click(function () {
+            if ($(this).is(":checked")) {
+                AjaxComponent.ajaxDialog('/operation/facturation/popupmodifffacturemotifs', {fact_id: $(this).attr('primary_value')}, {id: 'id_popup_modif_fact_motifs', width: '400px', title: '<?php echo $this->translate('Motifs Spécifiques'); ?>'});
+            } else {
+                sFact_id = $(this).attr('primary_value');
+                Component.confirm('<?php echo $this->translate('Voulez-vous annuler les motifs associés à la facture'); ?>?',
+                        function () {
+                            AjaxComponent.ajaxQuery('/operation/facturation/cancelfacturemotifs', {fact_id: sFact_id})
+                                    .success(function (data) {
+                                        if (data.action != 1) {
+                                            refreshFactures();
+                                        }
+                                    });
+                        },
+                        function () {
+                            refreshFactures();
+                        });
+            }
+
+        });
+    });
+
+</script>

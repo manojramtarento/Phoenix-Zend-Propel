@@ -1,0 +1,116 @@
+<div id="id_div_ajout_prestation">
+    <form id="id_form_add_prestation_simple">
+        <?php echo Phoenix_View_Helper_Html::input(array('name' => 'ost_tpl_rubrique_id', 'value' => $this->ost_tpl_rubrique_id, 'type' => 'hidden')) ?>
+        <?php echo Phoenix_View_Helper_Html::input(array('name' => 'ost_tpl_id', 'value' => $this->ost_tpl_id, 'type' => 'hidden')) ?>
+
+        <div class="section">
+            <div class="section-hd">
+                <h2 class="section-title"><?php echo $this->translate('Ajouter des prestations rapidement'); ?></h2>
+            </div>
+
+            <div class="section-bd">
+                <div class="line form-line">
+                    <label class="form-label unit size1of5" for="id_prestation_ids"><?php echo $this->translate('ID prestations'); ?> :</label>
+                    <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'prestation_ids', 'value' => '', 'placeholder' => $this->translate('Indiquez ici les ids des prestations à ajouter (séparées par un espace)'), 'class' => 'unit col size3of5 form-input')) ?>
+                    <?php echo Phoenix_View_Helper_Html::input(array('name' => 'add_prestations', 'value' => $this->translate('Ajouter'), 'type' => 'submit', 'class' => 'unit btn')) ?>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <form id="id_form_recherche_prestation">
+        <div class="section">
+            <div class="section-hd">
+                <h2 class="section-title"><?php echo $this->translate('Rechercher une prestation'); ?></h2>
+            </div>
+
+            <div class="section-bd">
+                <div class="line form-line">
+                    <label class="form-label unit size1of5" for="id_find_r_prestation_id"><?php echo $this->translate('ID prestation'); ?></label>
+                    <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_r_prestation_id', 'type' => 'text', 'class' => 'form-input unit lastUnit size1of5')) ?>
+                </div>
+
+                <div class="line form-line">
+                    <label class="form-label unit size1of5" for="id_find_r_p_libelle"><?php echo $this->translate('Nom prestation'); ?> :</label>
+                    <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_r_p_libelle', 'type' => 'text', 'class' => 'form-input unit lastUnit size1of5')) ?>
+                </div>
+
+                <div class="form-line">
+                    <?php echo Phoenix_View_Helper_Html::input(array('name' => 'recherche', 'value' => $this->translate('Recherche'), 'type' => 'submit', 'class' => 'btn push1of5')) ?>
+                    <?php echo Phoenix_View_Helper_Html::input(array('name' => 'findbyfields', 'value' => '1', 'type' => 'hidden')) ?>
+                    <?php echo Phoenix_View_Helper_Html::input(array('name' => 'ost_tpl_rubrique_id', 'value' => $this->ost_tpl_rubrique_id, 'type' => 'hidden')) ?>
+                    <?php echo Phoenix_View_Helper_Html::input(array('name' => 'ost_tpl_id', 'value' => $this->ost_tpl_id, 'type' => 'hidden')) ?>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <?php if (count($this->prestations) > 0) { ?>
+        <form id="id_form_add_prestation">
+            <div class="section">
+                <div class="section-hd">
+                    <h2 class="section-title"><?php echo $this->translate('Résultat de votre recherche'); ?></h2>
+                </div>
+
+                <div class="section-bd" style="height:220px;overflow:auto;">
+                    <table class="list list-main">
+                        <thead>
+                            <tr>
+                                <th width="40" class="check-column"><input id="check_all_presta" type="checkbox" value="1"></th>
+                                <th width="40"><span class="notsortable"><?php echo $this->translate('ID'); ?></span></th>
+                                <th><span class="notsortable"><?php echo $this->translate('Libellé Prestation'); ?></span></th>
+                                <th width="15%"><span class="notsortable"><?php echo $this->translate('Coût total'); ?></span></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($this->prestations as $prestation) { ?>
+                                <tr class="tr-check <?php echo $this->cycle(array('', 'alt'))->next() ?>">
+                                    <td class="check-column"><input class="checkbox_presta" type="checkbox" name="r_prestation_id[]" value="<?php echo $prestation['r_prestation_id']; ?>"></td>
+                                    <td align="left"><?php echo $prestation['r_prestation_id']; ?></td>
+                                    <td><?php echo $prestation['r_p_libelle']; ?></td>
+                                    <td align="right" class="column-secondary"><?php echo number_format($prestation['r_p_prix_vente'], 2, ',', ' '); ?>&euro;</td>
+                                </tr>
+                            <?php } ?>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+
+            <div class="text-center">
+                <?php echo Phoenix_View_Helper_Html::input(array('name' => 'ost_tpl_rubrique_id', 'value' => $this->ost_tpl_rubrique_id, 'type' => 'hidden')) ?>
+                <?php echo Phoenix_View_Helper_Html::input(array('name' => 'ost_tpl_id', 'value' => $this->ost_tpl_id, 'type' => 'hidden')) ?>
+                <?php echo Phoenix_View_Helper_Html::input(array('name' => 'add_prestations', 'value' => $this->translate('Ajouter'), 'type' => 'submit', 'class' => 'btn btn-orange btn-big')) ?>
+            </div>
+        </form>
+    <?php } else { ?>
+        Aucun résultat
+    <?php } ?>
+</div>
+<script language="javascript">
+
+    $(document).ready(function () {
+
+        //soumission du formulaire de recherche
+        $('#id_form_recherche_prestation').submit(function () {
+            AjaxComponent.ajaxDiv(baseUrl + '/administration/rtypesdevis/addprestation', $(this).serialize(), 'id_div_ajout_prestation');
+            return false;
+        });
+
+        $('#check_all_presta').change(function () {
+            status = $(this).is(':checked');
+            Component.updateAllCheckboxs('checkbox_presta', status);
+        });
+
+        $('#id_form_add_prestation').submit(function () {
+            AjaxComponent.ajaxQuery(baseUrl + '/administration/rtypesdevis/addprestation', $(this).serialize());
+            return false;
+        });
+
+        $('#id_form_add_prestation_simple').submit(function () {
+            AjaxComponent.ajaxQuery(baseUrl + '/administration/rtypesdevis/addprestation', $(this).serialize());
+            return false;
+        });
+    });
+
+</script>

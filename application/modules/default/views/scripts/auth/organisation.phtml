@@ -1,0 +1,22 @@
+<form action="<?php echo $this->BaseUrl() ?>/auth/organisation" method="post">
+
+    <?php echo $this->FlashMessenger('error','inline'); ?>
+    <div class="line form-line">
+        <label for="organisation_label" class="form-label unit size1of3">Organisation :</label>
+        <select name="currentOrganisationId" class="form-label unit size1of2">
+        <?php 
+            foreach($this->oraganisation as $oOrganisation){?>
+                <option value="<?php echo $oOrganisation->getOrganisations()->getOrganisationId();?>">
+                    <?php echo $oOrganisation->getOrganisations()->getOrganisationName();?>
+                </option>
+        <?php  }  ?>
+              
+     </select>
+     </div>
+
+    <div class="line">
+        <div class="unit size2of3 push1of3">
+            <input id="auth_submit_id" type="submit" value="Valider" class="btn btn-orange btn-big" />
+        </div>
+    </div>
+</form>

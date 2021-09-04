@@ -1,0 +1,241 @@
+<?php
+$this->title = $this->translate('Flux sortants');
+$this->headTitle($this->title);
+?>
+
+<?php echo $this->partial('partials/actionsbar.phtml', array('operation' => $this->operation)); ?>
+<input type="hidden" id="id_input_op_id" value="<?php echo $this->operation->getOpId() ?>" />
+
+<div id="site-content">
+    <?php echo $this->partial('partials/menu.phtml'); ?>
+    <div id="content-bd">
+        <div class="list-actions">
+            <h1 class="page-title"><?php echo $this->subtitle; ?></h1>
+
+            <div class="unit size2of5">
+                <div class="search">
+                    <form action="" method="get">
+                        <input type="text" name="findword" class="form-input" value="<?php if (isset($_REQUEST["findword"])) echo $_REQUEST["findword"]; ?>" placeholder="<?php echo $this->translate('Rechercher'); ?>" autocomplete="off" />
+                        <input type="submit" value="<?php echo $this->translate('OK'); ?>" class="btn btn-orange" />
+                        <input type="button" value="<?php echo $this->translate('Recherche avancée'); ?>" class="btn btn-big btn-adsearch" id="btn_adsearch" />
+                    </form>
+                </div>
+            </div>
+
+            <div class="unit size3of5">
+                <fieldset class="stats-op-fieldset">
+                    <legend><span class="title-icon icon-chart"></span></legend>
+                    <table class="stats-op">
+                        <thead>
+                            <tr>
+                                <th class="op-accepte size1of5"><?php echo $this->translate('Remboursements'); ?></th>
+                                <th class="op-refuse size1of5"> + <?php echo $this->translate('frais d\'envoi'); ?></th>
+                                <th class="op-encours size1of5"> = <?php echo $this->translate('Total'); ?></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="op-accepte"><?php echo Phoenix_Data_Convert::formatMoney($this->stats['Remb']); ?></td>
+                                <td class="op-refuse"><?php echo Phoenix_Data_Convert::formatMoney($this->stats['Frais']); ?></td>
+                                <td class="op-encours"><?php echo Phoenix_Data_Convert::formatMoney($this->stats['Total']); ?></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </fieldset>
+            </div>
+            <?php if ($this->NotifySearch()->isActive()) { ?>
+                <div class="unit size3of5 push2of5">
+                    <fieldset class="stats-op-fieldset">
+                        <legend><span class="title-icon icon-chart"><?php echo $this->translate('Données filtrées'); ?></span></legend>
+                        <table class="stats-op">
+                            <thead>
+                                <tr>
+                                    <th class="op-accepte size1of5"><?php echo $this->translate('Remboursements'); ?></th>
+                                    <th class="op-refuse size1of5"> + <?php echo $this->translate('frais d\'envoi'); ?></th>
+                                    <th class="op-encours size1of5"> = <?php echo $this->translate('Total'); ?></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="op-accepte"><?php echo Phoenix_Data_Convert::formatMoney($this->stats_filtre['Remb']); ?></td>
+                                    <td class="op-refuse"><?php echo Phoenix_Data_Convert::formatMoney($this->stats_filtre['Frais']); ?></td>
+                                    <td class="op-encours"><?php echo Phoenix_Data_Convert::formatMoney($this->stats_filtre['Total']); ?></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </fieldset>
+                </div>
+            <?php } ?>
+        </div>
+        <div class="clear"></div>
+        <div class="list-actions">
+            <div class="unit col">
+                <a class="icon icon-32 icon-excel" href="<?php echo $this->url(array('format' => 'csv'), null, false) . '?' . $_SERVER['QUERY_STRING'] ?>" title="<?php echo $this->translate('Exporter au format Excel'); ?>"><?php echo $this->translate('Exporter au format Excel'); ?></a>
+            </div>
+            <div class="unit rightUnit">
+                <div class="unit col">
+                    <?php echo $this->NotifySearch()->link(array('op_id' => $this->operation->getOpId(), 'doc_type' => $this->doc_type)) ?>
+                </div>
+                <div class="unit">
+                    <?php echo $this->paginationControl($this->paginator, 'Sliding', '/partials/pagination.phtml'); ?>
+                </div>
+            </div>
+        </div>
+        <table style="table-layout:fixed" class="list list-main">
+            <thead>
+                <tr>
+                    <th><?php echo My_View_Helper_Html::UrlOrderBy('numDemande', $this->translate('No de cmd')) ?></th>
+                    <th><?php echo My_View_Helper_Html::UrlOrderBy('recu', $this->translate('Reçu')) ?></th>
+                    <th><?php echo My_View_Helper_Html::UrlOrderBy('integre', $this->translate('Saisie')) ?></th>
+                    <th><?php echo My_View_Helper_Html::UrlOrderBy('edite', $this->translate('Edité')) ?></th>
+                    <th><?php echo My_View_Helper_Html::UrlOrderBy('expedie', $this->translate('Expédié')) ?></th>
+                    <th><?php echo My_View_Helper_Html::UrlOrderBy('retourne', $this->translate('Retourné')) ?></th>
+                    <th><?php echo My_View_Helper_Html::UrlOrderBy('montant_a_rembourser', $this->translate('Remboursé')) ?></th>
+                    <th><?php echo My_View_Helper_Html::UrlOrderBy('montant_frais_envois', $this->translate('Frais')) ?></th>
+                    <th><?php echo My_View_Helper_Html::UrlOrderBy('timbre', $this->translate('Timbre')) ?></th>
+                    <th><?php echo My_View_Helper_Html::UrlOrderBy('Reg', $this->translate('Reg')) ?></th>
+                    <th><?php echo My_View_Helper_Html::UrlOrderBy('Fact', $this->translate('Fact')) ?></th>
+                    <th><?php echo My_View_Helper_Html::UrlOrderBy('primes', $this->translate('Primes')) ?></th>
+                    <th><?php echo My_View_Helper_Html::UrlOrderBy('libelle_anomalie_1', $this->translate('Anomalie 1')) ?></th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($this->paginator as $document) { ?>
+                    <tr class="<?php echo $this->cycle(array('', 'alt'))->next() ?>" >
+                        <td><?php echo $document['numDemande']; ?></td>
+                        <td><?php echo $document['recu_fr']; ?></td>
+                        <td><?php echo $document['integre_fr']; ?></td>
+                        <td><?php echo $document['edite_fr']; ?></td>
+                        <td><?php echo $document['expedie_fr']; ?></td>
+                        <td><?php echo $document['retourne_fr']; ?></td>
+                        <td><?php echo Phoenix_Data_Convert::formatMoney($document['montant_a_rembourser']); ?></td>
+                        <td><?php echo Phoenix_Data_Convert::formatMoney($document['montant_frais_envois']); ?></td>
+                        <td><?php echo $document['timbre'] ? $this->translate('OUI') : $this->translate('NON'); ?></td>
+                        <td><?php echo $document['Reg'] ? $this->translate('OUI') : $this->translate('NON'); ?></td>
+                        <td><?php echo $document['Fact'] ? $this->translate('OUI') : $this->translate('NON'); ?></td>
+                        <td><?php
+                            $primes = array();
+
+                            $primes_list = explode(',', $document['primes']);
+                            foreach ($primes_list as $prime) {
+                                $oPrime = OperationPrimesQuery::create()
+                                        ->filterByOpId($this->operation->getOpId())
+                                        ->findOneByOpPrimeNumero($prime);
+                                if ($oPrime instanceof OperationPrimes) {
+                                    $primes[] = $oPrime->getOpPrimeLibelle();
+                                } else {
+                                    $primes[] = $this->translate('Invalide');
+                                }
+                            }
+
+                            echo implode(',', $primes);
+                            ?></td>
+                        <td><?php echo $document['libelle_anomalie_1']; ?></td>
+                    </tr>
+                <?php } ?>
+            </tbody>
+        </table>
+        <div class="list-actions">
+            <div class="unit rightUnit">
+                <div class="unit">
+                    <?php
+                    //34802 : adaptation les valeurs de pagination pour sql server
+                    echo $this->paginationControl($this->paginator, 'Sliding', '/partials/pagination.phtml', array('isSqlServerPaginate' => true));
+                    ?>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="id_dialog_search" title="<?php echo $this->translate('Recherche avancée'); ?>" style="display:none;">
+    <form action="" method="get" style="border:1px black">
+        <div class="line form-line">
+            <label class="unit size1of2 form-label" for="id_find_numDemande"><?php echo $this->translate('N° de commande'); ?> :</label>
+            <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'find_numDemande', 'class' => 'unit size1of4 form-input lastUnit')) ?>
+        </div>
+
+        <div class="line form-line">
+            <label class="unit size1of2 form-label" for=""><?php echo $this->translate('Date de réception'); ?> :</label>
+            <div class="unit size1of2">
+                <?php echo Phoenix_View_Helper_Html_Select::selectComparateur(array('name' => 'find_recu_comp', 'class' => 'form-select unit size1of4 col')) ?>
+                <div class="unit date">
+                    <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_recu', 'value' => $this->getParam('find_recu'), 'class' => 'date-input', 'placeholder' => $this->translate('JJ/MM/AAAA'), 'maxlenght' => '10')); ?>
+                </div>
+            </div>
+        </div>
+
+        <div class="line form-line">
+            <label class="unit size1of2 form-label" for=""><?php echo $this->translate('Date de saisie'); ?> :</label>
+            <div class="unit size1of2">
+                <?php echo Phoenix_View_Helper_Html_Select::selectComparateur(array('name' => 'find_integre_comp', 'class' => 'form-select unit size1of4 col')) ?>
+                <div class="unit date">
+                    <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_integre', 'value' => $this->getParam('find_integre'), 'class' => 'date-input', 'placeholder' => $this->translate('JJ/MM/AAAA'), 'maxlenght' => '10')); ?>
+                </div>
+            </div>
+        </div>
+
+        <div class="line form-line">
+            <label class="unit size1of2 form-label" for=""><?php echo $this->translate('Date d\'expédition'); ?> :</label>
+            <div class="unit size1of2">
+                <?php echo Phoenix_View_Helper_Html_Select::selectComparateur(array('name' => 'find_expedie_comp', 'class' => 'form-select unit size1of4 col')) ?>
+                <div class="unit date">
+                    <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_expedie', 'value' => $this->getParam('find_expedie'), 'class' => 'date-input', 'placeholder' => $this->translate('JJ/MM/AAAA'), 'maxlenght' => '10')); ?>
+                </div>
+            </div>
+        </div>
+
+        <div class="line form-line">
+            <label class="unit size1of2 form-label" for=""><?php echo $this->translate('Montant remboursé'); ?> :</label>
+            <div class="unit size1of2">
+                <?php echo Phoenix_View_Helper_Html_Select::selectComparateur(array('name' => 'find_montant_a_rembourser_comp', 'class' => 'form-select unit size1of4 col')) ?>
+                <div class="unit date">
+                    <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_montant_a_rembourser', 'class' => 'form-input', 'maxlenght' => '10')); ?>
+                </div>
+            </div>
+        </div>
+
+        <div class="line form-line">
+            <label class="unit size1of2 form-label" for=""><?php echo $this->translate('Edité'); ?> :</label>
+            <div class="unit size1of2">
+                <?php echo Phoenix_View_Helper_Html::select(array('name' => 'find_is_edited', 'class' => 'form-select unit size1of4 col'), array('tous' => array('value' => null), 'oui' => array('value' => 1), 'non' => array('value' => 0))) ?>
+            </div>
+        </div>
+
+        <div class="line form-line">
+            <label class="unit size1of2 form-label" for=""><?php echo $this->translate('Expédié'); ?> :</label>
+            <div class="unit size1of2">
+                <?php echo Phoenix_View_Helper_Html::select(array('name' => 'find_is_sent', 'class' => 'form-select unit size1of4 col'), array('tous' => array('value' => null), 'oui' => array('value' => 1), 'non' => array('value' => 0))) ?>
+            </div>
+        </div>
+
+        <div class="line form-line">
+            <label class="unit size1of2 form-label" for=""><?php echo $this->translate('Retourné'); ?> :</label>
+            <div class="unit size1of2">
+                <?php echo Phoenix_View_Helper_Html::select(array('name' => 'find_is_back', 'class' => 'form-select unit size1of4 col'), array('tous' => array('value' => null), 'oui' => array('value' => 1), 'non' => array('value' => 0))) ?>
+            </div>
+        </div>
+
+        <div class="line form-line">
+            <label class="unit size1of2 form-label" for=""><?php echo $this->translate('Code prime'); ?> :</label>
+            <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'find_primes', 'class' => 'unit size1of4 form-input lastUnit')) ?>
+        </div>
+
+        <div class="text-center">
+            <input type="submit" name="findbyfields" value="<?php echo $this->translate('Rechercher'); ?>" class="btn btn-orange">
+        </div>
+    </form>
+</div>
+
+
+<script language="javascript">
+    $(document).ready(function () {
+        $('#btn_adsearch').click(function (e) {
+            $('#id_dialog_search').dialog({
+                width: 500,
+                modal: true,
+                resizable: false
+            });
+        });
+    })
+</script>

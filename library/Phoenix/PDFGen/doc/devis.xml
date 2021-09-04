@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root SYSTEM "devis.dtd">
+<root>
+    <data>
+        <first_page>
+            <nom_contact>Pierric FINET</nom_contact>
+            <email_contact>pierric.finet@customsolutions.fr</email_contact>
+            <tel_contact>+33(0) 4 86 91 42 35</tel_contact>
+            <mobile_contact>+33(0) 4 86 91 42 99</mobile_contact>
+            <fax_contact>+33(0) 4 86 91 42 30</fax_contact>
+            <descriptif_operation>Pour l’achat d’une friteuse Philips, recevez 30€ remboursés.
+Références concernées (PVC : 180 à 200€) :
+HD9220/20
+HD9220/40
+HD9220/50
+HD9225/50
+Communication de l’offre : Catalogue, Pub TV, Affichage, Online</descriptif_operation>
+            <nom_offre>Philips Airfryer 201</nom_offre>
+            <num_devis>17321</num_devis>
+            <date_devis>27/04/2011</date_devis>
+            <num_version_devis>19</num_version_devis>
+			<validite_devis>2 mois</validite_devis>
+            <contact_client>Sophie CRISTOL</contact_client>
+            <nom_client>HASBRO</nom_client>
+            <adresse_1>FOURNISSEURS COMPTABILITE</adresse_1>
+            <adresse_2>Savoie Technolac</adresse_2>
+            <adresse_3></adresse_3>
+            <code_postal>73378</code_postal>
+            <ville>Le Bourget du Lac</ville>
+            <pays></pays>
+            <date_start_op>23 mars 2012</date_start_op>
+            <date_end_op>31 mai 2012</date_end_op>
+            <date_fin_postale>11 juin 2012</date_fin_postale>
+            <date_fin_gestion>11 octobre 2012</date_fin_gestion>
+        </first_page>
+        <last_page>
+            <adresse_facturation>PHILIPS France SAS, 33 Rue de Verdun BP 301, 92156 SURESNES CEDEX, France</adresse_facturation>
+            <contact_facturation>COMPTABILITE FOURNISSEURS</contact_facturation>
+        </last_page>
+    </data>
+    
+    <scenario>
+        <scenario_prestation>
+            <libelle>Estimation ventes totales</libelle>
+            <quantite>17000</quantite>
+            <taux_estime>50.00</taux_estime>
+            <total_estime>8500.00</total_estime>
+        </scenario_prestation>
+        <scenario_prestation>
+            <libelle>Estimation ventes totales</libelle>
+            <quantite>17000</quantite>
+            <taux_estime>50.00</taux_estime>
+            <total_estime>8500.00</total_estime>
+        </scenario_prestation>
+    </scenario>
+    
+    <budget_estime>
+        <budget_prestations>
+            <budget_prestation>
+                <libelle>Frais fixes de mise en place et suivi de l’opération</libelle>
+                <ht>0</ht>
+                <ttc>0.00</ttc>
+            </budget_prestation>
+            <budget_prestation>
+                <libelle>Frais variables de gestion</libelle>
+                <ht>2755.96</ht>
+                <ttc>3296.13</ttc>
+            </budget_prestation>
+        </budget_prestations>
+        
+        <budget_total_ht>10000.00</budget_total_ht>
+		<budget_total_tva taux="TVA 5.4 %">200.50</budget_total_tva>
+		<budget_total_tva taux="TVA 19.6 %">933.35</budget_total_tva>
+        <budget_total_ttc>12000.00</budget_total_ttc>
+        
+        <facturation_prev>
+            <facture>
+                <libelle>Appel de fond</libelle>
+                <date_facture>01/03/2012</date_facture>
+            </facture>
+            <facture>
+                <libelle>Frais fixe</libelle>
+                <date_facture>01/04/2012</date_facture>
+            </facture>
+            <facture>
+                <libelle>Frais variable</libelle>
+                <date_facture>01/05/2012</date_facture>
+            </facture>
+        </facturation_prev>
+    </budget_estime>
+    
+    <rubriques>
+		<total_ht>4326.46</total_ht>
+		<rubrique>
+			<title>Génération codes uniques</title>
+			<total_ht>606.60</total_ht>
+            <has_tva>1</has_tva>
+			<prestation>
+                <r_prest_id>1</r_prest_id>
+				<libelle>Ouverture dossier facturation, appel de fonds</libelle>
+				<descriptif>Prestation Offerte
+Briefing Production: masque de saisie, base de données, assistante.
+Relecture des modalités, contrôle vs Cahier des charges Devis
+Paramétrage lettre de non-conformité
+* Paramétrage des statistiques par mail (fréquence, destinataires, option)
+Choix du mode de facturation</descriptif>
+				<pu>360.00</pu>
+				<quantite></quantite>
+				<total_ht>0.0</total_ht>
+			</prestation>
+			<prestation>
+                <r_prest_id>1</r_prest_id>
+				<libelle>Paramétrage statistiques par région</libelle>
+				<descriptif></descriptif>
+				<pu>90.00</pu>
+				<quantite></quantite>
+				<total_ht>90.0</total_ht>
+			</prestation>
+			<prestation>
+                <r_prest_id>1</r_prest_id>
+				<libelle>Frais mensuels de suivi</libelle>
+				<descriptif>adresse postale, envois de statistiques hebdomadaires par e-mail, suivi de dossier, etc...</descriptif>
+				<pu>27.90</pu>
+				<quantite>4</quantite>
+				<total_ht>110.60</total_ht>
+			</prestation>
+			<prestation>
+                <r_prest_id>1</r_prest_id>
+				<libelle>Extract BDD, mise au format</libelle>
+				<descriptif></descriptif>
+				<pu>45.00</pu>
+				<quantite></quantite>
+				<total_ht>45.0</total_ht>
+			</prestation>
+		</rubrique>
+
+		<rubrique>
+			<title>FRAIS VARIABLES DE GESTION</title>
+			<total_ht>2755.96</total_ht>
+            <has_tva>0</has_tva>
+			<prestation>
+                <r_prest_id>1</r_prest_id>
+				<libelle>Ouverture dossier facturation, appel de fonds</libelle>
+				<descriptif>Prestation Offerte
+Briefing Production: masque de saisie, base de données, assistante.
+Relecture des modalités, contrôle vs Cahier des charges Devis
+Paramétrage lettre de non-conformité
+* Paramétrage des statistiques par mail (fréquence, destinataires, option)
+Choix du mode de facturation</descriptif>
+				<pu>360.00</pu>
+				<quantite></quantite>
+				<total_ht>0.0</total_ht>
+			</prestation>
+			<prestation>
+                <r_prest_id>1</r_prest_id>
+				<libelle>Paramétrage statistiques par région</libelle>
+				<descriptif></descriptif>
+				<pu>90.00</pu>
+				<quantite></quantite>
+				<total_ht>90.0</total_ht>
+			</prestation>
+			<prestation>
+                <r_prest_id>1</r_prest_id>
+				<libelle>Frais mensuels de suivi</libelle>
+				<descriptif>adresse postale, envois de statistiques hebdomadaires par e-mail, suivi de dossier, etc...</descriptif>
+				<pu>27.90</pu>
+				<quantite>4</quantite>
+				<total_ht>110.60</total_ht>
+			</prestation>
+			<prestation>
+                <r_prest_id>1</r_prest_id>
+				<libelle>Extract BDD, mise au format</libelle>
+				<descriptif></descriptif>
+				<pu>45.00</pu>
+				<quantite></quantite>
+				<total_ht>45.0</total_ht>
+			</prestation>
+		</rubrique>
+    </rubriques>
+        
+	<affranchissements>
+		<total>275.60</total>
+		<affranchissement>
+			<libelle>Affranchissememts des non-conformes en Ecopli</libelle>
+			<descriptif>- base 20 g</descriptif>
+			<pu>0.530</pu>
+			<quantite>459</quantite>
+			<total>243.27</total>
+		</affranchissement>
+		<affranchissement>
+			<libelle>Affranchissememts des LC en Ecopli</libelle>
+			<descriptif>- base 20 g</descriptif>
+			<pu>0.530</pu>
+			<quantite>61</quantite>
+			<total>32.33</total>
+		</affranchissement>
+	</affranchissements>
+</root>

@@ -1,0 +1,129 @@
+<?php
+$this->title = $this->translate('Nouveau client');
+$this->headTitle($this->title);
+?>
+<div id="site-content"> 
+    <div id="content-bd">
+        <div class="form-section">
+            <h1 class="page-title title-icon icon-doc"><?php echo $this->translate('Nouveau client'); ?></h1>
+        </div>
+        <form id="frm-client-create" method="post" action="" enctype="multipart/form-data">
+            <div class="line">
+                <div class="unit size1of2">
+                    <div class="box">
+                        <div class="box-hd">
+                            <h2 class="box-title"><?php echo $this->translate('Informations générales'); ?></h2>
+                        </div>
+                        <div class="box-bd">
+                            <div class="line form-line">
+                                <label class="form-label unit size1of3" for="id_cl_libelle"><?php echo $this->translate('Nom'); ?> :</label>
+                                <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'cl_libelle', 'id' => 'id_cl_libelle', 'class' => 'form-select unit size1of3 lastUnit')) ?>
+                            </div>
+
+                            <div class="line form-line">
+                                <label class="form-label unit size1of3" for="cl_logo"><?php echo $this->translate('Logo'); ?> :</label>
+                                <input type="file" name="cl_logo" id="cl_logo" />
+                            </div>
+
+                            <div class="line form-line">
+                                <label class="form-label unit size1of3" for="id_cl_type_id"><?php echo $this->translate('Catégorie'); ?> :</label>
+                                <?php echo Phoenix_View_Helper_Html::selectFromTable('View_Rclient_Types_Listing', array('name' => 'cl_type_id', 'class' => 'form-select unit size1of3 lastUnit'), array('name' => 'cl_type_libelle', 'value' => 'cl_type_id'), array('default_label' => $this->translate('choisir').'...','clause_order' => 'ordre asc', 'clause_where' => 'actif <> 0')) ?>
+                            </div>
+
+                            <div class="line form-line">
+                                <label class="form-label unit size1of3" for="id_cl_activity_id"><?php echo $this->translate('Secteur d\'activité'); ?> :</label>
+                                <?php echo Phoenix_View_Helper_Html::selectFromTable('View_Rclient_Activites_Listing', array('name' => 'cl_activity_id', 'class' => 'form-select unit size1of3 lastUnit'), array('name' => 'cl_activity_libelle', 'value' => 'cl_activity_id'), array('default_label' => $this->translate('choisir').'...','clause_order' => array('cl_type_id desc','parent_cl_activity_id asc','ordre asc'), 'clause_where' => 'actif <> 0')) ?>
+                            </div>
+
+                            <div class="line form-line">
+                                <label class="form-label unit size1of3" for="id_cl_bon_cmd"><?php echo $this->translate('Bon de commande'); ?> :</label>
+                                <?php echo Phoenix_View_Helper_Html::select(array('name' => 'cl_bon_cmd', 'class' => 'form-select unit size1of3 lastUnit'), array('non' => array('value' => 0), 'oui' => array('value' => 1))) ?>
+                            </div>
+
+                            <div class="line form-line">
+                                <label class="form-label unit size1of3" for="id_cl_dc_id"><?php echo $this->translate('Directeur de clientèle'); ?> :</label>
+                                <?php echo Phoenix_View_Helper_Html_Select::selectUsersByuserType(RUserTypes::KEY_ACCOUNT_MANAGER_USER_TYPE, array('name' => 'cl_dc_id', 'class' => 'form-select unit size1of3 lastUnit'), array('default_label' => $this->translate('Choisir') . '...')); ?>
+                            </div>
+
+                            <div class="line form-line">
+                                <label class="form-label unit size1of3" for="id_cl_fact_tvaintra"><?php echo $this->translate('N° de TVA intracommunautaire'); ?> :</label>
+                                <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'cl_fact_tvaintra', 'class' => 'form-select unit size1of3 lastUnit')) ?>
+                            </div>
+                            <div class="line form-line">
+                                <label class="form-label unit size1of3" for="id_cl_fact_siret"><?php echo $this->translate('Numéro SIRET'); ?> :</label>
+                                <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'cl_fact_siret', 'class' => 'form-select unit size1of3 lastUnit')) ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="unit size1of2 lastUnit">
+                    <div class="box">
+                        <div class="box-hd">
+                            <h2 class="box-title"><?php echo $this->translate('Site client'); ?></h2>
+                        </div>
+                        <div class="box-bd">
+                            <div class="line form-section">
+                                <label class="form-label unit size1of3" for="id_cl_site_libelle"><?php echo $this->translate('Intitulé adresse'); ?> :</label>
+                                <?php echo Phoenix_View_Helper_Html::input(array('name' => 'cl_site_libelle', 'class' => 'form-input unit size1of3 lastUnit')); ?>
+                            </div>
+
+                            <div class="line form-line">
+                                <label class="form-label unit size1of3" for="id_cl_site_addr_1"><?php echo $this->translate('Adresse 1'); ?> :</label>
+                                <?php echo Phoenix_View_Helper_Html::input(array('name' => 'cl_site_addr_1', 'class' => 'form-input unit size1of3 lastUnit')); ?>
+                            </div>
+
+                            <div class="line form-line">
+                                <label class="form-label unit size1of3" for="id_cl_site_addr_2"><?php echo $this->translate('Adresse 2'); ?> :</label>
+                                <?php echo Phoenix_View_Helper_Html::input(array('name' => 'cl_site_addr_2', 'class' => 'form-input unit size1of3 lastUnit')); ?>
+                            </div>
+
+                            <div class="line form-line">
+                                <label class="form-label unit size1of3" for="id_cl_site_addr_3"><?php echo $this->translate('Adresse 3'); ?> :</label>
+                                <?php echo Phoenix_View_Helper_Html::input(array('name' => 'cl_site_addr_3', 'class' => 'form-input unit size1of3 lastUnit')); ?>
+                            </div>
+
+                            <div class="line form-line">
+                                <label class="form-label unit size1of3" for="id_cl_site_zipcode"><?php echo $this->translate('Code postal'); ?> :</label>
+                                <?php echo Phoenix_View_Helper_Html::input(array('name' => 'cl_site_zipcode', 'class' => 'form-input unit size1of3 lastUnit')); ?>
+                            </div>
+
+                            <div class="line form-line">
+                                <label class="form-label unit size1of3" for="id_cl_site_town"><?php echo $this->translate('Ville'); ?> :</label>
+                                <?php echo Phoenix_View_Helper_Html::input(array('name' => 'cl_site_town', 'class' => 'form-input unit size1of3 lastUnit')); ?>
+                            </div>
+
+                            <div class="line form-line">
+                                <label class="form-label unit size1of3" for="id_cl_site_country_name"><?php echo $this->translate('Pays'); ?> :</label>
+                                <?php echo Phoenix_View_Helper_Html::input(array('name' => 'cl_site_country_id', 'type' => 'hidden', 'class' => 'form-input unit size1of3 lastUnit')); ?>
+                                <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'cl_site_country_name', 'class' => 'unit size1of3 form-input input-autocomplete lastUnit')) ?>
+                            </div>
+
+                            <div class="line form-line">
+                                <label class="form-label unit size1of3" for=""><?php echo $this->translate('Site logistique'); ?> :</label>
+                                <?php echo Phoenix_View_Helper_Html::checkbox(array('name' => 'cl_site_is_for_log', 'value' => 1, 'class' => 'form-checkbox unit size1of3 lastUnit')); ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center">
+                <a href="<?php echo $this->url(array('module' => 'client', 'controller' => 'listing', 'action' => 'index'), null, true) ?>" class="btn col"><?php echo $this->translate('Annuler'); ?></a>
+                <input type="submit" value="<?php echo $this->translate('Valider'); ?>" class="btn btn-orange" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<script language="javascript">
+    $(document).ready(function() {
+        // changement du pays avec autocompletion
+        $('#id_cl_site_country_name').AjaxAutocomplete({
+            url: baseUrl + '/common/autocomplete/country',
+            minLength: 3,
+            restrictive: true,
+            bindFieldId: 'id_cl_site_country_id'
+        });
+    })
+</script>

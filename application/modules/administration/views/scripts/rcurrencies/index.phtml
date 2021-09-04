@@ -1,0 +1,109 @@
+<?php
+$this->title = $this->translate('title_adminstration_r_currencies_listing');
+$this->headTitle($this->title);
+
+$this->headScript()->appendFile($this->baseUrl() . '/js/administration/rcurrencies/RCurrenciesManager.js');
+$this->headScript()->appendFile($this->baseUrl() . '/js/administration/rcurrencies/index.js');
+$bCreateEditIsAllowed = Phoenix_Auth_User::mvcActionIsAllowed('administration','rcurrencies','loadrcurrencyeditionpopup')  && Phoenix_Auth_User::mvcActionIsAllowed('administration','rcurrencies','savercurrencydata');
+$bDeleteIsAllowed = Phoenix_Auth_User::mvcActionIsAllowed('administration','rcurrencies','deletercurrencyrecord');
+?>
+<div id="actions-bar">
+    <div class="unit size1of5">
+        <h1 class="page-title"><?php echo $this->title; ?></h1>
+        <?php if($bCreateEditIsAllowed){ ?>
+        <input href="#" id="btn_add_new_currency" type="button" data-currency-addition-popup-title="<?php echo $this->translate('label_title_currency_addition_popup_title') ?>" class="btn btn-orange btn-big" value="<?php echo $this->translate('button_add_new_currency_label'); ?>" />
+        <?php } ?>
+    </div>
+    <div class="unit size3of5">
+        <div class="search">
+            <form method="get" id="currencies_form" action ="<?php echo $this->url(array('module' => 'administration', 'controller' => 'rcurrencies', 'action' => 'index'), null, true) ?>" >
+                <input type="text" name="findword" class="form-input" value="<?php echo isset($this->findword) ? $this->findword : ''; ?>" placeholder="<?php echo $this->translate('placeholder_search'); ?>" autocomplete="off" />
+                <input type="submit" value="<?php echo $this->translate('OK'); ?>" class="btn btn-orange" />
+                <input type="button" value="<?php echo $this->translate('Recherche avancée'); ?>" class="btn btn-big btn-adsearch" id="btn-adsearch" />
+            </form>
+        </div>
+    </div>
+</div>
+<div id="site-content">
+    <div class="content-list">
+        <div class="list-actions">
+            <div class="unit col">
+                <a class="icon icon-32 icon-excel" href="<?php echo $this->url(array('format' => 'csv'), null, false) . '?' . $_SERVER['QUERY_STRING'] ?>" title="<?php echo $this->translate('Exporter au format Excel'); ?>"><?php echo $this->translate('Exporter au format Excel'); ?></a>
+            </div>
+            <div class="unit rightUnit">
+                <div class="unit col">
+                    <?php echo $this->NotifySearch()->link() ?>
+                </div>
+                <div class="unit">
+                    <?php echo $this->paginationControl($this->paginator, 'Sliding', '/partials/pagination.phtml'); ?>
+                </div>
+            </div>
+        </div>
+        <table class="list list-main">
+            <thead>
+                <tr>
+                    <th width="26" class="column-noborder"></th>
+                    <th width="26" class="column-noborder"></th>
+                    <th>
+                        <?php echo My_View_Helper_Html::UrlOrderBy('r_currency_id', $this->translate('label_id')); ?>
+                    </th>
+                    <th>
+                        <?php echo My_View_Helper_Html::UrlOrderBy('r_currency_iso_code', $this->translate('label_currency_code')); ?>
+                    </th>
+                    <th>
+                        <?php echo My_View_Helper_Html::UrlOrderBy('r_currency_label', $this->translate('label_currency_label')); ?>
+                    </th>
+                    <th>
+                        <?php echo My_View_Helper_Html::UrlOrderBy('r_currency_actif', $this->translate('label_actif')); ?>
+                    </th>
+            </thead>
+            <tbody>
+                <?php foreach ($this->paginator as $aCurrency): ?>
+                    <tr class="<?php echo $this->cycle(array('', 'alt'))->next() ?>">
+                        <td>
+                            <?php if($bDeleteIsAllowed){ ?>
+                            <a href="#delete" class="icon-list icon-delete" data-currency-id="<?php echo $aCurrency['r_currency_id']; ?>" delete-currency-record-confirmation-message="<?php echo $this->translate('text_confirm_currency_record_deletion') . ' : ' . $aCurrency['r_currency_label'] ?>" title="<?php echo $this->translate('link_delete_currency'); ?>"><?php echo $this->translate('link_delete_currency'); ?></a>
+                            <?php } ?>
+                        </td>
+                        <td>
+                            <?php if($bCreateEditIsAllowed){ ?>
+                            <a href="#edit" class="icon-list icon-edit" data-currency-edition-popup-title="<?php echo $this->translate('title_edition'); ?>" data-currency-id="<?php echo $aCurrency['r_currency_id']; ?>" title="<?php echo $this->translate('link_edit_currency'); ?>"><?php echo $this->translate('link_edit_currency'); ?></a>
+                            <?php } ?>
+                       </td>
+                        <td align="left"><?php echo $aCurrency['r_currency_id']; ?></td>
+                        <td align="left"><?php echo $aCurrency['r_currency_iso_code']; ?></td>
+                        <td align="left"><?php echo $aCurrency['r_currency_label']; ?></td>
+                        <td align="left"><?php echo $aCurrency['r_currency_actif']; ?></td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div id="id-dialog-search" title="<?php echo $this->translate('Recherche avancée'); ?>" style="display:none;">
+    <form action="<?php echo $this->BaseUrl() ?>/administration/rcurrencies/index" method="GET">
+        <div class="section-bd">
+            <div class="line form-line">
+                <label class="unit size1of2 form-label" for="id-r-currency-id"><?php echo $this->translate('label_currency_id'); ?> :</label>
+                <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'find_r_currency_id', 'class' => 'unit size1of2 form-input lastUnit')) ?>
+            </div>
+
+            <div class="line form-line">
+                <label class="unit size1of2 form-label" for="id-r-currency-iso-code"><?php echo $this->translate('label_currency_code'); ?> :</label>
+                <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'find_r_currency_iso_code', 'class' => 'unit size1of2 form-input lastUnit')) ?>
+            </div>
+
+            <div class="line form-line">
+                <label class="unit size1of2 form-label" for="id-r-currency-label"><?php echo $this->translate('label_currency_label'); ?> :</label>
+                <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'find_r_currency_label', 'class' => 'unit size1of2 form-input lastUnit')) ?>
+            </div>
+            <div class="line form-line">
+                <label class="unit size1of2 form-label" for="id-r-currency-actif"><?php echo $this->translate('label_actif'); ?> :</label>
+                <?php echo Phoenix_View_Helper_Html::checkbox(array('name' => 'find_r_currency_actif', 'value' => 1)); ?>
+            </div>
+        </div>
+        <div class="text-center">
+            <input type="submit" name="findbyfields" value="<?php echo $this->translate('Recherche'); ?>" class="btn btn-orange">
+        </div>
+    </form>
+</div>

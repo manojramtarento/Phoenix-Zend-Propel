@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!ELEMENT root (data, scenario, budget_estime, rubriques, remboursements?, affranchissements?)>
+    <!ELEMENT data (first_page, last_page)>
+        <!ELEMENT first_page (nom_contact, email_contact, tel_contact, fax_contact, descriptif_operation,
+nom_offre, num_devis, date_devis, num_version_devis, validite_devis, contact_client, nom_client, adresse_1,
+adresse_2, adresse_3, code_postal, ville, pays, duree_operation, date_fin_postale, date_fin_gestion)>
+            <!ELEMENT nom_contact (#PCDATA) >
+            <!ELEMENT email_contact (#PCDATA) >
+            <!ELEMENT tel_contact (#PCDATA) >
+            <!ELEMENT fax_contact (#PCDATA) >
+            <!ELEMENT descriptif_operation (#PCDATA) >
+            <!ELEMENT nom_offre (#PCDATA) >
+            <!ELEMENT num_devis (#PCDATA) >
+            <!ELEMENT date_devis (#PCDATA) >
+            <!ELEMENT num_version_devis (#PCDATA) >
+            <!ELEMENT validite_devis (#PCDATA) >
+            <!ELEMENT contact_client (#PCDATA) >
+            <!ELEMENT nom_client (#PCDATA) >
+            <!ELEMENT adresse_1 (#PCDATA) >
+            <!ELEMENT adresse_2 (#PCDATA) >
+            <!ELEMENT adresse_3 (#PCDATA) >
+            <!ELEMENT code_postal (#PCDATA) >
+            <!ELEMENT ville (#PCDATA) >
+            <!ELEMENT pays (#PCDATA) >
+            <!ELEMENT duree_operation (#PCDATA) >
+            <!ELEMENT date_fin_postale (#PCDATA) >
+            <!ELEMENT date_fin_gestion (#PCDATA) >
+
+        <!ELEMENT last_page (adresse_facturation, contact_facturation,num_tva)>
+            <!ELEMENT adresse_facturation (#PCDATA) >
+            <!ELEMENT contact_facturation (#PCDATA) >
+            <!ELEMENT num_tva (#PCDATA) >
+
+    <!ELEMENT scenario (scenario_prestation*)>
+        <!ELEMENT scenario_prestation (libelle, quantite, taux_estime, total_estime)>
+            <!ELEMENT libelle (#PCDATA) >
+            <!ELEMENT quantite (#PCDATA) >
+            <!ELEMENT taux_estime (#PCDATA) >
+            <!ELEMENT total_estime (#PCDATA) >
+
+    <!ELEMENT budget_estime (budget_prestations, budget_total_ht, budget_total_tva*, budget_total_ttc,
+facturation_prev)>
+        <!ELEMENT budget_prestations (budget_prestation*)>
+            <!ELEMENT budget_prestation (libelle, ht, ttc)>
+                <!ELEMENT ht (#PCDATA) >
+                <!ELEMENT ttc (#PCDATA) >
+
+        <!ELEMENT budget_total_ht (#PCDATA) >
+        <!ELEMENT budget_total_tva (#PCDATA) >
+			<!ATTLIST budget_total_tva taux CDATA #REQUIRED>
+        <!ELEMENT budget_total_ttc (#PCDATA) >
+
+        <!ELEMENT facturation_prev (facture*)>
+            <!ELEMENT facture (libelle, date_facture) >
+				<!ELEMENT date_facture (#PCDATA) >
+
+    <!ELEMENT rubriques (total_ht, rubrique*)>
+		<!ELEMENT total_ht (#PCDATA) >
+		<!ELEMENT rubrique (title, total_ht, prestation*) >
+			<!ELEMENT title (#PCDATA) >
+			<!ELEMENT prestation (libelle, descriptif, pu, quantite, total_ht) >
+				<!ELEMENT descriptif (#PCDATA) >
+				<!ELEMENT pu (#PCDATA) >
+
+    <!ELEMENT remboursements (total, remboursement*)>
+		<!ELEMENT total (#PCDATA) >
+		<!ELEMENT remboursement (libelle, descriptif, pu, quantite, total_ttc) >
+			<!ELEMENT total_ttc (#PCDATA) >
+
+    <!ELEMENT affranchissements (total, affranchissement*)>
+		<!ELEMENT affranchissement (libelle, descriptif, pu, quantite, total) >

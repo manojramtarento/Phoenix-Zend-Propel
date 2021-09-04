@@ -1,0 +1,23 @@
+<div id="actions-bar">
+    <?php echo $this->partial('partials/logoclient.phtml', array('cl_id' => $this->cl_id)); ?>
+
+    <div class="unit size1of5">
+        <h1 class="page-title"><?php echo $this->cl_libelle; ?></h1>
+        <input id="client-changer" type="text" class="form-input input-switch" value="" placeholder="<?php echo $this->translate('Changer');?>" />
+    </div>
+</div>
+
+
+<script language="javascript">
+    $(document).ready(function(){
+        //changement du client basé sur recherche avec autocompletion
+        $('#client-changer').AjaxAutocomplete({
+            url: baseUrl+'/common/autocomplete/client',
+            minLength: 3,
+            restrictive:false,
+            select:function(event, ui){
+                window.location.href=baseUrl+'/client/fiche/index/cl_id/'+ui.item.id;
+            }
+        });
+    })
+</script>

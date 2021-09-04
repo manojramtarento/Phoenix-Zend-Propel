@@ -1,0 +1,210 @@
+<!-- DIALOG / AJOUT / MODIFICATION -->
+<form id="id_form_update_rprestation" action="<?php echo $this->url(array('module' => 'administration', 'controller' => 'rprestation', 'action' => 'update')) ?>" method="post">
+    <input type="hidden" name="submit_update_rprestation" value="1">
+    <input type="hidden" name="r_prestation_id" value="<?php echo $this->r_prestation_id; ?>">
+
+    <div class="line">
+        <div class="unit size1of2">
+            <div class="section col">
+                <div class="section bd">
+                    <div class="line form-line">
+                        <label class="unit size1of3 form-label" for='id_r_p_libelle'><?php echo $this->translate('Libellé'); ?> :</label>
+                        <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'r_p_libelle', 'value' => $this->r_p_libelle, 'class' => 'unit size2of3 form-input lastUnit')) ?>
+                    </div>
+
+                    <div class="line form-line">
+                        <label class="unit size1of3 form-label" for='id_r_p_libelle_en'><?php echo $this->translate('Libellé (anglais)'); ?> :</label>
+                        <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'r_p_libelle_en', 'value' => $this->r_p_libelle_en, 'class' => 'unit size2of3 form-input lastUnit')) ?>
+                    </div>
+
+                    <div class="line form-line">
+                        <label class="unit size1of3 form-label" for='id_r_p_axe1'><?php echo $this->translate('Activité'); ?> :</label>
+                        <?php echo Phoenix_View_Helper_Html::selectFromTable('r_p_axe1', array('name' => 'r_p_axe1', 'value' => $this->r_p_axe1, 'class' => 'unit size2of3 form-select lastUnit'), array('name' => 'r_p_axe1_libelle', 'value' => 'r_p_axe1_id'), array('default_label' => $this->translate('choisir') . '...')) ?>
+                    </div>
+
+                    <div class="line form-line">
+                        <label class="unit size1of3 form-label" for='id_r_p_axe3'><?php echo $this->translate('Famille'); ?> :</label>
+                        <?php echo Phoenix_View_Helper_Html::selectFromTable('r_p_axe3', array('name' => 'r_p_axe3', 'value' => $this->r_p_axe3, 'class' => 'unit size2of3 form-select lastUnit'), array('name' => 'r_p_axe3_libelle', 'value' => 'r_p_axe3_id'), array('default_label' => $this->translate('choisir') . '...')) ?>
+                    </div>
+
+                    <div class="line form-line">
+                        <label class="unit size1of3 form-label" for='id_r_p_axe4'><?php echo $this->translate('Catégorie'); ?> :</label>
+                        <?php echo Phoenix_View_Helper_Html::selectFromTable('r_p_axe4', array('name' => 'r_p_axe4', 'value' => $this->r_p_axe4, 'class' => 'unit size2of3 form-select lastUnit'), array('name' => 'r_p_axe4_libelle', 'value' => 'r_p_axe4_id'), array('default_label' => $this->translate('choisir') . '...')) ?>
+                    </div>
+
+                    <div class="line form-line">
+                        <label class="unit size1of3 form-label" for='id_r_p_axe2'><?php echo $this->translate('Axe2'); ?> :</label>
+                        <?php echo Phoenix_View_Helper_Html::selectFromTable('r_p_axe2', array('name' => 'r_p_axe2', 'value' => $this->r_p_axe2, 'class' => 'unit size2of3 form-select lastUnit'), array('name' => 'r_p_axe2_libelle', 'value' => 'r_p_axe2_id'), array('default_label' => $this->translate('choisir') . '...')) ?>
+                    </div>
+
+                    <div class="line form-line">
+                        <label class="unit size1of3 form-label" for='id_r_p_axe5'><?php echo $this->translate('Axe5'); ?> :</label>
+                        <?php echo Phoenix_View_Helper_Html::selectFromTable('r_p_axe5', array('name' => 'r_p_axe5', 'value' => $this->r_p_axe5, 'class' => 'unit size2of3 form-select lastUnit'), array('name' => 'r_p_axe5_libelle', 'value' => 'r_p_axe5_id'), array('default_label' => $this->translate('choisir') . '...')) ?>
+                    </div>
+
+                    <div class="line form-line">
+                        <label class="unit size1of3 form-label" for='id_r_p_validation_id'><?php echo $this->translate('Validation'); ?> :</label>
+                        <?php echo Phoenix_View_Helper_Html::selectFromTable('r_p_type_validation', array('name' => 'r_p_validation_id', 'value' => $this->r_p_validation_id, 'class' => 'unit size2of3 form-select lastUnit'), array('name' => 'r_p_type_validation_libelle', 'value' => 'r_p_type_validation_id'), array('default_label' => $this->translate('choisir') . '...')) ?>
+                    </div>
+
+                    <div class="line form-line">
+                        <label class="unit size1of3 form-label" for='id_r_p_code_comptable'><?php echo $this->translate('Code comptable'); ?> :</label>
+                        <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'r_p_code_comptable', 'value' => $this->r_p_code_comptable, 'class' => 'unit size2of3 form-input lastUnit')) ?>
+                    </div>
+
+                    <div class="line form-line">
+                        <label class="unit size1of3 form-label" for='id_r_p_controle'><?php echo $this->translate('Contrôle'); ?> :</label>
+                        <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'r_p_controle', 'value' => $this->r_p_controle, 'class' => 'unit size1of3 form-input lastUnit')) ?>
+                    </div>
+
+                    <div class="line form-line">
+                        <label class="unit size1of3 form-label" for='id_r_p_qui_valide'><?php echo $this->translate('Validation'); ?> :</label>
+                        <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'r_p_qui_valide', 'value' => $this->r_p_qui_valide, 'class' => 'unit size1of3 form-input lastUnit')) ?>
+                    </div>
+
+                    <div class="line form-line">
+                        <label class="unit size1of3 form-label" for='id_r_p_groupe_validation_id'><?php echo $this->translate('Groupe Validation'); ?> :</label>
+                        <?php echo Phoenix_View_Helper_Html::selectFromTable('acl_groups', array('name' => 'r_p_groupe_validation_id', 'value' => $this->r_p_groupe_validation_id, 'class' => 'unit size2of3 form-select lastUnit'), array('name' => 'group_name', 'value' => 'group_id'), array('default_label' => $this->translate('choisir') . '...')) ?>
+                    </div>
+                    <div class="line form-line">
+                        <div class="unit size1of2">
+                            <label for="id_r_p_is_maj_from_compiluo" class="unit size1of3 form-label"><?php echo $this->translate('Maj via compilUO'); ?></label>
+                            <?php echo Phoenix_View_Helper_Html::checkbox(array('name' => 'r_p_is_maj_from_compiluo', 'value' => 1, 'default_value' => $this->r_p_is_maj_from_compiluo, 'class' => 'unit size2of3 form-checkbox lastUnit')) ?>
+                        </div>
+
+                        <div class="unit size1of2">
+                            <label for="id_r_p_is_mandatory" class="unit size1of3 form-label"><?php echo $this->translate('Obligatoire'); ?></label>
+                            <?php echo Phoenix_View_Helper_Html::checkbox(array('name' => 'r_p_is_mandatory', 'value' => 1, 'default_value' => $this->r_p_is_mandatory, 'class' => 'unit size2of3 form-checkbox lastUnit')) ?>
+                        </div>
+                    </div>
+                    <div class="line form-line">
+                        <div class="unit size1of2">
+                            <label for="id_r_p_is_eligible_for_prime" class="unit size1of3 form-label"><?php echo $this->translate('Eligible pour prime'); ?></label>
+                            <?php echo Phoenix_View_Helper_Html::checkbox(array('name' => 'r_p_is_eligible_for_prime', 'value' => 1, 'default_value' => $this->r_p_is_eligible_for_prime, 'class' => 'unit size2of3 form-checkbox lastUnit')) ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="unit size1of2">
+            <div class="section col">
+                <div class="section bd">
+                    <div class="line form-line">
+                        <label class="unit size1of3 form-label" for='id_r_p_type_frais_id'><?php echo $this->translate('Type de coûts'); ?> :</label>
+                        <?php echo Phoenix_View_Helper_Html::selectFromTable('r_p_type_frais', array('name' => 'r_p_type_frais_id', 'value' => $this->r_p_type_frais_id, 'class' => 'unit size2of3 form-select lastUnit'), array('name' => 'r_p_type_frais_libelle', 'value' => 'r_p_type_frais_id'), array('default_label' => $this->translate('choisir') . '...')) ?>
+                    </div>
+
+                    <div class="line form-line">
+                        <label class="unit size1of3 form-label" for='id_r_p_tva_id'><?php echo $this->translate('Type de TVA'); ?> :</label>
+                        <?php echo Phoenix_View_Helper_Html::selectFromTable('r_tva_type', array('name' => 'r_p_tva_id', 'value' => $this->r_p_tva_id, 'class' => 'unit size2of3 form-select lastUnit'), array('name' => 'r_tva_libelle', 'value' => 'r_tva_id'), array('default_label' => $this->translate('choisir') . '...')) ?>
+                    </div>
+
+                    <div class="line form-line">
+                        <?php echo Phoenix_View_Helper_Html::checkbox(array('name' => 'r_p_couts_estimes_modifiables', 'value' => 1, 'default_value' => $this->r_p_couts_estimes_modifiables)) ?>
+                        <label for='id_r_p_couts_estimes_modifiables'><?php echo $this->translate('Autoriser la modification des coûts estimés'); ?></label>
+                    </div>
+
+                    <div class="line form-line">
+                        <label class="unit size1of3 form-label"><?php echo $this->translate('Coûts'); ?> :</label>
+                        <table class="unit size2of3 form-label">
+                            <thead>
+                                <tr>
+                                    <th><?php echo $this->translate('Coûts interne'); ?></th>
+                                    <th><?php echo $this->translate('Coûts externe'); ?></th>
+                                    <th><?php echo $this->translate('Coûts total'); ?></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><center><?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'r_p_cout_interne', 'value' => $this->r_p_cout_interne, 'class' => 'unit size2of3 form-input lastUnit')) ?></center></td>
+                            <td><center><?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'r_p_cout_externe', 'value' => $this->r_p_cout_externe, 'class' => 'unit size2of3 form-input lastUnit')) ?></center></td>
+                            <td><center><?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'r_p_cout_total', 'value' => $this->r_p_cout_total, 'class' => 'unit size2of3 form-input lastUnit')) ?></center></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="line form-line">
+                        <label class="unit size1of3 form-label"><?php echo $this->translate('Marge et prix de vente'); ?> :</label>
+                        <table class="unit size2of3 form-label">
+                            <thead>
+                                <tr>
+                                    <th><?php echo $this->translate('Taux de marge'); ?></th>
+                                    <th><?php echo $this->translate('PV conseillé'); ?></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <center>
+                                            <?php
+                                            // 34478:  Enregistre taux marge dans le champ r_p_taux_marge_min
+                                            echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'r_p_taux_marge_min', 'value' => $this->r_p_taux_marge_min, 'class' => 'unit size2of3 form-input lastUnit'));
+                                            ?>
+                                        </center>
+                                    </td>
+                                    <td>
+                                        <center><?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'r_p_prix_vente', 'value' => $this->r_p_prix_vente, 'class' => 'unit size2of3 form-input lastUnit')) ?></center>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="line form-line">
+                        <label class="unit size1of3 form-label" for='id_r_p_description_fr'><?php echo $this->translate('Description'); ?> :</label>
+                        <?php echo Phoenix_View_Helper_Html::textarea(array('name' => 'r_p_description_fr', 'value' => $this->r_p_description_fr, 'rows' => 3, 'class' => 'unit size2of3 form-textarea lastUnit')) ?>
+                    </div>
+
+                    <div class="line form-line">
+                        <label class="unit size1of3 form-label" for='id_r_p_description_en'><?php echo $this->translate('Description (anglais)'); ?> :</label>
+                        <?php echo Phoenix_View_Helper_Html::textarea(array('name' => 'r_p_description_en', 'value' => $this->r_p_description_en, 'rows' => 3, 'class' => 'unit size2of3 form-textarea lastUnit')) ?>
+                    </div>
+
+                    <div class="line form-line">
+                        <label class="unit size1of3 form-label" for='id_r_p_commentaires'><?php echo $this->translate('Commentaires'); ?> :</label>
+                        <?php echo Phoenix_View_Helper_Html::textarea(array('name' => 'r_p_commentaires', 'value' => trim($this->r_p_commentaires), 'rows' => 3, 'class' => 'unit size2of3 form-textarea lastUnit')) ?>
+                    </div>
+
+                    <div class="line form-line">
+                        <div class="unit size1of2">
+                            <?php echo Phoenix_View_Helper_Html::checkbox(array('name' => 'actif', 'value' => 1, 'default_value' => $this->actif)) ?>
+                            <label for='id_actif'><?php echo $this->translate('Prestation active'); ?></label>
+                        </div>
+
+                        <div class="unit size1of2">
+                            <?php echo Phoenix_View_Helper_Html::checkbox(array('name' => 'valide_daf', 'value' => 1, 'default_value' => $this->valide_daf)) ?>
+                            <label for='id_valide_daf'><?php echo $this->translate('Valide DAF'); ?></label>
+                        </div>
+                    </div>
+
+                    <div class="line form-line">
+                        <div class="unit size1of2">
+                            <?php echo Phoenix_View_Helper_Html::checkbox(array('name' => 'r_p_adf', 'value' => 1, 'default_value' => $this->r_p_adf)) ?>
+                            <label for='id_r_p_adf'><?php echo $this->translate('ADF'); ?></label>
+                        </div>
+
+                        <div class="unit size1of2">
+                            <?php echo Phoenix_View_Helper_Html::checkbox(array('name' => 'r_p_rfa', 'value' => 1, 'default_value' => $this->r_p_rfa)) ?>
+                            <label for='id_r_p_rfa'><?php echo $this->translate('RFA'); ?></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center">
+        <input type="submit" value="<?php echo $this->translate('Valider'); ?>" class="btn btn-orange">
+    </div>
+</form>
+
+
+<script language="javascript">
+    $(document).ready(function() {
+        $('#id_form_update_rprestation').ajaxForm({
+            divId: 'id_dialog_update_rprestation'
+        });
+    });
+</script>

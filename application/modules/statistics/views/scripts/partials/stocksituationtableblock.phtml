@@ -1,0 +1,27 @@
+<div class="block-graph noborder-block top-10-container-block stock-situation-bloc">
+    <div class="top-10-title-bloc stock-situation-title"><?php echo $this->sKpiTitle; ?></div>
+    <div class="stock-situation-content-bloc">
+        <table cellspacing="0">
+            <tr class ="data-table-head">
+                <th class ="data-column-name"></th>
+                <th class ="data-column-name" align="left"><?php echo $this->translate('label_estimated'); ?></th>
+                <th class ="data-column-name" align="left"><?php echo $this->translate('label_dedicated'); ?></th>
+                <th class ="data-column-name" align="left"><?php echo $this->translate('label_received'); ?></th>
+                <th class ="data-column-name" align="left"><?php echo $this->translate('label_outstanding'); ?></th>
+            </tr>
+            <?php
+            $this->aStockSituation['dataList'] = array_slice($this->aStockSituation['dataList'], 0, 15, true);
+            foreach ($this->aStockSituation['dataList'] as $sLibelle => $aData) {
+                ?>
+                <tr>
+                    <td class="stock-item-libelle"><?php echo $sLibelle; ?></td>
+                    <td class="stock-situation-table-row <?php echo isset($aData['Estimé']) && ((int) $aData['Estimé'] < 0) ? 'warning-value' : ''; ?>"><?php echo isset($aData['Estimé']) ? Phoenix_Data_Convert::formatNumber($aData['Estimé'], false, false) : '-'; ?></td>
+                    <td class="stock-situation-table-row <?php echo isset($aData['Affecté']) && ((int) $aData['Affecté'] < 0) ? 'warning-value' : ''; ?>"><?php echo isset($aData['Affecté']) ? Phoenix_Data_Convert::formatNumber($aData['Affecté'], false, false) : '-'; ?></td>
+                    <td class="stock-situation-table-row <?php echo isset($aData['Reçu']) && ((int) $aData['Reçu'] < 0) ? 'warning-value' : ''; ?>"><?php echo isset($aData['Reçu']) ? Phoenix_Data_Convert::formatNumber($aData['Reçu'], false, false) : '-'; ?></td>
+                    <?php $iRemaining = isset($aData['Restant']) ? (int) $aData['Restant'] : 0 ?>
+                    <td class="stock-situation-table-row <?php echo $iRemaining && $iRemaining < 0 ? 'warning-value' : ''; ?>"><?php echo isset($aData['Restant']) ? Phoenix_Data_Convert::formatNumber($iRemaining, false, false) : '-'; ?></td>
+                </tr>
+            <?php } ?>
+        </table>
+    </div>
+</div>

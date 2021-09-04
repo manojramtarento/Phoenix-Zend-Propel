@@ -1,0 +1,46 @@
+<div class="boxes-sortable" id="list-boxes-sortable" >
+    <?php foreach ($this->rubriques as $rubrique) { ?>
+        <div class="class_div_rubrique box box-last box-prestas" ost_tpl_rubrique_id="<?php echo $rubrique->getOstTplRubriqueId() ?>" id="id_rubrique_<?php echo $rubrique->getOstTplRubriqueId() ?>" >
+            <?php echo $this->partial('rtypesdevis/rubrique.phtml', array('rubrique' => $rubrique, 'scenarii' => $this->scenarii)); ?>
+        </div>
+    <?php } ?>
+</div>
+
+<script language="javascript">
+
+    /**
+     * RUBRIQUES SORTABLE
+     */
+    var rubrique_order;
+    $('#list-boxes-sortable').sortable({
+        placeholder: 'ui-sortable-placeholder',
+        handle: '.box-hd .box-handle',
+        start: function(event, ui) {
+            var height = ui.item.height();
+            ui.placeholder.css({height: height + 'px'});
+            rubrique_order = $(this).sortable('toArray', {attribute: 'ost_tpl_rubrique_id'});
+            //console.debug(rubrique_order);
+        },
+        update: function(event, ui) {
+            var new_rubrique_order = $(this).sortable('toArray', {attribute: 'ost_tpl_rubrique_id'});
+            //console.debug(order);
+            var rubrique_id_moved = ui.item.attr('ost_tpl_rubrique_id');
+            //console.log(rubrique_id_moved);
+            var rubrique_id_replaced = parseInt(rubrique_order[new_rubrique_order.indexOf(ui.item.attr('ost_tpl_rubrique_id'))]);
+            //console.log(rubrique_id_replaced);
+
+            AjaxComponent.ajaxQuery(
+                    baseUrl + '/administration/rtypesdevis/updaterubriqueposition',
+                    {rubrique_id_moved: rubrique_id_moved, rubrique_id_replaced: rubrique_id_replaced}
+            ).success(function(data) {
+                $('#' + ui.item.attr('id')).notifyError(false);
+
+                if (typeof data == 'object') {
+                    if (data.action != 0) {
+                        $('#list-boxes-sortable').sortable('cancel');
+                    }
+                }
+            });
+        }
+    });
+</script>

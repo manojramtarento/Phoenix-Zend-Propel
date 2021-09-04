@@ -1,0 +1,176 @@
+<?php
+$this->title = "Gestion des lots courriers";
+$this->headTitle($this->title);
+?>
+<?php echo $this->partial('partials/actionsbar.phtml', array('operation' => $this->operation)); ?>
+<input type="hidden" id="id_input_op_id" value="<?php echo $this->operation->getOpId() ?>" />
+<div id="site-content">
+    <?php echo $this->partial('partials/menu.phtml'); ?>
+    <div id="content-bd">
+        <div class="list-actions">
+            <div class="unit col size2of5">
+                <fieldset class="stats-op-fieldset">
+                    <legend><span class="title-icon icon-chart"></span></legend>
+    <!--		<table class="stats-op">
+                            <thead>
+                                    <tr>
+                                            <th class="op-encours size1of5">Total</th>
+                                            <th class="op-accepte size1of5">Conformes</th>
+                                            <th class="op-refuse size1of5">Non conforme</th>
+                                            <th class="op-encours size1of5">Réclamations</th>
+                                            <th class="op-refuse size1of5">NC+</th>
+                                    </tr>
+                            </thead>
+                            <tbody>
+                                    <tr>
+                                            <td class="op-encours"><?php echo $this->nb_total; ?></td>
+                                            <td class="op-accepte"><?php echo $this->nb_conforme; ?></td>
+                                            <td class="op-refuse"><?php echo $this->nb_nc; ?></td>
+                                            <td class="op-encours"><?php echo $this->nb_recla; ?></td>
+                                            <td class="op-refuse"><?php echo $this->nb_ncplus; ?></td>
+                                    </tr>
+                            </tbody>
+                    </table>
+                    -->
+                    <table class="stats-op">
+                        <thead>
+                            <tr>
+                                <th class="op-encours size1of5"><?php echo $this->translate('Courriers reçus'); ?></th>
+                                <th class="op-accepte size1of5"><?php echo $this->translate('Demandes saisies'); ?></th>
+                                <th class="op-refuse size1of5"><?php echo $this->translate('Reste à saisir'); ?></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="op-encours"><?php echo Phoenix_Data_Convert::formatNumber($this->courriers_recus) ?></td>
+                                <td class="op-accepte"><?php echo Phoenix_Data_Convert::formatNumber($this->demandes_saisies) ?></td>
+                                <td class="op-refuse"><?php echo Phoenix_Data_Convert::formatNumber($this->reste_a_saisir) ?></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </fieldset>
+            </div>
+            <div class="unit size2of5">
+                <div class="search">
+                    <form action="" method="get"><?php echo $this->translate(''); ?>
+                        <input type="text" name="findword" class="form-input" value="<?php if (isset($_REQUEST["findword"])) echo $_REQUEST["findword"]; ?>" placeholder="<?php echo $this->translate('Rechercher'); ?>" autocomplete="off" />
+                        <input type="submit" value="<?php echo $this->translate('OK'); ?>" class="btn btn-orange" />
+                        <input type="button" value="<?php echo $this->translate('Recherche avancée'); ?>" class="btn btn-big btn-adsearch" id="btn_adsearch" />
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+        <div class="list-actions">
+            <div class="unit col">
+                <a class="icon icon-32 icon-excel" href="<?php echo $this->url(array('format' => 'csv'), null, false) . '?' . $_SERVER['QUERY_STRING'] ?>" title="Exporter au format Excel"><?php echo $this->translate('Exporter au format Excel'); ?></a>
+            </div>
+            <div class="unit rightUnit">
+                <div class="unit col">
+                    <?php echo $this->NotifySearch()->link(array('op_id' => $this->operation->getOpId())) ?>
+                </div>
+                <div class="unit">
+                    <?php
+                    //34802 : adaptation les valeurs de pagination pour sql server
+                    echo $this->paginationControl($this->paginator, 'Sliding', '/partials/pagination.phtml', array('isSqlServerPaginate' => true));
+                    ?>
+                </div>
+            </div>
+        </div>
+        <table class="list list-main">
+            <thead>
+            <th width="125"><?php echo My_View_Helper_Html::UrlOrderBy('numlot', $this->translate('N° de lot courrier')); ?></th>
+            <th width="155"><?php echo My_View_Helper_Html::UrlOrderBy('lc_date_reception', $this->translate('Date de réception')); ?></th>
+            <th width="190"><?php echo My_View_Helper_Html::UrlOrderBy('recu', $this->translate('Qte de courriers reçus')); ?></th>
+            <th width="155"><?php echo My_View_Helper_Html::UrlOrderBy('saisi', $this->translate('Demandes saisies')); ?></th>
+            <th width="125"><?php echo My_View_Helper_Html::UrlOrderBy('restant', $this->translate('Reste à saisir')); ?></th>
+            <th width="190"><?php echo My_View_Helper_Html::UrlOrderBy('lc_date_decharge', $this->translate('État de déchargement')); ?></th>
+            <th width="75"><span class="notsortable"><?php echo $this->translate('Retard'); ?></span></th>
+            <th width="65"><?php echo My_View_Helper_Html::UrlOrderBy('prest_libelle', $this->translate('Qui') . ' ?'); ?></th>
+            </tr>
+            </thead>
+            <tbody>
+                <?php
+                foreach ($this->paginator as $lot_c) {
+                    $dateRecept = $lot_c['lc_date_reception'];
+                    $dateDecharge = $lot_c['lc_date_decharge'];
+
+                    // calcul du retard
+                    $retard = 0 . ' j.';
+                    if ($lot_c['restant'] > 0) {
+                        $now = new DateTime();
+
+                        $interval = $dateRecept->diff($now);
+                        $retard = $interval->format('%a j.');
+                    }
+                    ?>
+                    <tr class="<?php echo $this->cycle(array('', 'alt'))->next() ?>">
+                        <td><?php echo $lot_c['numlot']; ?></td>
+                        <td><?php echo $dateRecept->format('Y-m-d H:i:s') ?></td>
+                        <td><?php echo Phoenix_Data_Convert::formatNumber($lot_c['recu']); ?></td>
+                        <td><?php echo Phoenix_Data_Convert::formatNumber($lot_c['saisi']); ?></td>
+                        <td><?php echo Phoenix_Data_Convert::formatNumber($lot_c['restant']); ?></td>
+                        <td align="right"><?php if (!empty($dateDecharge)) echo "Déchargé"; ?></td>
+                        <td align="right"><?php echo $retard; ?></td>
+                        <td align="right"><?php echo $lot_c['prest_libelle']; ?></td>
+                    </tr>
+                <?php } ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<!-- DIALOG / RECHERCHE AVANCEE -->
+<div id="id_dialog_search" title="Recherche avancée" style="display:none;">
+    <form action="" method="get">
+        <div class="line form-line">
+            <label class="unit size1of3 form-label" for="id_find_numlot"><?php echo $this->translate('N° de lot courrier'); ?> :</label>
+            <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_numlot', 'class' => 'form-input unit size1of3 lastUnit')); ?>
+        </div>
+
+        <div class="line form-line">
+            <label class="unit size1of3 form-label" for=""><?php echo $this->translate('Date de réception'); ?> :</label>
+            <div class="unit size1of2">
+                <?php echo Phoenix_View_Helper_Html_Select::selectComparateur(array('name' => 'find_lc_date_reception_comp', 'class' => 'form-select unit size1of4 col')) ?>
+                <div class="unit date">
+                    <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_lc_date_reception', 'value' => Phoenix_Data_Convert::formatdateFromString($this->getParam('find_lc_date_reception')), 'class' => 'date-input', 'placeholder' => $this->translate('JJ/MM/AAAA'), 'maxlenght' => '10')); ?>
+                </div>
+            </div>
+        </div>
+
+        <div class="line form-line">
+            <label class="unit size1of3 form-label" for="id_find_lc_date_decharge_comp"><?php echo $this->translate('État de déchargement'); ?> :</label>
+            <?php echo Phoenix_View_Helper_Html::select(array('name' => 'find_lc_date_decharge_comp', 'class' => 'form-select unit size1of3 lastUnit'), array($this->translate('Déchargé') => array('value' => 'notnull'), $this->translate('Non Déchargé') => array('value' => 'null')), array('default_label' => $this->translate('Choisir') . '...')); ?>
+        </div>
+
+        <div class="line form-line">
+            <label class="unit size1of3 form-label" for="id_find_lc_prest_id"><?php echo $this->translate('Qui'); ?> :</label>
+            <?php
+            $option_params = array();
+            foreach ($this->liste_prestataires as $id => $name) {
+                $option_params[$name] = array('value' => $id);
+            }
+            echo Phoenix_View_Helper_Html::select(array('name' => 'find_lc_prest_id', 'class' => 'form-select unit size1of3 lastUnit'), $option_params, array('default_label' => $this->translate('Choisir') . '...'));
+            ?>
+        </div>
+
+        <input type="submit" name="findbyfields" value="<?php echo $this->translate('Rechercher'); ?>" class="btn btn-orange push1of3">
+    </form>
+</div>
+
+
+<script language="javascript">
+
+    $(document).ready(function () {
+        //-- DIALOG / RECHERCHE AVANCEE -->
+        $('#btn_adsearch').click(function (e) {
+            $('#id_dialog_search').dialog({
+                width: 500,
+                modal: true,
+                resizable: false
+            });
+        });
+    });
+
+</script>

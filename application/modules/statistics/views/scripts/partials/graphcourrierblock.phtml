@@ -1,0 +1,50 @@
+<?php
+// 37771 Customizing the class and width to use for the chart, depending of the template in which the
+// Graph will be displayed. In a case of an operation beggening the graph is wider than in the other templates
+if ($this->sblockClass === 'graph-courrier-full-width') {
+    $iGraphWidth = 900;
+    $iGraphContainerClass = 'courriers-bar-graph-container-full-width';
+} else {
+    $iGraphWidth = 775;
+    $iGraphContainerClass = 'courriers-bar-graph-container-medium-width';
+}
+
+$aBarChartGraphData = $this->aBarChartGraphData['C3'];
+$aBarChartGraphData['bindto'] = '#courrier-bar-chart';
+$aBarChartGraphData['size']['width'] = $iGraphWidth;
+$aBarChartGraphData['bar']['width'] = 30;
+$aBarChartGraphData['data']['labels'] = array('format' => '{numberFormat}');
+$aBarChartGraphData['axis']['x']['max'] = 20;
+$aBarChartGraphData['axis']['y']['tick']['format'] = '{numberFormat}';
+$aBarChartGraphData['axis']['x']['tick']['width'] = 50;
+$aBarChartGraphData['padding']['top'] = 5;
+
+// 47819 Handelling the case of statistics version 1, where we manually format the x axis label
+// Starting of version 2, needless to format data
+if (isset($aBarChartGraphData['axis']['x']['categories'][0]) && strlen($aBarChartGraphData['axis']['x']['categories'][0]) > 3) {
+    foreach ($aBarChartGraphData['axis']['x']['categories'] as $iKey => $sWeekNumber) {
+        $aBarChartGraphData['axis']['x']['categories'] [$iKey] = trim(substr($sWeekNumber, strpos($sWeekNumber, '-') + 1));
+    }
+}
+
+$sBarChartGraphData = str_replace('"{numberFormat}"', 'd3.format(",")	', json_encode($aBarChartGraphData));
+?>
+
+<div class="block-graph graph-courrier-container <?php echo $this->sblockClass ?>">
+    <div class="title-bloc"><?php echo $this->translate('label_mailed_file_per_twenty_weeks'); ?>*</div>
+    <div class="content-bloc">
+        <div class="content-bloc-bar-graph courriers-bar-graph <?php echo $iGraphContainerClass ?>" id="courrier-bar-chart">
+        </div>
+        <?php if ($this->aMonthsData) { ?>
+            <div class="courrier-summary-data-table">
+                <?php echo $this->partial('/partials/simpletabledatabymonthblock.phtml', 'statistics', array('sKpiTitle' => $this->translate('label_summary_one_year'), 'aDataByMonth' => $this->aMonthsData, 'sStatisticsLanguage' => $this->sLanguage, 'sTotalClass' => 'total-graph-summary-month', 'bTitleStyleBold' => true, 'sDataTableClass' => 'medium-data-table')); ?>
+                <div class="graph-courrier-legend">* <?php echo $this->translate('text_legend_mailed_files'); ?></div>
+            </div>
+        <?php } ?>
+    </div>
+</div>
+
+
+<script language="javascript">
+    var chart = c3.generate(<?php echo $sBarChartGraphData; ?>);
+</script>

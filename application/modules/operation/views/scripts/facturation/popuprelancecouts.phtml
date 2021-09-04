@@ -1,0 +1,26 @@
+<?php echo $this->translate('Envoyer un email aux responsables suivants'); ?> :
+<ul>
+    <?php foreach ($this->groupes_validation as $groupe_validation) { ?>
+        <li><?php echo $groupe_validation; ?></li>
+    <?php } ?>
+</ul>
+
+<form id="id_form_relance_couts" action="<?php echo $this->url(array('module' => 'operation', 'controller' => 'facturation', 'action' => 'popuprelancecouts')) ?>" method="post">
+    <input type="hidden" name="submit_send_relance" value="1">
+    <input type="hidden" name="op_id" value="<?php echo $this->op_id; ?>">
+
+    <div class="text-center">
+        <input type="submit" value="<?php echo $this->translate('Valider'); ?>" class="btn btn-orange">
+    </div>
+</form>
+
+
+
+
+<script language="javascript">
+    $(document).ready(function () {
+        $('#id_form_relance_couts').ajaxForm({
+            divId: 'id_popup_relance_couts'
+        });
+    });
+</script>

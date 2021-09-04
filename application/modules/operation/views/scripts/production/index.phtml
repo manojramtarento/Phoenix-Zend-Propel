@@ -1,0 +1,40 @@
+<?php
+$this->title = $this->translate('Gestion des lots courriers');
+$this->headTitle($this->title);
+?>
+<?php echo $this->partial('partials/actionsbar.phtml', array('operation' => $this->operation)); ?>
+<input type="hidden" id="id_input_op_id" value="<?php echo $this->operation->getOpId() ?>" />
+<div id="site-content">
+	<?php echo $this->partial('partials/menu.phtml'); ?>
+	<div id="content-bd">
+
+		<div class="line">
+			<div class="unit size1of1 lastUnit">
+				<div class="box">
+					<div class="line box-hd">
+						<h2 class="box-title title-icon icon-text"><?php echo $this->translate('Aide au paramétrage');?></h2>
+					</div>
+					<div class="box-bd">
+						<div class="line">
+							<div class="unit size1of2">
+								<div class="form-line">
+									<label class="section-title"><?php echo $this->translate('Modalités de l\'offre');?></label>
+								</div>
+								<div class="col">
+								<?php echo Phoenix_View_Helper_Html::textarea(array('name'=>'op_modalite','value'=>$this->operation->getOpModalite(), 'model_name'=>'Operations','primary_value'=>$this->operation->getOpId(),'cols'=>60,'rows'=>10,'class'=>'form-textarea size1of1')) ?>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</div>
+
+<script language="javascript">
+	
+	$('#id_op_modalite').updateField('/operation/production/updatefield');
+	
+</script>

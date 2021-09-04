@@ -1,0 +1,100 @@
+<!-- DIALOG / AJOUT / MODIFICATION -->
+<form id="id_form_update_decouvert" action="<?php echo $this->url(array('module' => 'comptabilite', 'controller' => 'decouverts', 'action' => 'update')) ?>" method="post">
+    <input type="hidden" name="submit_update_decouvert" value="1">
+    <input type="hidden" name="op_dec_id" value="<?php echo $this->op_dec_id; ?>">
+    
+	<div class="section">
+		<div class="section-bd">
+			<div class="line form-line">
+				<span class="unit size1of3 form-label"><?php echo $this->translate('Opération');?> :</span>
+				<span class="unit size2of3 form-text"><b><?php echo $this->op_number; ?></b></span>
+			</div>
+			
+			<div class="line form-line">
+				<span class="unit size1of3 form-label"><?php echo $this->translate('Client');?> :</span>
+				<span class="unit size2of3 form-text"><b><?php echo $this->cl_libelle; ?></b></span>
+			</div>
+			
+			<div class="line form-line">
+				<span class="unit size1of3 form-label"><?php echo $this->translate('Date de la demande');?> :</span>
+				<span class="unit size2of3 form-text"><b><?php echo Phoenix_Data_Convert::formatDateFromSqlServer2($this->date_create); ?></b></span>
+			</div>
+			
+			<div class="line form-line">
+				<span class="unit size1of3 form-label"><?php echo $this->translate('Demandeur');?> :</span>
+				<span class="unit size2of3 form-text"><b><?php echo $this->username; ?></b></span>
+			</div>
+			
+			<div class="line form-line">
+				<span class="unit size1of3 form-label"><?php echo $this->translate('Montant demandé');?> :</span>
+				<span class="unit size2of3 form-text text-ko"><?php echo Phoenix_Data_Convert::formatMoney($this->op_dec_mont_demande); ?> </span>
+			</div>
+			
+			<div class="line form-line">
+				<span class="unit size1of3 form-label"><?php echo $this->translate('Motif de la demande');?> :</span>
+				<span class="unit size2of3 form-text"><?php echo $this->op_dec_motif_demande; ?></span>
+			</div>
+		</div>
+	</div>
+	
+	<div class="section">
+		<div class="section-hd">
+			<h2 class="section-title"><?php echo $this->translate('Décision DAF');?></h2>
+		</div>
+		<div class="section-bd">
+			<div class="line form-line">
+				<label class="unit size1of3 form-label" for="id_op_dec_statut_id"><?php echo $this->translate('Découvert autorisé');?> :</label>
+				<div class="unit size2of3">
+					<div class="unit size1of4">
+						<?php echo Phoenix_View_Helper_Html::radio(array('name' => 'op_dec_statut_id', 'id' => 'op_dec_statut_id_oui', 'value' => ROperationDecouvertStatuts::ACCEPTE, 'default_value' => $this->op_dec_statut_id)) ?>
+						<label class="form-text" for="op_dec_statut_id_oui"><?php echo $this->translate('Oui');?></label>
+					</div>
+					
+					<div class="unit size1of4">
+						<?php echo Phoenix_View_Helper_Html::radio(array('name' => 'op_dec_statut_id', 'id' => 'op_dec_statut_id_non', 'value' => ROperationDecouvertStatuts::REFUSE, 'default_value' => $this->op_dec_statut_id)) ?>
+						<label class="form-text" for="op_dec_statut_id_non"><?php echo $this->translate('Non');?></label>
+					</div>
+				</div>
+			</div>
+			
+			<div class="line form-line">
+				<label class="unit size1of3 form-label" for="id_op_dec_mont_accord"><?php echo $this->translate('Montant autorisé');?> :</label>
+				<?php echo Phoenix_View_Helper_Html::input(array('name' => 'op_dec_mont_accord', 'value' => $this->op_dec_mont_accord, 'class' => 'text-right form-input unit size1of3')); ?>&nbsp;
+			</div>
+			
+			<div class="line form-section">
+				<label class="unit size1of3 form-label" for="id_op_dec_motif_accord"><?php echo $this->translate('Raison');?> :</label>
+				<?php echo Phoenix_View_Helper_Html::selectFromTable('r_operation_decouvert_motif_accord', array('name' => 'op_dec_motif_accord', 'class' => 'form-select unit size2of3 lastUnit'), array('value' => 'r_op_dec_motif_id', 'name' => 'r_op_dec_motif_libelle'), array('default_label' => $this->translate('choisir').'...')); ?>
+			</div>
+		</div>
+	</div>
+	<input type="submit" value="<?php echo $this->translate('Valider');?>" class="btn btn-orange push1of3">
+</form>
+
+
+<script language="javascript">
+	function updateFields() {
+		$('#id_op_dec_mont_accord').removeAttr('disabled');
+				
+		if($('#op_dec_statut_id_non').is(':checked')) {
+			$('#id_op_dec_mont_accord').val('');
+			$('#id_op_dec_mont_accord').attr('disabled', 'disabled');
+		}
+	}
+	
+    $(document).ready(function(){
+        $('#id_form_update_decouvert').ajaxForm({
+            divId:'id_dialog_update_decouvert'
+        });
+		
+		$('#op_dec_statut_id_oui').click(function(e){
+			updateFields();
+		});
+		
+		$('#op_dec_statut_id_non').click(function(e){
+			updateFields();
+		});
+		
+		updateFields();
+    });
+</script>

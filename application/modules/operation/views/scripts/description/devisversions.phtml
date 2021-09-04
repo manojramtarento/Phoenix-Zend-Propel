@@ -1,0 +1,21 @@
+<?php
+foreach ($this->oQuotes as $oQuote) {
+    $user = $this->translate('Inconnu');
+    if ($oQuote->getUserId() > 0) {
+        $user = UsersQuery::create()->findOneByUserId($oQuote->getUserId());
+        if ($user instanceof Users) {
+            $user = $user->getUserNom() . " " . $user->getUserPrenom();
+        }
+    }
+    ?>
+    <tr>
+        <td width="16"><a href="javascript:void(0)" onclick="javascript:deleteDevis(<?php echo $oQuote->getFileId() ?>)" class="icon-list icon-delete" title="<?php echo $this->translate('Supprimer le devis'); ?>"><?php echo $this->translate('Supprimer le devis'); ?></a></td>
+        <td><?php echo $oQuote->getDateCreate('d/m/Y H:i:s') ?></td>
+        <td><a href="<?php echo $this->url(array('module' => 'operation', 'controller' => 'description', 'action' => 'downloaddevis', 'file_id' => $oQuote->getFileId()), null, true) ?>" title="<?php echo $this->translate('Voir le devis'); ?>"><?php echo $oQuote->getFileName(); ?></a></td>
+        <td><?php echo $user; ?></td>
+        <td><?php if ($oQuote->getFileIsAcceptedVersion()) { ?>
+                <span class="unit col icon-statut icon-accepte" title="<?php echo $this->translate('Version acceptée') ?>"></span>
+            <?php } ?>
+        </td>
+    </tr>
+<?php } ?>

@@ -1,0 +1,15 @@
+<table class="list list-simple">
+    <tbody>
+        <tr>
+            <th><span class="notsortable"><?php echo $this->translate('label_media'); ?></span></th>
+            <th><span class="notsortable"><?php echo $this->translate('label_universe'); ?></span></th>
+        </tr>
+        <?php foreach ($this->universesAndMedias as $oUniversesAndMedias) { ?>
+            <tr>
+                <td><?php echo $oUniversesAndMedias->getOperationMedia()->getROperationMediaLabel(); ?></td>
+                <td><?php echo $oUniversesAndMedias->getOperationUniverse()->getROperationUniverseLabel(); ?></td>
+            </tr>
+        <?php } ?>
+
+    </tbody>
+</table>

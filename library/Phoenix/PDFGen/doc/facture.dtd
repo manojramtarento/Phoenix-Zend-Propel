@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!ELEMENT root (data, rubriques, affranchissements)>
+    <!ELEMENT data (first_page, last_page)>
+        <!ELEMENT first_page (mention_fact, type_fact, num_bdc, num_facture, date_facture,
+contact_client, nom_client, adresse_1, adresse_2, adresse_3, code_postal, ville, pays, num_operation,
+titre_operation, num_dossier, nom_responsable_suivi, contact_telephonique_responsable, duree_operation,
+date_fin_postale, date_fin_gestion)>
+			<!ELEMENT mention_fact (#PCDATA) >			
+			<!ELEMENT type_fact (#PCDATA) >
+            <!ELEMENT num_bdc (#PCDATA) >
+            <!ELEMENT num_facture (#PCDATA) >
+            <!ELEMENT date_facture (#PCDATA) >
+            <!ELEMENT contact_client (#PCDATA) >
+            <!ELEMENT nom_client (#PCDATA) >
+            <!ELEMENT adresse_1 (#PCDATA) >
+            <!ELEMENT adresse_2 (#PCDATA) >
+            <!ELEMENT adresse_3 (#PCDATA) >
+            <!ELEMENT code_postal (#PCDATA) >
+            <!ELEMENT ville (#PCDATA) >
+            <!ELEMENT pays (#PCDATA) >
+            <!ELEMENT num_operation (#PCDATA) >
+            <!ELEMENT titre_operation (#PCDATA) >
+            <!ELEMENT num_dossier (#PCDATA) >
+            <!ELEMENT nom_responsable_suivi (#PCDATA) >
+            <!ELEMENT contact_telephonique_responsable (#PCDATA) >
+            <!ELEMENT duree_operation (#PCDATA) >
+            <!ELEMENT date_fin_postale (#PCDATA) >
+            <!ELEMENT date_fin_gestion (#PCDATA) >
+
+        <!ELEMENT last_page (total_ht_soumis_a_tva, total_tva*, total_ttc, total_a_payer, mentions_specifiques,
+reglement_delai, reglement_date,num_tva)>
+            <!ELEMENT total_ht_soumis_a_tva (#PCDATA) >
+            <!ELEMENT total_tva (#PCDATA) >
+				<!ATTLIST total_tva taux CDATA #REQUIRED>
+            <!ELEMENT total_ttc (#PCDATA) >
+            <!ELEMENT total_affranchissement (#PCDATA) >
+            <!ELEMENT total_a_payer (#PCDATA) >
+            <!ELEMENT mentions_specifiques (#PCDATA) >
+            <!ELEMENT reglement_delai (#PCDATA) >
+            <!ELEMENT reglement_date (#PCDATA) >
+            <!ELEMENT num_tva (#PCDATA) >
+
+    <!ELEMENT rubriques (rubrique*)>
+        <!ELEMENT rubrique (title, total_ht, table)>
+            <!ELEMENT title (#PCDATA) >
+            <!ELEMENT table (prestation*) >
+                <!ELEMENT prestation (libelle, descriptif, tarif_unitaire, cumul_total, deja_facture, solde_a_facturer, montant) >
+                    <!ELEMENT libelle (#PCDATA) >
+                    <!ELEMENT descriptif (#PCDATA) >
+                    <!ELEMENT tarif_unitaire (#PCDATA) >
+                    <!ELEMENT cumul_total (#PCDATA) >
+                    <!ELEMENT deja_facture (#PCDATA) >
+                    <!ELEMENT solde_a_facturer (#PCDATA) >
+                    <!ELEMENT montant (#PCDATA) >
+
+    <!ELEMENT affranchissements (total, prestation*)>
+		<!ELEMENT total (#PCDATA) >

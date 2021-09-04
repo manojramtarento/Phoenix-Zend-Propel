@@ -1,0 +1,21 @@
+<?php
+$this->headMeta()->appendHttpEquiv('Content-Type', 'text/html;charset=utf-8');
+$this->headTitle()->setSeparator(' - ');
+$this->headTitle('Phoenix');
+
+echo $this->doctype() . PHP_EOL;
+?>
+<html lang="fr">
+    <head>
+        <?php echo $this->headMeta(); ?>
+        <?php echo $this->headTitle(); ?>
+        <link rel="stylesheet" type="text/css" href="<?php echo ROOT_PATH . '/public/css/statistics.css'; ?>">
+        <link rel="stylesheet" type="text/css" href="<?php echo ROOT_PATH . '/public/css/c3.css'; ?>">
+        <script src="<?php echo ROOT_PATH . '/public/js/d3.min.js'; ?>" charset="utf-8"></script>
+        <script src="<?php echo ROOT_PATH . '/public/js/c3.min.js'; ?>"></script>
+        <script src="<?php echo ROOT_PATH . '/public/js/statistics.js'; ?>"></script>
+    </head>
+    <body>
+        <?php echo $this->layout()->content; ?>
+    </body>
+</html>

@@ -1,0 +1,67 @@
+<form id="id_form_update_site" action="<?php echo $this->url(array('module' => 'client', 'controller' => 'fiche', 'action' => 'updatesite')) ?>" method="post">
+    <input type="hidden" name="submit_update_site" value="1">
+    <input type="hidden" name="cl_id" value="<?php echo $this->cl_id; ?>">
+    <input type="hidden" name="cl_site_id" value="<?php echo $this->cl_site_id; ?>">
+    
+    <div class="line form-section">
+        <label class="form-label unit size1of3" for=""><?php echo $this->translate('Intitulé adresse');?> :</label>
+        <?php echo Phoenix_View_Helper_Html::input(array('name' => 'cl_site_libelle', 'value' => $this->cl_site_libelle, 'class' => 'form-input unit size2of3 lastUnit')); ?>
+    </div>
+
+    <div class="line form-line">
+        <label class="form-label unit size1of3" for=""><?php echo $this->translate('Adresse 1');?> :</label>
+        <?php echo Phoenix_View_Helper_Html::input(array('name' => 'cl_site_addr_1', 'value' => $this->cl_site_addr_1, 'class' => 'form-input unit size2of3 lastUnit')); ?>
+    </div>
+
+    <div class="line form-line">
+        <label class="form-label unit size1of3" for=""><?php echo $this->translate('Adresse 2');?> :</label>
+        <?php echo Phoenix_View_Helper_Html::input(array('name' => 'cl_site_addr_2', 'value' => $this->cl_site_addr_2, 'class' => 'form-input unit size2of3 lastUnit')); ?>
+    </div>
+
+    <div class="line form-line">
+        <label class="form-label unit size1of3" for=""><?php echo $this->translate('Adresse 3');?> :</label>
+        <?php echo Phoenix_View_Helper_Html::input(array('name' => 'cl_site_addr_3', 'value' => $this->cl_site_addr_3, 'class' => 'form-input unit size2of3 lastUnit')); ?>
+    </div>
+
+    <div class="line form-line">
+        <label class="form-label unit size1of3" for=""><?php echo $this->translate('Code postal');?> :</label>
+        <?php echo Phoenix_View_Helper_Html::input(array('name' => 'cl_site_zipcode', 'value' => $this->cl_site_zipcode, 'class' => 'form-input unit size2of3 lastUnit')); ?>
+    </div>
+
+    <div class="line form-line">
+        <label class="form-label unit size1of3" for=""><?php echo $this->translate('Ville');?> :</label>
+        <?php echo Phoenix_View_Helper_Html::input(array('name' => 'cl_site_town', 'value' => $this->cl_site_town, 'class' => 'form-input unit size2of3 lastUnit')); ?>
+    </div>
+
+    <div class="line form-line">
+        <label class="form-label unit size1of3" for=""><?php echo $this->translate('Pays');?> :</label>
+            <?php echo Phoenix_View_Helper_Html::input(array('name' => 'cl_site_country_id', 'type' => 'hidden', 'value' => $this->cl_site_country_id, 'class' => 'form-input unit size2of3 lastUnit')); ?>
+            <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'cl_site_country_name', 'id' => 'cl_site_country_name', 'value' => $this->cl_site_country_name, 'class' => 'unit size2of3 form-input input-autocomplete lastUnit')) ?>
+    </div>
+
+    <div class="line form-line">
+        <label class="form-label unit size1of3" for=""><?php echo $this->translate('Site logistique');?> :</label>
+        <?php echo Phoenix_View_Helper_Html::checkbox(array('name' => 'cl_site_is_for_log', 'value'=>1, 'default_value' => $this->cl_site_is_for_log, 'class' => 'form-checkbox unit size2of3 lastUnit')); ?>
+    </div>
+	
+    <input type="submit" value="Valider" class="btn btn-orange push1of3" />
+</form>
+
+<script language="javascript">
+    $(document).ready(function() {
+        $('#id_form_update_site').ajaxForm({
+            divId:'id_dialog_update_site'
+        });
+        
+        // changement du pays avec autocompletion
+        $('#cl_site_country_name').AjaxAutocomplete({
+            url: baseUrl+'/common/autocomplete/country',
+            minLength: 3,
+            restrictive:true,
+            select:function(event, ui){
+                // 34515 : On indique l'identifiant du pays du site client
+                $('#id_cl_site_country_id').val(ui.item.id);
+            }
+        });
+    });
+</script>

@@ -1,0 +1,134 @@
+<?php
+$sOperationLanguage = $this->aData['aOperationGlobalInformation']['sStatisticsLanguage'];
+?>
+<div class="main-operation-data-bloc">
+    <div class="statistics-report-img-container">
+        <img class="statistics-report-img" src="<?php echo ROOT_PATH . '/public/img/pdfgen/logo-promoanalytics-pdf.png'; ?>"/>
+    </div>
+    <div class="global-operation-info">
+        <!--  The following div must be kept, otherwise the bold text will not be displayed as bold in the PDF document-->
+        <div class="boldFont">-</div>
+        <div  class="operation_libelle">
+            <span class="clientName">
+                <?php echo (!empty($this->aData['aOperationGlobalInformation']['sClientLibelle']) ? $this->aData['aOperationGlobalInformation']['sClientLibelle'] : ''); ?> <br />
+            </span>
+            <?php echo (!empty($this->aData['aOperationGlobalInformation']['sOperationLibelle']) ? $this->aData['aOperationGlobalInformation']['sOperationLibelle'] : ''); ?>
+        </div>
+        <div class="operation-info-section">
+            <div class="operation-info-block operation-dates">
+                <div class="operation-info-block-title">
+                    <span><?php echo $this->Translate('label_date_campaign'); ?></span></div>
+                <div class="operation-info-block-content">
+
+                    <?php echo $this->translate('label_campaign_duration'); ?> :
+                    <br />
+                    <?php
+                    if (!empty($this->aData['aOperationDates']['sOperationConsumptionStartDate'])) {
+                        echo $this->translate('label_from') . ' ' . $this->Translations()->getTranslatedMonthName($this->aData['aOperationDates']['sOperationConsumptionStartDate'], $sOperationLanguage, false);
+                    }
+                    ?>
+
+                    <br />
+                    <?php
+                    if (!empty($this->aData['aOperationDates']['sOperationConsumptionEndDate'])) {
+                        echo $this->translate('label_from') . ' ' . $this->Translations()->getTranslatedMonthName($this->aData['aOperationDates']['sOperationConsumptionEndDate'], $sOperationLanguage, false);
+                    }
+                    ?>
+                    <hr class="operation-info-block-separator" />
+
+                    <?php
+                    if (!empty($this->aData['aOperationDates']['sOperationPostEndDate'])) {
+                        echo $this->translate('label_end_subscription');
+                        ?> :
+                        <br />
+                        <?php
+                        echo $this->Translations()->getTranslatedMonthName($this->aData['aOperationDates']['sOperationPostEndDate'], $sOperationLanguage, false);
+                    }
+                    ?>
+
+                    <hr class="operation-info-block-separator" />
+                    <?php
+                    if (!empty($this->aData['aOperationDates']['sOperationManagementEndDate'])) {
+                        echo $this->translate('lanel_end_project');
+                        ?> :
+                        <br />
+                        <?php echo $this->Translations()->getTranslatedMonthName($this->aData['aOperationDates']['sOperationManagementEndDate'], $this->aData['aOperationGlobalInformation']['sStatisticsLanguage'], false); ?>
+                        <br />
+                    <?php } ?>
+                </div>
+            </div>
+        </div>
+
+        <div class="operation-info-section">
+            <div class="operation-info-block operation-contacts operation-contact-container">
+                <div class="operation-info-block-title">
+                    <span><?php echo $this->Translate('label_your_contacts'); ?></span></div>
+                <div class="operation-info-block-content">
+                    <?php if (!empty($this->aData['aOperationContacts']['aOperationDc']['sUserName'])) { ?>
+                        <div class="operation-info-highlight">
+                            <?php echo $this->aData['aOperationContacts']['aOperationDc']['sUserName']; ?>
+                        </div>
+                        <?php echo $this->translate('label_key_account_manager'); ?>
+                        <br />
+                        <span class="user-email-block">
+                            <?php
+                            echo $this->aData['aOperationContacts']['aOperationDc']['sUserEmail'];
+                            ?>
+                        </span>
+                        <br />
+                        <br />
+                        <?php
+                        if (!empty($this->aData['aOperationContacts']['aOperationDc']['sUserTel'])) {
+                            echo $this->translate('label_phone_number');
+                            ?> :  <?php
+                            echo $this->aData['aOperationContacts']['aOperationDc']['sUserTel'];
+                        }
+                        ?>
+                        <br/>
+                        <?php
+                        if (!empty($this->aData['aOperationContacts']['aOperationDc']['sUserFax'])) {
+                            echo $this->translate('label_fax_number');
+                            ?> : <?php
+                            echo $this->aData['aOperationContacts']['aOperationDc']['sUserFax'];
+                        }
+                        ?>
+                        <br />
+                    <?php } ?>
+                    <hr class="operation-info-block-separator" />
+                    <?php if (!empty($this->aData['aOperationContacts']['aOperationCp']['sUserName'])) { ?>
+                        <div class="operation-info-highlight">
+                            <?php echo $this->aData['aOperationContacts']['aOperationCp']['sUserName']; ?>
+                        </div>
+                        <?php echo $this->translate('label_projects_officer'); ?>
+                        <br />
+                        <span class="user-email-block">
+                            <?php echo $this->aData['aOperationContacts']['aOperationCp']['sUserEmail']; ?>
+                            <br />
+                        </span>
+                        <br />
+                        <?php
+                        if (!empty($this->aData['aOperationContacts']['aOperationCp']['sUserTel'])) {
+                            echo $this->translate('label_phone_number');
+                            ?> :  <?php
+                            echo $this->aData['aOperationContacts']['aOperationCp']['sUserTel'];
+                        }
+                        ?>
+                        <br/>
+                        <?php
+                        if (!empty($this->aData['aOperationContacts']['aOperationCp']['sUserFax'])) {
+                            echo $this->translate('label_fax_number');
+                            ?> : <?php
+                            echo $this->aData['aOperationContacts']['aOperationCp']['sUserFax'];
+                        }
+                        ?>
+                        <br />
+                        <br />
+                    <?php } ?>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="custom_logo">
+        <img src="<?php echo ROOT_PATH . '/public/img/pdfgen/logo-company-pdf.png'; ?>"/>
+    </div>
+</div>

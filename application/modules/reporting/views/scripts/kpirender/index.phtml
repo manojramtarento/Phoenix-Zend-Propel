@@ -1,0 +1,115 @@
+<?php
+$this->title = $this->translate('KPI');
+$this->headTitle($this->title);
+
+$this->headScript()->appendFile($this->baseUrl() . '/js/kpi/index.js');
+
+echo $this->FlashMessenger('error');
+
+echo $this->FlashMessenger('default');
+?>
+
+<div id="taller-actions-bar">
+    <div class="unit size1of3">
+        <h1 class="page-title"><?php echo $this->title; ?></h1>
+    </div>
+    <form id="kpi_settings_select">
+        <div class="unit gutter20">
+            <label class="unit form-label"><?php echo $this->translate('KPIS'); ?>:</label>
+            <?php echo Phoenix_View_Helper_Html::selectFromTable('user_kpi_settings', array('name' => 'select_user_kpi_settings', 'multiple' => 'multiple', 'size' => '5'), array('name' => 'user_kpi_settings_name', 'value' => 'user_kpi_settings_id'), array('clause_where' => "user_kpi_settings_user_id='" . Phoenix_Auth_User::getInstance()->getUserId() . "'", 'clause_order' => 'user_kpi_settings_id')) ?>
+        </div>
+        <div class="unit size1of5" >
+            <input type="submit" value="<?php echo $this->translate('Activer') ?>" class="btn btn-orange unit">
+        </div>
+    </form>
+</div>
+<div id="site-content">
+    <div class="content-list">
+        <div class="kpi-list-actions">
+            <div class="unit col" >
+                <a class="btn btn-orange unit" href="<?php echo $this->baseUrl() ?>/reporting/kpirender/settings"><?php echo $this->translate('Paramétrages') ?></a>
+            </div>
+            <div class="unit col" >
+                <form method="POST" id="kpi_form_display_all">
+                    <input type="submit" value="<?php echo $this->translate('Afficher tout') ?>" class="btn btn-orange unit">
+                </form>
+            </div>
+            <div class="unit col" >
+                <a class="btn btn-orange " href="<?php echo $this->baseUrl() ?>/reporting/kpirender"><?php echo $this->translate('Réinitialiser') ?></a>
+            </div>
+        </div>
+        <div id="kpi-page-body">
+            <?php foreach ($this->userKpiSettingsParams AS $iIndicatorKey => $aIndicatorSettings) { ?>
+                <div class="box box-blue">
+                    <div class="line box-hd kpi-title">
+                        <h2 class="box-title title-icon icon-doc"><?php echo $aIndicatorSettings['name']; ?></h2>
+                    </div>
+                    <div class="box-bd">
+                        <div class="box">
+                            <div class="line box-hd">
+                            </div>
+                            <div class="box-bd">
+                                <form class="kpi_form" id="kpi_form_<?php echo 'ind' . $iIndicatorKey; ?>" action ="<?php echo $this->url(array('module' => 'reporting', 'controller' => 'kpirender'), null, true) ?>" >
+                                    <div class="line">
+                                        <?php if (in_array('kpi_month', array_keys($this->indicators[$iIndicatorKey]['filters']))) { ?>
+                                            <div class = "unit size1of5">
+                                                <label class = "unit size1of3" ><?php echo $this->translate('Mois'); ?> :</label>
+                                                <select class="unit size1of3" type="text" name="kpi_month" id="kpi_month" value="<?php echo $this->kpi_month ?>">
+                                                    <?php for ($iMonth = 1; $iMonth <= 12; ++$iMonth) { ?>
+                                                        <option value="<?php echo $iMonth; ?>" <?php echo ($iMonth == (isset($aIndicatorSettings['filters']['kpi_month']) ? $aIndicatorSettings['filters']['kpi_month'] : $this->kpi_month)) ? 'selected' : ''; ?>><?php echo str_pad($iMonth, 2, '0', STR_PAD_LEFT); ?></option>
+                                                    <?php } ?>
+                                                </select>
+                                            </div>
+                                        <?php } ?>
+                                        <?php if (in_array('kpi_year', array_keys($this->indicators[$iIndicatorKey]['filters']))) { ?>
+                                            <div class="unit size1of5">
+                                                <label class="unit size1of3" ><?php echo $this->translate('Année'); ?> :</label>
+                                                <select class="unit size1of3" type="text" name="kpi_year" id="kpi_year" value="<?php echo $this->kpi_year ?>">
+                                                    <?php for ($iYear = 1995; $iYear <= 2025; ++$iYear) { ?>
+                                                        <option value="<?php echo $iYear; ?>" <?php echo ($iYear == (isset($aIndicatorSettings['filters']['kpi_year']) ? $aIndicatorSettings['filters']['kpi_year'] : $this->kpi_year)) ? 'selected' : ''; ?>><?php echo $iYear; ?></option>
+                                                    <?php } ?>
+                                                </select>
+                                            </div>
+                                        <?php } ?>
+                                        <?php if (in_array('activites_id', array_keys($this->indicators[$iIndicatorKey]['filters']))) { ?>
+                                            <div class="unit size1of5">
+                                                <label class="unit size1of3" > <?php echo $this->translate('Activités'); ?> :</label>
+                                                <?php echo Phoenix_View_Helper_Html::selectFromTable('r_activity_kpi', array('name' => 'activites_id', 'value' => isset($aIndicatorSettings['filters']['activites_id']) ? $aIndicatorSettings['filters']['activites_id'] : '', 'class' => 'unit size1of3'), array('name' => 'r_activity_kpi_libelle', 'value' => 'r_activity_kpi_id'), array('default_label' => $this->translate('choisir') . '...')) ?>
+                                            </div>
+                                        <?php } ?>
+                                        <?php if (in_array('status_taux_id', array_keys($this->indicators[$iIndicatorKey]['filters']))) { ?>
+                                            <div class="unit size1of5">
+                                                <label class="unit size1of3" > <?php echo $this->translate('Status'); ?> :</label>
+                                                <?php echo Phoenix_View_Helper_Html::select(array('name' => 'status_taux_id', 'value' => isset($aIndicatorSettings['filters']['status_taux_id']) ? $aIndicatorSettings['filters']['status_taux_id'] : '', 'class' => 'unit size1of3'), $this->statusTaux, array('default_label' => $this->translate('Choisir') . '...')); ?>
+                                            </div>
+                                        <?php } ?>
+                                        <?php if (in_array('client', array_keys($this->indicators[$iIndicatorKey]['filters']))) { ?>
+                                            <div class="unit size1of3">
+                                                <label class="unit size2of4 form-label" for="id_autocomplete_client"><?php echo $this->translate('Nom du client'); ?> :</label>
+                                                <?php echo Phoenix_View_Helper_Html::input(array('name' => 'client', 'type' => 'hidden', 'value' => isset($aIndicatorSettings['filters']['client']) ? $aIndicatorSettings['filters']['client'] : '')); ?>
+                                                <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'autocomplete_client', 'value' => !empty($aIndicatorSettings['filters']['client']) ? ClientsQuery::create()->findOneByClId($aIndicatorSettings['filters']['client'])->getClLibelle() : '', 'class' => 'unit size3of5 form-input input-autocomplete lastUnit')) ?>
+                                            </div>
+                                        <?php } ?>
+                                        <div class="unit size1of5 lastunit">
+                                            <input type="submit" value="<?php echo $this->translate('Afficher') ?>" class="btn btn-orange unit">
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div id="<?php echo 'ind' . $iIndicatorKey; ?>" >
+                        </div>
+                    </div>
+                </div>
+            <?php } ?>
+        </div>
+    </div>
+</div>
+<script language="javascript">
+    $(document).ready(function () {
+        $('#kpi_form_display_all').submit(function () {
+            displayActiveGraphs();
+            return false;
+        });
+    });
+</script>

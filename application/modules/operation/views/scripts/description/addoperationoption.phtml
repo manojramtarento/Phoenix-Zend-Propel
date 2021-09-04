@@ -1,0 +1,49 @@
+<div id="id_div_add_services">
+    <form method="post" id="id_form_add_services">
+        <?php
+        echo Phoenix_View_Helper_Html::input(array('name' => 'iROpOptionId', 'value' => $this->rOpOptionId, 'type' => 'hidden'));
+        echo Phoenix_View_Helper_Html::input(array('name' => 'iOperationId', 'value' => $this->operationId, 'type' => 'hidden'));
+        foreach ($this->activesServicesGroupedByRubric as $iRubricId => $aRelatedServices) {
+            $sRubricServicesClass = 'check_rubric_' . $iRubricId . '_all_presta';
+            ?>
+
+            <div class="section">
+                <div class="section-hd">
+                    <h2 class="section-title"><?php echo $aRelatedServices['r_rub_libelle']; ?></h2>
+                </div>
+                <div class="section-bd operation_option_related_service_table_style">
+                    <table class="list list-main">
+                        <thead>
+                            <tr>
+                                <th width="40"><span class="notsortable"></span></th>
+                                <th width="500"><span class="notsortable"><?php echo $this->translate('label_service_name'); ?></span></th>
+                                <th width="40" class="check-column"><input id="<?php echo $sRubricServicesClass ?>" class="check_all_rubric_services" type="checkbox" value="1"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            foreach ($aRelatedServices['services'] as $iServiceId => $aService) {
+                                $bIsDisabled = $aService['r_op_option_tpl_is_mandatory'] == 1;
+                                $this->cycle(array('', 'alt'))->rewind();
+                                ?>
+                                <tr class="tr-check <?php echo $this->cycle(array('', 'alt'))->next() ?>">
+
+                                    <td align="left"><?php echo $iServiceId; ?></td>
+                                    <td><?php echo $aService['r_p_libelle']; ?></td>
+                                    <td class="check-column">
+                                        <?php echo Phoenix_View_Helper_Html::checkbox(array('name' => 'r_prestation_id[' . $iRubricId . '][]', 'id' => 'checkbox' . $iRubricId . '_' . $iServiceId, 'class' => $sRubricServicesClass . ' service_option', 'disabled' => $bIsDisabled, 'value' => $iServiceId), array('checked' => true)); ?>
+                                    </td>
+                                </tr>
+                            <?php } ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        <?php } ?>
+        <div class="text-center">
+            <input type="hidden" name="submit_add_services" value="1" >
+            <input type="submit" class="btn btn-orange btn-big" value="<?php echo $this->translate('label_to_add'); ?>">
+        </div>
+    </form>
+</div>
+

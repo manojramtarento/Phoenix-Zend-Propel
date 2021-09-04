@@ -1,0 +1,19 @@
+<!-- DIALOG / VIEW -->
+<div class="line form-line">
+    <span class="unit size1of2 form-label"><?php echo $this->translate('N° OP');?> :</span>
+    <span class="unit size1of2 form-text"><b><?php echo $this->task_data->getOpId(); ?></b></span>
+</div>
+
+<div class="line form-line">
+    <span class="unit size1of2 form-label"><?php echo $this->translate('Type de tâche');?> :</span>
+    <?php echo Phoenix_View_Helper_Html::selectFromTable('r_operation_tasks_type', array('disabled' => True, 'name' => 'op_task_type_id', 'id' => 'op_task_type_id', 'value' => $this->task_data->getOpTaskTypeId(), 'class' => 'form-select unit size1of2 lastUnit'), array('value' => 'r_op_task_type_id', 'name' => 'r_op_task_type_libelle'), array('default_label' => $this->translate('choisir').'...')); ?>
+</div>
+
+<div class="section">
+    <div class="section-hd">
+        <h2 class="section-title title-icon icon-text"><?php echo $this->translate('Commentaire');?></h2>
+    </div>
+    <div class="section-bd" style="height:150px;overflow:auto;">
+        <?php echo $this->task_data->getOpTaskComments(); ?>
+    </div>
+</div>

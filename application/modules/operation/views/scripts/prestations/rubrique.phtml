@@ -1,0 +1,174 @@
+<div class="line box-hd class_form_rubrique_update_<?php echo $this->rubrique->getOpRubriqueId() ?>" >
+    <span class="unit col box-handle" title="<?php echo $this->translate('Déplacer la rubrique'); ?>"></span>
+    <a href="javascript:void(0)" onclick="javascript:oUiManager.deleteRubrique(<?php echo $this->rubrique->getOpRubriqueId() ?>,<?php echo $this->rubrique->getOpId() ?>)" op_rubrique_id="<?php $this->rubrique->getOpRubriqueId() ?>" class="unit col icon-list icon-delete" title="<?php echo $this->translate('Supprimer la rubrique'); ?>"><?php echo $this->translate('Supprimer la rubrique'); ?></a>
+    <h2 class="unit size1of3 col box-title"><?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'id' => 'id_op_rubrique_libelle_' . $this->rubrique->getOpRubriqueId(), 'name' => 'op_rubrique_libelle', 'value' => $this->rubrique->getOpRubriqueLibelle(), 'class' => 'form-input input-editable size1of1')) ?></h2>
+    <span class="text-money unit col"><?php echo $this->rubrique->getRRubriquesType()->getRubriqueTypeLibelle() ?> / <?php echo Phoenix_View_Helper_Html::selectFromTable('r_tva_type', array('name' => 'r_tva_type_id', 'id' => 'id_r_tva_type_id_' . $this->rubrique->getOpRubriqueId(), 'value' => $this->rubrique->getRTvaTypeId()), array('name' => 'r_tva_libelle', 'value' => 'r_tva_id'), array('clause_where' => 'actif=1')) ?></span>
+    <label class="form-label unit"><?php echo $this->translate('Total estimé'); ?> :</label>
+    <span class="text-money unit col"><?php echo Phoenix_Data_Convert::formatMoney($this->rubrique->getMontantTotalEstim(), true, true, true) ?> </span>
+    <label class="form-label unit"><?php echo $this->translate('Total réalisé'); ?> :</label>
+    <span class="text-money unit col"><?php echo Phoenix_Data_Convert::formatMoney($this->rubrique->getMontantTotalReel(), true, true, true) ?></span>
+    <div class="unit rightUnit">
+        <label for="npa_<?php echo $this->rubrique->getOpRubriqueId(); ?>" class="form-label unit"><?php echo $this->translate('Tous NPA'); ?> :</label>
+        <input type="button" id="id_btn_check_npa" onclick="javascript:oUiManager.checkNPA(false,<?php echo $this->rubrique->getOpRubriqueId() ?>)" class="unit col" value=" " />
+        <input type="button" id="id_btn_uncheck_npa" onclick="javascript:oUiManager.checkNPA(true,<?php echo $this->rubrique->getOpRubriqueId() ?>)" class="unit col" value="x" />
+
+        <a href="javascript:void(0)" class="unit icon-list btn-hide-show icon-minus" onclick="javascript:oUiManager.hideBox(this)" title="<?php echo $this->translate('Réduire la rubrique'); ?>"><?php echo $this->translate('Réduire la rubrique'); ?></a>
+    </div>
+</div>
+<div class="box-bd">
+
+    <table class="list list-sortable list-simple" id="list-prestation-sortable-<?php echo $this->rubrique->getOpRubriqueId() ?>">
+        <thead>
+            <tr>
+                <th width="1%" class="column-noborder"></th>
+                <th width="1%" class="column-noborder"></th>
+                <th class="column-noborder" width="25%"><span class="notsortable"><?php echo $this->translate('Prestation'); ?></span></th>
+                <th width="64"></th>
+                <th width="6%"><span class="notsortable"><?php echo $this->translate('Scénario'); ?></span></th>
+                <th width="4%"><span class="notsortable"><?php echo $this->translate('Prime'); ?></span></th>
+                <th width="6%"><span class="notsortable"><?php echo $this->translate('Prix'); ?></span></th>
+                <th width="1%"><span class="notsortable"><?php echo $this->translate('Prest. Off'); ?></span></th>
+                <th width="1%"><span class="notsortable"><?php echo $this->translate('Coef'); ?>.</span></th>
+                <th width="1%"><span class="notsortable"><?php echo $this->translate('Qté Est'); ?>.</span></th>
+                <th width="4%"><span class="notsortable"><?php echo $this->translate('Montant Est'); ?>.</span></th>
+                <th width="4%"><span class="notsortable"><?php echo $this->translate('Marge Est'); ?>.</span></th>
+                <th width="4%"><span class="notsortable"><?php echo $this->translate('Qté Réa'); ?>.</span></th>
+                <th width="4%"><span class="notsortable"><?php echo $this->translate('Montant Réa'); ?>.</span></th>
+                <th width="4%"><span class="notsortable"><?php echo $this->translate('Marge Réa'); ?>.</span></th>
+                <th width="4%"><span class="notsortable"><?php echo $this->translate('Qté fact'); ?>.</span></th>
+                <th width="4%"><span class="notsortable"><?php echo $this->translate('Montant fact'); ?>.</span></th>
+                <th width="1%"><span class="notsortable"><?php echo $this->translate('NPR'); ?></span></th>
+                <th width="1%"><span class="notsortable"><?php echo $this->translate('NPA'); ?></span></th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php
+            $aOperationServices = $this->rubrique->getOperationPrestationss();
+            foreach ($aOperationServices as $oService) {
+                $bIsComplete = $oService->isComplete();
+				$bIsAdf = $oService->isAdf($oService->getOpRPrestId());
+                ?>
+                <tr data-pos="<?php echo $oService->getOpPrestOrder() ?>" class="class_form_prestation_<?php echo $this->rubrique->getOpRubriqueId() ?>" id="id_form_prestation_<?php echo $oService->getOpPrestId() ?>" action="<?php echo $this->url(array('module' => 'operation', 'controller' => 'prestations', 'action' => 'updateprestation')) ?>" model_name="OperationPrestations" primary_value="<?php echo $oService->getOpPrestId() ?>">
+                    <td class="column-handle" title="<?php echo $this->translate('Déplacer la prestation'); ?>"></td>
+                    <td>
+                        <a href="javascript:void(0)" onclick="javascript:oUiManager.deletePrestation(<?php echo $oService->getOpPrestId() ?>,<?php echo $this->rubrique->getOpRubriqueId() ?>)"  class="icon-list icon-delete" title="<?php echo $this->translate('Supprimer la prestation'); ?>"><?php echo $this->translate('Supprimer la prestation'); ?></a>
+                    </td>
+
+                    <td class="<?php if (!$bIsComplete) echo 'text-ko'; ?>"> 
+                        <?php echo '[' . $oService->getOpRPrestId() . '] '. Phoenix_View_Helper_Html::input(array('type' => 'text', 'id' => 'id_op_prest_libelle_devis_' . $oService->getOpPrestId(), 'name' => 'op_prest_libelle_devis', 'class' => 'form-input  op_service_name input-editable size1of1', 'value' => $oService->getOpPrestLibelleDevis())) ?>
+                    </td>
+                    
+                    <td align="right">
+                        <?php if($bIsAdf){  ?>
+						    <span class="tip icon-list icon-visible icon-euro" title="<?php echo $this->translate('Prestation ADF')?>"></span>
+						<?php } ?>
+                        <?php if (!is_null($oService->getOpPrestDescription()) && $oService->getOpPrestDescription() != '') { ?>
+                            <span class="icon-list icon-visible icon-text tip" title="<?php echo $this->translate('Description') . ' : ' . htmlentities($oService->getOpPrestDescription(), ENT_COMPAT, 'UTF-8'); ?>"></span>
+                        <?php } ?>
+                        <?php if (trim($oService->getOpPrestCommentInterne())) { ?>
+                            <span class="icon-list icon-visible icon-pin tip" title="<?php echo $this->translate('Commentaire interne') . ' : ' . htmlentities($oService->getOpPrestCommentInterne(), ENT_COMPAT, 'UTF-8'); ?>"></span>
+                        <?php }; ?>
+                        <a href="javascript:void(0)" onclick="javascript:oUiManager.descriptionPrestation(<?php echo $oService->getOpPrestId() ?>)" class="icon-list icon-edit" title="<?php echo $this->translate('Qualifier la prestation'); ?>"></a>
+                    </td>
+                    <td>
+                        <?php
+                        echo Phoenix_View_Helper_Html::selectFromTable('operation_scenarii', array('name' => 'op_prest_scena_id', 'id' => 'id_op_scenario_id_' . $oService->getOpPrestId(), 'value' => $oService->getOpPrestScenaId(), 'class' => 'form-select size1of1 input-editable class_select_scenario'), array('name' => "(CONCAT(convert(op_scenario_numero, char(50)), ' - ', COALESCE(op_scenario_libelle, '')))", 'value' => 'op_scenario_id'), array('clause_where' => "op_id='" . $oService->getOpId() . "'", 'clause_order' => 'op_scenario_numero', 'default_label' => '-'));
+                        ?>
+                    </td>
+                    <td>
+                        <?php
+                        // If a scenario is selected, only the linked premium is displayed (or nothing if no premium is linked)
+                        $sWhereClause = "op_id='" . $oService->getOpId() . "'";
+                        if ($oService->getOpPrestScenaId() > 0) {
+                            $oOperationScenario = OperationScenariiQuery::create()->findPk($oService->getOpPrestScenaId());
+                            if ($oOperationScenario instanceof OperationScenarii) {
+                                $sWhereClause .= " AND op_prime_id = '" . $oOperationScenario->getOpRPrimeId() . "'";
+                            }
+                        }
+                        echo Phoenix_View_Helper_Html::selectFromTable('operation_primes', array('name' => 'op_prest_prime_id', 'id' => 'id_op_prime_id_' . $oService->getOpPrestId(), 'value' => $oService->getOpPrestPrimeId(), 'class' => 'form-select size1of1 input-editable class_select_prime'), array('name' => "(CONCAT(convert(op_prime_numero, char(50)), ' - ', COALESCE(op_prime_libelle,'')))", 'value' => 'op_prime_id'), array('clause_where' => $sWhereClause, 'default_label' => '-'));
+                        ?>
+                    </td>
+                    <td align="right">
+                        <?php echo Phoenix_View_Helper_Html::input(array('name' => 'op_prest_pv', 'id' => 'id_op_prest_pv_' . $oService->getOpPrestId(), 'value' => Phoenix_Data_Convert::formatMoney($oService->getOpPrestPv(), true, false, false), 'class' => 'form-input input-editable size4of5 text-right')) ?>&nbsp;€
+                    </td>
+                    <td align="center">
+                        <?php echo Phoenix_View_Helper_Html::checkbox(array('value' => '1', 'default_value' => $oService->getOpPrestOff(), 'name' => 'op_prest_off', 'id' => 'id_op_prest_off_' . $oService->getOpPrestId())) ?>
+                    </td>
+                    <td>
+                        <?php echo Phoenix_View_Helper_Html::input(array('name' => 'op_prest_coef', 'id' => 'id_op_prest_coef_' . $oService->getOpPrestId(), 'value' => ((int)$oService->getOpPrestCoef()) == $oService->getOpPrestCoef()?(int)$oService->getOpPrestCoef():$oService->getOpPrestCoef(), 'class' => 'form-input input-editable size1of1 text-right')) ?>
+                    </td>
+                    <td>
+                        <?php echo Phoenix_View_Helper_Html::input(array('name' => 'op_prest_qestim', 'id' => 'id_op_prest_qestim_' . $oService->getOpPrestId(), 'value' => $oService->getOpPrestQestim(), 'class' => 'form-input input-editable size1of1 text-right')) ?>
+                    </td>
+                    <td class="column-secondary" align="right"><?php echo Phoenix_Data_Convert::formatMoney($oService->getOpPrestMestim(), true, true, false) ?></td>
+                    <td class="column-secondary" align="right"><?php echo Phoenix_Data_Convert::formatMoney($oService->getOpPrestMargeEstim(), true, true, false) ?></td>
+
+                    <?php if ($oService->isOpPrestQreelManualyUpdatable()) { ?>
+                        <?php $sClass = ($oService->getOpPrestIsMajFromCompiluo() == 0 ? 'form-input input-highlight size1of1 text-right' : 'form-input input-editable size1of1 text-right') ?>
+                        <td class="column-secondary" align="right"><?php echo Phoenix_View_Helper_Html::input(array('name' => 'op_prest_qreel', 'id' => 'id_op_prest_qreel_' . $oService->getOpPrestId(), 'value' => $oService->getOpPrestQreel(), 'class' => $sClass)) ?></td>
+                    <?php } elseif ($oService->getRPrestations()->getRPValidationId() == RPTypeValidation::ACHAT) { ?>
+                        <td class="column-secondary" align="right">
+                            <span class = "form-span-highlight "><?php echo Phoenix_View_Helper_Html::input(array('name' => 'op_prest_qreel', 'id' => 'id_op_prest_qreel_' . $oService->getOpPrestId(), 'value' => $oService->getOpPrestQreel(), 'class' => 'form-input input-editable size1of1 text-right')) ?>
+                            </span>
+                        </td>
+                    <?php } ?>
+                    <td class="column-secondary" align="right">
+                        <?php
+                        if ($oService->isRemboursement()) {
+                            echo Phoenix_View_Helper_Html::input(array('name' => 'op_prest_mreel', 'id' => 'id_op_prest_mreel_' . $oService->getOpPrestId(), 'value' => $oService->getOpPrestMreel(), 'class' => 'form-input input-editable size1of1 text-right'));
+                        } else {
+                            echo Phoenix_Data_Convert::formatMoney($oService->getOpPrestMreel(), true, true, false);
+                        }
+                        ?>
+                    </td>
+                    <td class="column-secondary" align="right">
+                        <?php
+                        $fRealMargin = $oService->getOpPrestMargeReelle();
+                        if ($fRealMargin === False) {
+                            echo "<span title='" . $this->translate('En attente de la validation des coûts') . "'>N.C</span>";
+                        } else {
+                            echo Phoenix_Data_Convert::formatMoney($fRealMargin, true, true, false);
+                        }
+                        ?>
+                    </td>
+                    <?php
+                        $aAlreadyChargedData = $oService->getAlreadyChargedData();
+                    ?>
+                    <td class="column-secondary" align="right">
+                        <?php echo Phoenix_Data_Convert::formatMoney($aAlreadyChargedData['total_quantity_already_charged'], true, false, false); ?>
+                    </td>
+                    <td class="column-secondary" align="right">
+                        <?php echo Phoenix_Data_Convert::formatMoney($aAlreadyChargedData['total_amount_already_charged'], true, false, false); ?>
+                    </td>
+                    <td align="center"><?php echo Phoenix_View_Helper_Html::checkbox(array('value' => '1', 'default_value' => $oService->getOpPrestNpr(), 'name' => 'op_prest_npr', 'id' => 'id_op_prest_npr_' . $oService->getOpPrestId())) ?></td>
+                    <td align="center"><?php echo Phoenix_View_Helper_Html::checkbox(array('value' => '1', 'default_value' => $oService->getOpPrestNpa(), 'name' => 'op_prest_npa', 'id' => 'id_op_prest_npa_' . $oService->getOpPrestId(), 'class' => 'class_op_prest_npa_' . $this->rubrique->getOpRubriqueId())) ?></td>
+                </tr>
+            <?php } ?>
+        </tbody>
+    </table>
+    <a href="javascript:void(0)" class="link-add class_btn_ajout_prestation" onclick="javascript:oUiManager.ajoutPrestation(<?php echo $this->rubrique->getOpRubriqueId() ?>,<?php echo $this->rubrique->getOpId() ?>)"  ><?php echo $this->translate('Ajouter des prestations'); ?></a>
+</div>
+
+<script language="javascript">
+    $('document').ready(function() {
+        $('#id_op_rubrique_libelle_<?php echo $this->rubrique->getOpRubriqueId() ?>, #id_r_tva_type_id_<?php echo $this->rubrique->getOpRubriqueId() ?>').updateField(
+                "<?php echo $this->url(array('module' => 'operation', 'controller' => 'prestations', 'action' => 'updaterubrique')) ?>", {
+                    model_name: "OperationRubriques",
+                    primary_value: "<?php echo $this->rubrique->getOpRubriqueId() ?>"
+                }
+        );
+
+        // Updating the section
+        $('.class_form_rubrique_update_<?php echo $this->rubrique->getOpRubriqueId() ?>').formUpdate();
+
+        // Updating service fields
+        $('.class_form_prestation_<?php echo $this->rubrique->getOpRubriqueId() ?>').formUpdate({
+            callback: function() {
+                oUiManager.refreshRubrique(<?php echo $this->rubrique->getOpRubriqueId() ?>);
+            }
+        });
+        // Set services sortable
+        oUiManager.prestationSortable(<?php echo $this->rubrique->getOpRubriqueId() ?>);
+
+    });
+</script>

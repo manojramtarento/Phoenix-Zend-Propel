@@ -1,0 +1,6 @@
+<?php foreach ($this->contrats as $contrat) { ?>
+    <tr>
+        <td width="16"><a href="javascript:void(0)" onclick="javascript:deleteContrat(<?php echo $contrat->getFileId() ?>)" class="icon-list icon-delete" title="<?php echo $this->translate('Supprimer le contrat'); ?>"><?php echo $this->translate('Supprimer le contrat'); ?></a></td>
+        <td><a href="<?php echo $this->url(array('module' => 'operation', 'controller' => 'description', 'action' => 'downloadcontrat', 'file_id' => $contrat->getFileId()), null, true) ?>" title="<?php echo $this->translate('Voir le contrat'); ?>"><?php echo $contrat->getFileName(); ?></a></td>
+    </tr>
+<?php } ?>

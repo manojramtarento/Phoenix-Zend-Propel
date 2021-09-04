@@ -1,0 +1,6 @@
+<?php foreach ($this->planstransport as $plantransport) { ?>
+    <tr>
+        <td width="16"><a href="javascript:void(0)" onclick="javascript:deletePlanTransport(<?php echo $plantransport->getFileId() ?>)" class="icon-list icon-delete" title="<?php echo $this->translate('Supprimer le contrat'); ?>"><?php echo $this->translate('Supprimer le contrat'); ?></a></td>
+        <td><a href="<?php echo $this->url(array('module' => 'operation', 'controller' => 'description', 'action' => 'downloadcontrat', 'file_id' => $plantransport->getFileId()), null, true) ?>" title="<?php echo $this->translate('Voir le plan de transport'); ?>"><?php echo $plantransport->getFileName(); ?></a></td>
+    </tr>
+<?php } ?>

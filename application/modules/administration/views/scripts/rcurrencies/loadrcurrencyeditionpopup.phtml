@@ -1,0 +1,18 @@
+<form id="currency-update-form" action="<?php echo $this->url(array('module' => 'administration', 'controller' => 'rcurrencies', 'action' => 'savercurrencydata')) ?>" method="post">
+    <?php echo Phoenix_View_Helper_Html::input(array('type' => 'hidden', 'name' => 'r_currency_id', 'value' => isset($this->rCurrency) ? $this->rCurrency->getRCurrencyId() : '')) ?>
+    <div class="line form-line">
+        <label class="unit size1of3 form-label" for='id-r-currency-code'><?php echo $this->translate('label_currency_code'); ?> :</label>
+        <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'id' => 'id-r-currency-code', 'name' => 'r_currency_iso_code', 'class' => 'unit size2of3 form-input lastUnit', 'value' => isset($this->rCurrency) ? $this->rCurrency->getRCurrencyIsoCode() : '')) ?>
+    </div>
+    <div class="line form-line">
+        <label class="unit size1of3 form-label" for='id-r-currency-label'><?php echo $this->translate('label_currency_label'); ?> :</label>
+        <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'id' => 'id-r-currency-label', 'name' => 'r_currency_label', 'class' => 'unit size2of3 form-input lastUnit', 'value' => isset($this->rCurrency) ? $this->rCurrency->getRCurrencyLabel() : '')) ?>
+    </div>
+    <div class="line form-line">
+        <label class="unit size1of3 form-label" for='id-r-currency-actif'><?php echo $this->translate('label_actif'); ?> :</label>
+        <?php echo Phoenix_View_Helper_Html::checkbox(array('id' => 'id-r-currency-actif', 'name' => 'r_currency_actif', 'value' => 1, 'default_value' => isset($this->rCurrency) ? $this->rCurrency->getRCurrencyActif() : '')) ?>
+    </div>
+    <div class="text-center">
+        <input type="submit" value="<?php echo $this->translate('Valider'); ?>" class="btn btn-orange">
+    </div>
+</form>

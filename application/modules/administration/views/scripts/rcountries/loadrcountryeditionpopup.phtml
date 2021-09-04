@@ -1,0 +1,54 @@
+<form id="country-update-form" action="<?php echo $this->url(array('module' => 'administration', 'controller' => 'rcountries', 'action' => 'savercountrydata')) ?>" method="post">
+    <?php echo Phoenix_View_Helper_Html::input(array('type' => 'hidden', 'name' => 'r_country_id', 'value' => isset($this->rCountry) ? $this->rCountry->getRCountryId() : '')) ?>
+    <div class="line form-line">
+        <label class="unit size1of3 form-label" for='id-r-country-code'><?php echo $this->translate('label_country_code'); ?> :</label>
+        <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'id' => 'id-r-country-code', 'name' => 'r_country_code', 'class' => 'unit size2of3 form-input lastUnit', 'value' => isset($this->rCountry) ? $this->rCountry->getRCountryCode() : '')) ?>
+    </div>
+    <div class="line form-line">
+        <label class="unit size1of3 form-label" for='id-r-country-name'><?php echo $this->translate('label_country_label'); ?> :</label>
+        <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'id' => 'id-r-country-name', 'name' => 'r_country_name', 'class' => 'unit size2of3 form-input lastUnit', 'value' => isset($this->rCountry) ? $this->rCountry->getRCountryName() : '')) ?>
+    </div>
+    <div class="line form-line">
+        <label class="unit size1of2 form-label" for='r-country-r-currency-id'><?php echo $this->translate('label_country_currency_label'); ?> :</label>
+        <?php
+        echo Phoenix_View_Helper_Html::selectFromTable(
+                'r_currencies', array('name' => 'r_country_r_currency_id', 'class' => 'unit size1of2 form-select lastUnit', 'id' => 'id-r-country-r-currency-id', 'value' => isset($this->rCountry) ? $this->rCountry->getRCountryRCurrencyId() : ''), array('name' => 'r_currency_label', 'value' => 'r_currency_id'), array('default_label' => $this->translate('choisir') . '...')
+        );
+        ?>
+    </div>
+    <div class="line form-line">
+        <label class="unit size1of2 form-label" for='id-r-country-r-country-calling-code-id'><?php echo $this->translate('label_country_calling_label'); ?> :</label>
+        <?php
+        echo Phoenix_View_Helper_Html::selectFromTable(
+                'r_countries_calling_codes', array('name' => 'r_country_r_country_calling_code_id', 'value' => isset($this->rCountry) ? $this->rCountry->getRCountryRCountryCallingCodeId() : '', 'class' => 'unit size1of2 form-select lastUnit', 'id' => 'id-r-country-r-country-calling-code-id'), array('name' => 'r_country_calling_code', 'value' => 'r_country_calling_code_id'), array('default_label' => $this->translate('choisir') . '...')
+        );
+        ?>
+    </div>
+    <div class="line form-line">
+        <label class="unit size1of2 form-label" for='id-r-country-culture-id'><?php echo $this->translate('label_country_culture'); ?> :</label>
+        <?php
+        echo Phoenix_View_Helper_Html::select(array('name' => 'r_country_culture_id[]', 'value' => isset($this->rCountry) ? $this->rCountry->getAssociatedRCulturesId() : array(), 'class' => 'unit size1of2 lastUnit', 'multiple' => 'multiple', 'size' => 7, 'id' => 'id-r-country-culture-id'), $this->rCultures);
+        ?>
+    </div>
+
+    <div class="line form-line">
+        <label class="unit size1of2 form-label" for='id-r-country-language'><?php echo $this->translate('label_country_languages'); ?> :</label>
+        <?php
+        echo Phoenix_View_Helper_Html::select(array('name' => 'r_country_language', 'class' => 'unit size1of2 lastUnit', 'disabled' => 'true', 'multiple' => 'multiple', 'size' => 7, 'id' => 'id-r-country-language'), array());
+        ?>
+    </div>
+
+    <div class="line form-line">
+        <label class="unit size1of2 form-label" for='id-r-country-language-code'><?php echo $this->translate('label_country_languages'); ?> :</label>
+
+    </div>
+
+    <div class="line form-line">
+        <label class="unit size1of3 form-label" for='id-r-country-actif'><?php echo $this->translate('label_actif'); ?> :</label>
+        <?php echo Phoenix_View_Helper_Html::checkbox(array('id' => 'id-r-country-actif', 'name' => 'r_country_actif', 'value' => 1, 'default_value' => isset($this->rCountry) ? $this->rCountry->getRCountryActif() : '')) ?>
+    </div>
+
+    <div class="text-center">
+        <input type="submit" value="<?php echo $this->translate('Valider'); ?>" class="btn btn-orange">
+    </div>
+</form>

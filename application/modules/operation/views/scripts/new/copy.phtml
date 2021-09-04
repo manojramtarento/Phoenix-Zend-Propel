@@ -1,0 +1,357 @@
+<?php
+$this->title = $this->translate('Nouveau devis');
+$this->headTitle($this->title);
+$this->headScript()->appendFile($this->baseUrl() . '/js/operation/new/index.js');
+$this->headScript()->appendFile($this->baseUrl() . '/js/operation/commonFeatures.js');
+echo $this->FlashMessenger('error');
+?>
+<div id="site-content">
+    <div id="content-bd">
+        <div class="form-section">
+            <h1 class="page-title title-icon icon-doc"><?php echo $this->translate('Nouveau devis à partir de l\'opération '); ?><?php echo $this->operation->getOpNumber() ?> - <?php echo $this->operation->getOpLibelle() ?></h1>
+        </div>
+        <form action="" method="post" id="operation_copy_form">
+            <input type="hidden" name="op_id" id="id_op_id" value="<?php echo $this->getParam('op_id') ?>" >
+            <input type="hidden" name="submit_copy_operation" id="submit_form_id" value="0">
+            <div class="line">
+                <div class="unit size1of2">
+                    <div class="box">
+                        <div class="box-hd">
+                            <h2 class="box-title"><?php echo $this->translate('Configuration de l\'opération'); ?></h2>
+                        </div>
+                        <div class="box-bd">
+                            <div class="line">
+                                <div class="unit size3of5">
+                                    <div class="col">
+                                        <div class="section">
+                                            <div class="section-hd">
+                                                <h2 class="section-title"><?php echo $this->translate('Intitulé de l\'opération'); ?></h2>
+                                            </div>
+                                            <div class="section-bd">
+                                                <div class="line form-section">
+                                                    <?php echo Phoenix_View_Helper_Html::input(array('name' => 'op_libelle', 'value' => $this->operation->getOpLibelle(), 'placeholder' => $this->translate('INTITULÉ DE L\'OPERATION'), 'class' => 'form-input input-big input-orange unit size4of5')); ?>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="unit size2of5 lastUnit">
+                                    <div class="col">
+                                        <div class="section">
+                                            <div class="section-hd">
+                                                <h2 class="section-title"><?php echo $this->translate('Taux de conversion'); ?></h2>
+                                            </div>
+                                            <div class="section-bd">
+                                                <div class="line form-section">
+                                                    <?php echo Phoenix_View_Helper_Html::select(array('name' => 'op_taux_conversion', 'value' => $this->operation->getOpTauxConversion(), 'class' => 'form-select'), array('0 %' => array('value' => '0'), '25 %' => array('value' => '25'), '50 %' => array('value' => '50'), '75 %' => array('value' => '75'), '100 %' => array('value' => '100')), array('default_label' => $this->translate('choisir') . '...')); ?>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="section">
+                                <div class="section-hd">
+                                    <h2 class="section-title"><?php echo $this->translate('terminology_selection_label'); ?></h2>
+                                </div>
+                                <div class="section-bd">
+                                    <div class="line form-line">
+                                        <label class="unit size1of5 form-label" for="id_op_act_id"><?php echo $this->translate('operation_business_label'); ?> :</label>
+                                        <div class="unit size3of5 date lastUnit">
+                                            <?php echo My_View_Helper_Html::selectFromTable('r_custom_activites', array('name' => 'op_act_id', 'value' => $this->operation->getOpActId(), 'class' => 'unit size1of2 form-select'), array('value' => 'act_id', 'name' => 'act_libelle'), array('default_label' => $this->translate('choisir') . '...', 'clause_where' => 'actif = 1', 'clause_order' => 'ord ASC', 'include_element_value' => false)) ?>
+                                        </div>
+                                    </div>
+                                    <div class="line form-line">
+                                        <label class="unit size1of5 form-label" for="id_op_type_id"><?php echo $this->translate('operation_category_label'); ?> :</label>
+                                        <div class="unit size3of5 date lastUnit">
+                                            <?php echo My_View_Helper_Html::selectFromTable('r_operation_type', array('name' => 'op_type_id', 'value' => $this->operation->getOpTypeId(), 'class' => 'unit size1of2 form-select'), array('value' => 'ot_id', 'name' => 'ot_libelle', 'class' => 'act_id'), array('default_label' => $this->translate('choisir') . '...', 'clause_where' => 'actif = 1', 'clause_order' => 'ord ASC', 'include_element_value' => false)) ?>
+                                        </div>
+                                    </div>
+                                    <div class="line form-line">
+                                        <label class="unit size1of5 form-label" for="id_op_subtype_id"><?php echo $this->translate('operation_mecanic_label'); ?> :</label>
+                                        <div class="unit size3of5 date lastUnit">
+                                            <?php echo My_View_Helper_Html::selectFromTable('r_operation_type_sub', array('name' => 'op_subtype_id', 'value' => $this->operation->getOpSubtypeId(), 'class' => 'unit size1of2 form-select'), array('value' => 'ost_id', 'name' => 'ost_libelle', 'class' => 'ost_ot_id'), array('default_label' => $this->translate('choisir') . '...', 'clause_where' => 'actif = 1', 'clause_order' => 'ord ASC', 'include_element_value' => false)) ?>
+                                        </div>
+                                    </div>
+                                    <div class="line form-line">
+                                        <label class="unit size1of5 form-label" for="id_operation_universe_id"><?php echo $this->translate('label_universe'); ?> :</label>
+                                        <div class="unit size3of5 date lastUnit">
+                                            <?php echo My_View_Helper_Html::selectFromTable('r_operation_universes', array('name' => 'operation_universe_id', 'value' => $this->operation->getOperationUniverseId(), 'class' => 'form-select unit size1of2', 'id' => 'id_operation_universe_id'), array('value' => 'r_operation_universe_id', 'name' => 'r_operation_universe_label'), array('default_label' => $this->translate('choisir') . '...', 'clause_where' => 'r_operation_universe_actif = 1', 'clause_order' => 'r_operation_universe_order ASC', 'include_element_value' => false)) ?>
+                                        </div>
+                                    </div>
+                                    <div class="line form-line">
+                                        <label class="unit size1of5 form-label" for="id_operation_media_id"><?php echo $this->translate('label_participation_media'); ?> :</label>
+                                        <div class="unit size3of5 date lastUnit">
+                                            <?php echo My_View_Helper_Html::selectFromTable('r_operation_medias', array('name' => 'operation_media_id', 'value' => $this->operation->getOperationMediaId(), 'class' => 'form-select unit size1of2', 'id' => 'id_operation_media_id'), array('value' => 'r_operation_media_id', 'name' => 'r_operation_media_label'), array('default_label' => $this->translate('choisir') . '...', 'clause_where' => 'r_operation_media_actif = 1', 'clause_order' => 'r_operation_media_order ASC', 'include_element_value' => false)) ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="section">
+                                <div class="section-hd">
+                                    <h2 class="section-title"><?php echo $this->translate('Client'); ?></h2>
+                                </div>
+                                <div class="section-bd">
+                                    <div class="form-section">
+                                        <div class="line form-line">
+                                            <label for="" class="form-label unit size1of5"><?php echo $this->translate('Choix du client'); ?> :</label>
+                                            <div class="unit size1of5 gutter10">
+                                                <?php echo Phoenix_View_Helper_Html::input(array('name' => 'op_cl_id', 'value' => $this->operation->getOpClId(), 'type' => 'hidden')) ?>
+                                                <?php echo Phoenix_View_Helper_Html::input(array('name' => 'autocomplete_client', 'value' => $this->operation->getClients()->getClLibelle(), 'class' => 'form-input input-autocomplete size1of1')); ?>
+                                            </div>
+                                            <div class="unit size3of5 lastUnit">
+                                                <a href="#" class="link-add" id="btn-client-add"><?php echo $this->translate('Créer un nouveau client'); ?></a>
+                                            </div>
+                                        </div>
+                                        <!-- N'apparait que si un client est sélectionné -->
+                                        <div class="line form-line" id="id_div_contact" style="<?php echo ($this->operation->getOpClId() != null ? '' : 'display:none') ?>">
+                                            <label for="" class="form-label unit size1of5"><?php echo $this->translate('Contact commercial'); ?> :</label>
+                                            <div class="unit size1of5 gutter10">
+                                                <?php echo Phoenix_View_Helper_Html::selectFromTable('contacts', array('name' => 'op_ct_id', 'value' => $this->operation->getOpCtId(), 'class' => 'form-select size1of1'), array('value' => 'ct_id', 'name' => "CONCAT(COALESCE(ct_lastname), ' ', COALESCE(ct_firstname))"), array('clause_where' => "cl_id='" . $this->operation->getOpClId() . "'", 'default_label' => $this->translate('choisir') . '...')); ?>
+                                            </div>
+                                            <div class="unit size3of5 lastUnit">
+                                                <a href="#" class="link-add" id="btn-contact-add"><?php echo $this->translate('Créer un contact'); ?></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="section">
+                                <div class="section-hd">
+                                    <h2 class="section-title"><?php echo $this->translate('Copie des prestations'); ?></h2>
+                                </div>
+                                <div class="section-bd">
+                                    <div class="form-section">
+                                        <div class="line form-line">
+                                            <div class="unit size1of4 negociated_services_choices">
+                                                <label for="id_apply_presta_negoce_1" class="form-label"><?php echo $this->translate('Appliquer la grille de prestations négociées'); ?></label>
+                                                <?php echo Phoenix_View_Helper_Html::radio(array('name' => 'apply_presta_negoce', 'id' => 'id_apply_presta_negoce_1', 'value' => 1, 'class' => 'form-radio')) ?>
+                                            </div>
+                                            <div class="unit size1of4 negociated_services_choices">
+                                                <label for="id_apply_presta_negoce_0" class="form-label"><?php echo $this->translate('Reprendre les prix du devis'); ?></label>
+                                                <?php echo Phoenix_View_Helper_Html::radio(array('name' => 'apply_presta_negoce', 'id' => 'id_apply_presta_negoce_0', 'value' => 0, 'class' => 'form-radio')) ?>
+                                            </div>
+                                            <div class="unit size1of1 no_negociated_services">
+                                                <?php echo $this->translate('Il n\'y a pas de grille de tarification négociée pour ce client'); ?>.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="section">
+                                <div class="section-hd">
+                                    <h2 class="section-title"><?php echo $this->translate('Dates'); ?></h2>
+                                </div>
+                                <div class="section-bd">
+                                    <div class="form-section">
+                                        <div class="line form-line">
+                                            <label class="form-label unit size1of5"><?php echo $this->translate('Début gestion'); ?> :</label>
+                                            <div class="unit size4of5 date lastUnit">
+                                                <?php echo Phoenix_View_Helper_Html::input(array('name' => 'op_stamp_start', 'value' => Phoenix_Data_Convert::formatdateFromSqlServer($this->operation->getOpStampStart()), 'class' => 'date-input', 'placeholder' => $this->translate('JJ/MM/AAAA'), 'maxlenght' => '10')); ?>
+                                            </div>
+                                        </div>
+                                        <?php if (Phoenix_Auth_User::getInstance()->isAllowed(AclFonctionnalites::CONSUMERING_DATES)) { ?>
+                                        <div class="line form-line">
+                                            <label class="form-label unit size1of5"><?php echo $this->translate('Début conso'); ?> :</label>
+                                            <div class="unit size4of5 date lastUnit">
+                                                <?php echo Phoenix_View_Helper_Html::input(array('name' => 'op_dateConso_start', 'value' => Phoenix_Data_Convert::formatdateFromSqlServer($this->operation->getOpDateConsoStart()), 'class' => 'date-input', 'placeholder' => $this->translate('JJ/MM/AAAA'), 'maxlenght' => '10')); ?>
+                                            </div>
+                                        </div>
+                                        <div class="line form-line">
+                                            <label class="form-label unit size1of5"><?php echo $this->translate('Fin conso'); ?> :</label>
+                                            <div class="unit size4of5 date lastUnit">
+                                                <?php echo Phoenix_View_Helper_Html::input(array('name' => 'op_dateConso_end', 'value' => Phoenix_Data_Convert::formatdateFromSqlServer($this->operation->getOpDateConsoEnd()), 'class' => 'date-input', 'placeholder' => $this->translate('JJ/MM/AAAA'), 'maxlenght' => '10')); ?>
+                                            </div>
+                                        </div>
+                                        <?php 
+                                    }
+                                    if (Phoenix_Auth_User::getInstance()->isAllowed(AclFonctionnalites::END_POSTE_DATE)) { ?>
+                                        <div class="line form-line">
+                                            <label class="form-label unit size1of5"><?php echo $this->translate('Fin poste'); ?> :</label>
+                                            <div class="unit size4of5 date lastUnit">
+                                                <?php echo Phoenix_View_Helper_Html::input(array('name' => 'op_datePoste_end', 'value' => Phoenix_Data_Convert::formatdateFromSqlServer($this->operation->getOpDatePosteEnd()), 'class' => 'date-input', 'placeholder' => $this->translate('JJ/MM/AAAA'), 'maxlenght' => '10')); ?>
+                                            </div>
+                                        </div>
+                                        <?php 
+                                    }
+                                    if (Phoenix_Auth_User::getInstance()->isAllowed(AclFonctionnalites::END_DATE)) { ?>
+                                        <div class="line form-line">
+                                            <label class="form-label unit size1of5"><?php echo $this->translate('Fin gestion'); ?> :</label>
+                                            <div class="unit size4of5 date lastUnit">
+                                                <?php echo Phoenix_View_Helper_Html::input(array('name' => 'op_stamp_end', 'value' => Phoenix_Data_Convert::formatdateFromSqlServer($this->operation->getOpStampEnd()), 'class' => 'date-input', 'placeholder' => $this->translate('JJ/MM/AAAA'), 'maxlenght' => '10')); ?>
+                                            </div>
+                                        </div>
+                                        <?php 
+                                    }
+                                    if (Phoenix_Auth_User::getInstance()->isAllowed(AclFonctionnalites::END_ARCHIVING_DATE)) { ?>
+                                        <div class="line form-line">
+                                            <label class="form-label unit size1of5" for="id_op_date_archivage_end"><?php echo $this->translate('Fin d\'archivage'); ?> :</label>
+                                            <div class="unit size4of5 date">
+                                                <?php echo Phoenix_View_Helper_Html::input(array('name' => 'op_date_archivage_end', 'value' => Phoenix_Data_Convert::formatdateFromSqlServer($this->operation->getOpDateArchivageEnd()), 'class' => 'date-input', 'placeholder' => $this->translate('JJ/MM/AAAA'), 'maxlenght' => '10')); ?>
+                                            </div>
+                                        </div>
+                                        <?php 
+                                    } ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="unit size1of2 lastUnit">
+                    <div class="box">
+                        <div class="box-hd">
+                            <h2 class="box-title">2. <?php echo $this->translate('Choix des options'); ?></h2>
+                        </div>
+                        <div class="box-bd">
+                            <?php
+                            $iItemRanking = 1;
+                            foreach ($this->activitiesKpis as $oActivityKpi) {
+                                if ($oActivityKpi->countRelatedOperationOptionsPackages()) {
+                                    $bIsFirstElementOfTheRow =  $iItemRanking & 1;
+                                    if ($bIsFirstElementOfTheRow) {
+                                        ?>
+                                        <div class="line">
+                                        <?php } ?>
+                                        <div class="unit size1of2 <?php echo ($bIsFirstElementOfTheRow) ? 'gutter10' : 'lastUnit' ?>">
+                                            <div class="section">
+                                                <div class="section-hd">
+                                                    <h2 class="section-title"><?php echo $oActivityKpi->getRActivityKpiLibelle() ?></h2>
+                                                </div>
+                                                <div class="section-bd">
+                                                    <?php echo Phoenix_View_Helper_Html::retrieveOptionsListByActivityKpi($oActivityKpi, $this->operation->getOpId()); ?>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <?php if (!$bIsFirstElementOfTheRow) { ?>
+                                        </div>
+                                        <?php
+                                    }
+                                    ++$iItemRanking;
+                                }
+                            }
+                            if ($this->countDetachedOperationOptions) {
+
+                                $bIsFirstElementOfTheRow =  $iItemRanking & 1;
+                                if ($bIsFirstElementOfTheRow) {
+                                    ?>
+                                    <div class="line">
+                                    <?php } ?>
+                                    <div class="unit size1of2 <?php echo ($bIsFirstElementOfTheRow) ? 'gutter10' : 'lastUnit' ?>">
+                                        <div class="section">
+                                            <div class="section-hd">
+                                                <h2 class="section-title"><?php echo $this->translate('label_divers'); ?></h2>
+                                            </div>
+                                            <div class="section-bd">
+                                                <?php echo Phoenix_View_Helper_Html::retrieveOptionsListByActivityKpi(null, $this->operation->getOpId()); ?>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            <?php } ?>
+                        </div>
+                    </div>
+                </div>
+                <br/>
+                <br/>
+                
+                
+                
+            </div>
+            <div class="text-center">
+                <a href="<?php echo $this->url(array('module' => 'operation', 'controller' => 'listing'), null, true) ?>" class="btn col"><?php echo $this->translate('Annuler'); ?></a>
+                <input id="validation-form-button" onclick="checkDisabledPrestations();" type="button" value="<?php echo $this->translate('Valider'); ?>" class="btn btn-orange" />
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<script language="javascript">
+
+    //changement du client basé sur recherche avec autocompletion
+    $('#id_autocomplete_client').AjaxAutocomplete({
+        url: baseUrl + '/common/autocomplete/client',
+        minLength: 3,
+        restrictive: false,
+        bindFieldId: 'id_op_cl_id',
+        select: function(event, ui) {
+            $('#id_div_contact').show();
+            refreshSelectContact(ui.item.id);
+            // 31500 Invocation de la méthode doescustomerhasnegociatedservices
+            // suite au changement du client
+            doescustomerhasnegociatedservices(ui.item.id);
+        }
+    });
+
+    function refreshSelectContact(clId) {
+        AjaxComponent.ajaxQuery(baseUrl + '/operation/new/selectcontact', {cl_id: clId})
+                .success(function(data) {
+                    //maj du select des contacts
+                    $('#id_op_ct_id option').remove();
+                    $('#id_op_ct_id').append('<option value=""></option>');
+                    for (index in data.msg) {
+                        $('#id_op_ct_id').append('<option value="' + data.msg[index].CtId + '">' + data.msg[index].CtLastname + ' ' + data.msg[index].CtFirstname + '</option>');
+                    }
+                });
+    }
+
+    //popup ajout client
+    $('#btn-client-add').click(function() {
+        AjaxComponent.ajaxDialog(baseUrl + '/operation/new/ajoutclient', {}, {width: '600', title: '<?php echo $this->translate('Créer un nouveau client'); ?>', id: 'id_dialog_ajout_client'});
+    });
+
+    //popup ajout contact
+    $('#btn-contact-add').click(function() {
+        AjaxComponent.ajaxDialog(baseUrl + '/operation/new/ajoutcontact', {cl_id: $('#id_op_cl_id').val()}, {width: '600', title: '<?php echo $this->translate('Créer un nouveau contact'); ?>', id: 'id_dialog_ajout_contact'});
+    });
+
+
+    function checkDisabledPrestations()
+    {
+        $('#validation-form-button').prop('disabled', true);
+
+        $.post('/operation/new/checkdisabledprestations', {op_id: $('#id_op_id').val()}, function(oData) {
+            $('#submit_form_id').val('1');
+            if (oData.msg) {
+                var sMsg = oData.msg;
+                sMsg = sMsg + ' <br/> <center><input type="button" id="id_validate_service_exclusion" style="text-align" class="btn btn-orange" onclick="$(\'#operation_copy_form\').submit();" value="<?php echo $this->translate('Valider'); ?>" /></center>';
+                Component.modalDialog(sMsg, {
+                    title: '<?php echo $this->translate('Exclusion des prestations'); ?>'
+                });
+                $('#validation-form-button').prop('disabled', false);
+            } else {
+                $('#operation_copy_form').submit();
+            }
+        });
+
+    }
+
+    /**
+     * Cette fonction permet d'afficher ou cacher les options de
+     * grille de tarification en fonction du client choisit
+     * @param {integer} customerId
+     */
+    function doescustomerhasnegociatedservices(customerId) {
+        AjaxComponent.ajaxQuery(baseUrl + '/operation/new/doescustomerhasnegociatedservices', {customer_id: customerId})
+                .success(function(data) {
+                    if (data.option === true) {
+                        $('.negociated_services_choices').show();
+                        $('.no_negociated_services').hide();
+                    } else {
+                        $('.negociated_services_choices').hide();
+                        $('.no_negociated_services').show();
+                    }
+                });
+    }
+
+    $(document).ready(function() {
+        // 31500 Invocation de la méthode doescustomerhasnegociatedservices
+        // au chargement de la page
+        customerId = $('#id_op_cl_id').val();
+        doescustomerhasnegociatedservices(customerId);
+    });
+
+</script>

@@ -1,0 +1,127 @@
+<?php
+/* @var $this Zend_View */
+
+$this->title = $this->translate('Flux sortants');
+$this->headTitle($this->title);
+$bArthurConnectionEnabled = !!Settings::getSettingValueBySettingKey(Settings::SETTING_KEY_EXTERNAL_CONNECTION_ARTHUR);
+echo $this->FlashMessenger('error');
+?>
+
+<?php echo $this->partial('partials/actionsbar.phtml', array('operation' => $this->operation)); ?>
+
+<div id="site-content">
+    <?php echo $this->partial('partials/menu.phtml'); ?>
+    <div id="content-bd">
+        <form method="get" id="id_form_checked_documents" action="<?php echo $this->url(array('action' => 'exportmultipledocuments')) ?>?>">
+
+            <div class="list-actions">
+                <div class="unit size3of5 push2of5">
+                    <fieldset class="stats-op-fieldset">
+                        <legend><span class="title-icon icon-chart"></span></legend>
+                        <table class="stats-op">
+                            <thead>
+                                <tr>
+                                    <th class="op-encours size1of4"><?php echo $this->translate('Fonds encaissés'); ?></th>
+                                    <th class="op-encours size1of4"><?php echo $this->translate('Fonds utilisés'); ?></th>
+                                    <th class="op-refuse size1of4"><?php echo $this->translate('Fonds dispo'); ?></th>
+                                    <?php if ($bArthurConnectionEnabled) { ?>
+                                    <th class="op-encours size1of4"><?php echo $this->translate('Fonds requis'); ?></th>
+                                    <?php } ?>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+				    <?php
+                                        $aFundRaisingAmount = $this->operation->getFundRaisingAmount();
+				    ?>
+                                    <td class="op-cree"><?php echo Phoenix_Data_Convert::formatMoney($aFundRaisingAmount['ADF_Encaisse']); ?></td>
+                                    <td class="op-accepte"><?php echo Phoenix_Data_Convert::formatMoney($aFundRaisingAmount['ADF_Utilise']) ?></td>
+                                    <td class="op-refuse"><?php echo Phoenix_Data_Convert::formatMoney($aFundRaisingAmount['ADF_Dispo']); ?></td>
+                                    <?php if ($bArthurConnectionEnabled) { ?>
+                                    <td class="op-encours"><?php echo Phoenix_Data_Convert::formatMoney($this->stats['Requis']); ?></td>
+                                    <?php } ?>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </fieldset>
+                </div>
+            </div>
+            <?php if ($bArthurConnectionEnabled) { ?>
+            <div class="clear"></div>
+            <div class="list-actions">
+                <div class="unit col">
+                    <input type="submit" class="icon icon-32 icon-excel" title="<?php echo $this->translate('Exporter au format Excel'); ?>"/>
+                </div>
+                <div class="unit rightUnit">
+                    <div class="unit">
+                        <div class ="pagination">
+                            <span class="page-current"><?php echo count($this->aDocuments) . ' ' . $this->translate('élements trouvés'); ?></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <table class="list list-main">
+                <thead>
+                    <tr>
+                        <th><span class="notsortable"><?php echo $this->translate('Définition') ?></span></th>
+                        <th><span class="notsortable"><?php echo $this->translate('Type') ?></span></th>
+                        <th><span class="notsortable"><?php echo $this->translate('Sous-type') ?></span></th>
+                        <th><span class="notsortable"><?php echo $this->translate('Non édités') ?></span></th>
+                        <th><span class="notsortable"><?php echo $this->translate('Edités') ?></span></th>
+                        <th><span class="notsortable"><?php echo $this->translate('Expédiés') ?></span></th>
+                        <th><span class="notsortable"><?php echo $this->translate('Retournés') ?></span></th>
+                        <th colspan="2"><span class="notsortable"><?php echo $this->translate('Fonds requis'); ?></span></th>
+                        <th class="check-column column-noborder"><input type="checkbox"  id="id_check_all_edit" /></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    $aFinalitesAffichees = array();
+                    foreach ($this->aDocuments as $aDocType) {
+                        if (!in_array($aDocType['nom_finalite'], $aFinalitesAffichees)) {
+                            $aFinalitesAffichees[] = $aDocType['nom_finalite'];
+                            $sNomFinalite = ucfirst(strtolower($aDocType['nom_finalite']));
+                            ?>  <tr>
+                                <td style="background-color:#E0E0E0;" colspan="10">
+                                    <h5 style="font-weight:bold;"><?php echo $sNomFinalite ?></h5>
+                                </td>
+                            </tr>
+                            <?php
+                        }
+                        ?>
+                        <tr class="<?php echo $this->cycle(array('', 'alt'))->next() ?>" data-href="<?php echo $this->url(array('module' => 'operation', 'controller' => 'flux', 'action' => 'listing', 'op_id' => $this->operation->getOpId(), 'doc_type' => $aDocType['op_param_id'])) ?>" >
+                            <td><?php echo utf8_encode($aDocType['libelle']); ?></td>
+                            <td><?php echo utf8_encode($aDocType['doc_type_libelle']); ?></td>
+                            <td><?php echo utf8_encode($aDocType['dst_libelle']); ?></td>
+                            <td><?php echo Phoenix_Data_Convert::formatNumber($aDocType['attente']); ?></td>
+                            <td><?php echo Phoenix_Data_Convert::formatNumber($aDocType['edite']); ?></td>
+                            <td><?php echo Phoenix_Data_Convert::formatNumber($aDocType['envoye']); ?></td>
+                            <td><?php echo Phoenix_Data_Convert::formatNumber($aDocType['retour']); ?></td>
+                            <td><?php echo Phoenix_Data_Convert::formatMoney($aDocType['Requis']); ?></td>
+                            <td><img width="16" src="/img/icon_search.png" /></td>
+                            <td class="check-column"><?php echo Phoenix_View_Helper_Html::checkbox(array('name' => 'requested_documents[' . $aDocType['op_param_id'] . ']', 'class' => 'class_check_document', 'value' => $aDocType['op_param_id'])); ?>
+                            </td>
+                        </tr>
+                    <?php } ?>
+                </tbody>
+            </table>
+            <?php } ?>
+        </form>
+    </div>
+</div>
+
+
+<script language="javascript">
+    $(document).ready(function () {
+        //-- CHANGE DISPLAY -->
+        $('#id_find_type').change(function (e) {
+            $('#form_filtrage').submit();
+        });
+
+        $('#id_check_all_edit').bindCheckboxes('class_check_document');
+    });
+
+    function getSerializedCheckedboxes() {
+        return $('.class_check_facture').serialize();
+    }
+</script>

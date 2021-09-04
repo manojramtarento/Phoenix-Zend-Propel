@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE root SYSTEM "facture.dtd">
+<root>
+    <data>
+        <first_page>
+			<mention_fact>Annulation de la facture N°00005</mention_fact>
+			<type_fact>Annulation</type_fact>
+            <num_bdc>TODO</num_bdc>
+			<num_facture>00001</num_facture>
+            <date_facture>31 JANVIER 2012</date_facture>
+            <contact_client>Sophie CRISTOL</contact_client>
+            <nom_client>HASBRO</nom_client>
+            <adresse_1>FOURNISSEURS COMPTABILITE</adresse_1>
+            <adresse_2>Savoie Technolac</adresse_2>
+            <adresse_3></adresse_3>
+            <code_postal>73378</code_postal>
+            <ville>Le Bourget du Lac</ville>
+            <pays></pays>
+            <num_operation>21213</num_operation>
+            <titre_operation>Votre 2nd Transformers remboursés !</titre_operation>
+            <num_dossier>21213-4</num_dossier>
+            <nom_responsable_suivi>Nicolas Cassar</nom_responsable_suivi>
+            <contact_telephonique_responsable>+33(0) 4 86 91 42 38</contact_telephonique_responsable>
+            <duree_operation>du 23 mars 2012 au 31 mai 2012</duree_operation>
+            <date_fin_postale>11 juin 2012</date_fin_postale>
+            <date_fin_gestion>11 octobre 2012</date_fin_gestion>
+			<display_header_reverse_charge>0</display_header_reverse_charge>
+        </first_page>
+        <last_page>
+            <total_ht_soumis_a_tva>4761.97</total_ht_soumis_a_tva>
+			<total_tva taux="TVA 5.4 %">200.50</total_tva>
+			<total_tva taux="TVA 19.6 %">933.35</total_tva>
+            <total_ttc>5695.32</total_ttc>
+            <total_a_payer>5914.77</total_a_payer>
+			<mentions_specifiques>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis molestie sodales risus at luctus. Morbi lacinia sollicitudin interdum. Nulla tellus dui, vulputate a tincidunt ac, faucibus et erat. Curabitur eu nulla non nibh pharetra ultrices ac sit amet quam. Nullam hendrerit facilisis massa pellentesque adipiscing. Pellentesque dapibus risus sit amet est mattis rhoncus. Aliquam ligula odio, laoreet vitae cursus a, aliquam sed tellus.</mentions_specifiques>
+            <reglement_delai>30 jours nets:</reglement_delai>
+			<reglement_date>02 mars 2012</reglement_date>
+			<display_instruction_remboursement>1</display_instruction_remboursement>
+        </last_page>
+
+    </data>
+
+    <rubriques>
+        <rubrique>
+            <tva>19.6</tva>
+            <title>Frais fixes de gestion</title>
+            <total_ht>1110.00</total_ht>
+            <table>
+                <prestation>
+                    <r_prest_id>1</r_prest_id>
+                    <libelle>Ouverture - mise en place</libelle>
+                    <descriptif>- Ouverture boîte postale
+- Briefing des équipes (informatique - saisie - assistante)
+- Création base de données et masque de saisie
+- Paramétrage des non-conformes
+- Paramétrage lettre chèque
+- Relecture des modalités
+- Paramétrage des statistiques
+- Choix du mode de facturation et paramétrage
+                    </descriptif>
+                    <tarif_unitaire>350.00</tarif_unitaire>
+                    <cumul_total></cumul_total>
+                    <deja_facture>0.0</deja_facture>
+                    <solde_a_facturer>0.0</solde_a_facturer>
+                    <montant>350.00</montant>
+                </prestation>
+            </table>
+        </rubrique>
+        <rubrique>
+            <tva>19.6</tva>
+            <title>Frais fixes de gestion</title>
+            <total_ht>1110.00</total_ht>
+            <table>
+                <prestation>
+                    <r_prest_id>1</r_prest_id>
+                    <libelle>Ouverture - mise en place</libelle>
+                    <descriptif>- Ouverture boîte postale
+- Briefing des équipes (informatique - saisie - assistante)
+- Création base de données et masque de saisie
+                    </descriptif>
+                    <tarif_unitaire>350.00</tarif_unitaire>
+                    <cumul_total></cumul_total>
+                    <deja_facture>0.0</deja_facture>
+                    <solde_a_facturer>0.0</solde_a_facturer>
+                    <montant>350.00</montant>
+                </prestation>
+            </table>
+        </rubrique>
+    </rubriques>
+        
+	<affranchissements>
+        <tva>5.5</tva>
+		<total>275.60</total>
+		<prestation>
+			<libelle>Affranchissememts des non-conformes en Ecopli</libelle>
+			<descriptif>- base 20 g</descriptif>
+			<tarif_unitaire>350.00</tarif_unitaire>
+			<cumul_total></cumul_total>
+			<deja_facture>0.0</deja_facture>
+			<solde_a_facturer>0.0</solde_a_facturer>
+			<montant>350.00</montant>
+		</prestation>
+		<prestation>
+			<libelle>Affranchissememts des LC en Ecopli</libelle>
+			<descriptif>- base 20 g</descriptif>
+			<tarif_unitaire>350.00</tarif_unitaire>
+			<cumul_total></cumul_total>
+			<deja_facture>0.0</deja_facture>
+			<solde_a_facturer>0.0</solde_a_facturer>
+			<montant>350.00</montant>
+		</prestation>
+	</affranchissements>
+</root>

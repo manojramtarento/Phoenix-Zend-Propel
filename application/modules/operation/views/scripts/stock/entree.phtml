@@ -1,0 +1,52 @@
+<?php
+$this->title = $this->translate('Etat des stocks');
+$this->headTitle($this->title);
+?>
+
+<?php echo $this->partial('partials/actionsbar.phtml', array('operation' => $this->operation)); ?>
+<input type="hidden" id="id_input_op_id" name="input_op_id" value="<?php echo $this->operation->getOpId() ?>">
+<div id="site-content">
+    <?php echo $this->partial('partials/menu.phtml'); ?>
+    <div id="content-bd">
+        <?php echo $this->partial('stock/partials/entete.phtml', array('total_qte' => $this->total_qte)); ?>
+        <div class="clear"></div>
+
+        <div class="list-actions">
+            <div class="unit rightUnit">
+                <div class="unit col">
+                </div>
+                <div class="unit">
+                    <?php
+                    //34802 : adaptation les valeurs de pagination pour sql server
+                    echo $this->paginationControl($this->paginator, 'Sliding', '/partials/pagination.phtml', array('isSqlServerPaginate' => true));
+                    ?>
+                </div>
+            </div>
+        </div>
+
+        <table class="list list-main">
+            <thead>
+                <tr>
+                    <th style="text-align:center;"><?php echo My_View_Helper_Html::UrlOrderBy('date_reception', $this->translate('Date réception')) ?></th>
+                    <th style="text-align:center;"><?php echo My_View_Helper_Html::UrlOrderBy('ref_prod', $this->translate('Ref')) ?></th>
+                    <th style="text-align:center;"><?php echo My_View_Helper_Html::UrlOrderBy('libelle_prod', $this->translate('Prime / Produit')) ?></th>
+                    <th style="text-align:center;"><?php echo My_View_Helper_Html::UrlOrderBy('qte', $this->translate('Qté')) ?></th>
+                    <th style="text-align:center;"><?php echo My_View_Helper_Html::UrlOrderBy('qte_palette', $this->translate('Palettes')) ?></th>
+                    <th style="text-align:center;"><?php echo My_View_Helper_Html::UrlOrderBy('qte_colis', $this->translate('Colis')) ?></th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($this->paginator as $produit) { ?>
+                    <tr class="<?php echo $this->cycle(array('', 'alt'))->next() ?>"  >
+                        <td><?php echo $produit['date_reception_fr']; ?></td>
+                        <td><?php echo $produit['ref_prod']; ?></td>
+                        <td><?php echo $produit['libelle_prod']; ?></td>
+                        <td align="center"><?php echo $produit['qte']; ?></td>
+                        <td align="center"><?php echo $produit['qte_palette']; ?></td>
+                        <td align="center"><?php echo $produit['qte_colis']; ?></td>
+                    </tr>
+                <?php } ?>
+            </tbody>
+        </table>
+    </div>
+</div>

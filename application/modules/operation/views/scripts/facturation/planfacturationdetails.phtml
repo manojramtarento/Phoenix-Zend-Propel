@@ -1,0 +1,36 @@
+<table class="list">
+    <thead>
+        <tr>
+            <th width="26" class="column-noborder"></th>
+            <th width="26" class="column-noborder"></th>
+            <th><span class="notsortable"><?php echo $this->translate('Demande facture'); ?></span></th>
+            <th><span class="notsortable"><?php echo $this->translate('Type Facture'); ?></span></th>
+            <th><span class="notsortable">% <?php echo $this->translate('ADF'); ?></span></th>
+            <th><span class="notsortable">% <?php echo $this->translate('Facture partielle'); ?></span></th>
+            <th><span class="notsortable"><?php echo $this->translate('Facture annulée/remboursée'); ?></span></th>
+            <th><span class="notsortable"><?php echo $this->translate('Date création'); ?></span></th>
+            <th><span class="notsortable"><?php echo $this->translate('Date modification'); ?></span></th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($this->plan_facturation_details as $plan_facturation_detail) { ?>
+            <tr class="<?php echo $this->cycle(array('', 'alt'), 'plan_factu')->next() ?>">
+                <td><a href="javascript:void(0)" onclick="javascript: deletePlanfactuDetail(<?php echo $plan_facturation_detail->getPfdId() ?>)" class="icon-list icon-delete" title="<?php echo $this->translate('Supprimer la facture'); ?>"><?php echo $this->translate('Supprimer la facture'); ?></a></td>
+                <td><a href="javascript:void(0)" onclick="javascript: editPlanfactuDetail(<?php echo $plan_facturation_detail->getPfdId() ?>)" class="icon-list icon-edit" title="<?php echo $this->translate('Modifier la facture'); ?>"><?php echo $this->translate('Modifier la facture'); ?></a></td>
+                <td><?php echo $plan_facturation_detail->getPfdDatePlanif('d/m/Y') ?></td>
+                <td><?php echo $plan_facturation_detail->getRFactureTypes()->getRFactTypeLibelle(); ?></td>
+                <td align="right"><?php echo $plan_facturation_detail->getPfdTauxAdf() ?></td>
+                <td align="right"><?php echo $plan_facturation_detail->getPfdTauxPartiel() ?></td>
+                <td><?php
+                    if ($plan_facturation_detail->getPfdFactAnnul() != null) {
+                        echo $plan_facturation_detail->getFactureToCancel()->getFactReference();
+                    } elseif ($plan_facturation_detail->getPfdIdToCancel() != null) {
+                        echo $plan_facturation_detail->getPlanFacturationDetailToCancel()->getRFactureTypes()->getRFactTypeLibelle() . ' du ' . $plan_facturation_detail->getPlanFacturationDetailToCancel()->getPfdDatePlanif('d/m/Y');
+                    }
+                    ?></td>
+                <td align="center"><?php echo Phoenix_Data_Convert::formatdateFromSqlServer($plan_facturation_detail->getDateCreate()) ?></td>
+                <td align="center"><?php echo Phoenix_Data_Convert::formatdateFromSqlServer($plan_facturation_detail->getDateModify()) ?></td>
+            </tr>
+        <?php } ?>
+    </tbody>
+</table>

@@ -1,0 +1,161 @@
+<?php
+$this->title = $this->translate('Listing de tous les contacts');
+$this->headTitle($this->title);
+?>
+<div id="actions-bar">
+    <div class="unit size1of5">
+        <h1 class="page-title"><?php echo $this->title; ?></h1>
+        <input type="button" class="btn btn-orange btn-big" id="id_btn_ajout_contact" value="<?php echo $this->translate('Nouveau contact'); ?>" />
+    </div>
+    <div class="unit size3of5">
+        <div class="search">
+            <form action="<?php echo $this->BaseUrl() ?>/client/contact/listing" method="get">
+                <input type="text" name="findword" id="id_findword" class="form-input" value="<?php if (isset($_REQUEST["findword"])) echo $_REQUEST["findword"]; ?>" placeholder="<?php echo $this->translate('Rechercher'); ?>" autocomplete="on" />
+                <input type="submit" value="OK" class="btn btn-orange" />
+                <input type="button" value="<?php echo $this->translate('Recherche avancée'); ?>" class="btn btn-big btn-adsearch" id="btn_adsearch" />
+            </form>
+        </div>
+    </div>
+</div>
+<div id="site-content">
+    <div class="content-list">
+        <div class="list-actions">
+            <div class="unit col">
+                <a class="icon icon-32 icon-excel" href="<?php echo $this->url(array('format' => 'csv'), null, false) . '?' . $_SERVER['QUERY_STRING'] ?>" title="Exporter au format Excel"><?php echo $this->translate('Exporter au format Excel'); ?></a>
+            </div>
+            <div class="unit rightUnit">
+                <div class="unit col">
+                    <?php echo $this->NotifySearch()->link() ?>
+                </div>
+                <div class="unit">
+                    <?php echo $this->paginationControl($this->paginator, 'Sliding', '/partials/pagination.phtml'); ?>
+                </div>
+            </div>
+        </div>
+        <table class="list list-main">
+            <thead>
+                <tr>
+                    <th width="26" class="column-noborder"></th>
+                    <th width="26" class="column-noborder"></th>
+                    <th width="26" class="column-noborder"></th>
+                    <th><?php echo My_View_Helper_Html::UrlOrderBy('contact_name', $this->translate('Nom du contact')); ?></th>
+                    <th width="20%"><?php echo My_View_Helper_Html::UrlOrderBy('ct_email', $this->translate('E-mail')); ?></th>
+                    <th width="20%"><?php echo My_View_Helper_Html::UrlOrderBy('cl_libelle', $this->translate('Compte client')); ?></th>
+                    <th width="15%"><span class="notsortable"><?php echo $this->translate('Télephone'); ?></span></th>
+                    <th width="220"><span class="notsortable"><?php echo $this->translate('Lister les opérations relatives'); ?></span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($this->paginator as $contact) {
+                    ?>
+                    <tr class="<?php echo $this->cycle(array('', 'alt'))->next() ?>">
+                        <td><a href="#delete" class="icon-list icon-delete" ct_id="<?php echo $contact['ct_id']; ?>" title="Basculer le statut du contact (actif/inactif)"><?php echo $this->translate('Basculer le statut du contact'); ?></a></td>
+                        <td><a href="javascript:void(0)" class="icon-list icon-edit" ct_id="<?php echo $contact['ct_id']; ?>" title="Modifier le contact"><?php echo $this->translate('Modifier le contact'); ?></a></td>
+                        <td align="center"><?php echo Phoenix_View_Helper_Html::getContactStatusIcon($contact['actif']); ?></td>
+                        <td><?php echo mb_convert_case($contact['ct_lastname'], MB_CASE_UPPER, "UTF-8") . ' ' . mb_convert_case($contact['ct_firstname'], MB_CASE_TITLE, "UTF-8"); ?></td>
+                        <td><a href="mailto:<?php echo $contact['ct_email']; ?>"><?php echo $contact['ct_email']; ?></a></td>
+                        <td class="column-secondary">
+                            <a href="<?php echo $this->url(array('module' => 'client', 'controller' => 'fiche', 'action' => 'index', 'cl_id' => $contact['cl_id'])) ?>">
+                                <?php echo $contact['cl_libelle']; ?>
+                            </a>
+                        </td>
+                        <td><?php echo $contact['ct_phone'] ?></td>
+                        <td>
+                            <?php if ($contact['nb_operations'] > 0) { ?>
+                                <a href="<?php echo $this->url(array('module' => 'operation', 'controller' => 'listing', 'action' => 'index', 'findbyfields' => "Rechercher", 'find_op_ct_id' => $contact['ct_id'])) ?>">
+                                    Voir les opérations du contact (<?php echo $contact['nb_operations']; ?>)
+                                </a>
+                            <?php } ?>
+                        </td>
+                    </tr>
+                <?php } ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div id="id_dialog_search" title="Recherche avancée" style="display:none;">
+    <form action="<?php echo $this->BaseUrl() ?>/client/contact/listing" method="get" style="border:1px black">
+        <div class="section-bd">
+            <div class="line form-line">
+                <label class="unit size1of2 form-label" for="id_find_ct_lastname"><?php echo $this->translate('Nom du contact'); ?> :</label>
+                <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_ct_lastname', 'class' => 'form-input unit size1of2 lastUnit')); ?>
+            </div>
+
+            <div class="line form-line">
+                <label class="unit size1of2 form-label" for="id_find_ct_firstname"><?php echo $this->translate('Prénom du contact'); ?> :</label>
+                <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_ct_firstname', 'class' => 'form-input unit size1of2 lastUnit')); ?>
+            </div>
+
+            <div class="line form-line">
+                <label class="unit size1of2 form-label" for="id_find_ct_email"><?php echo $this->translate('E-mail'); ?> :</label>
+                <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_ct_email', 'class' => 'form-input unit size1of2 lastUnit')); ?>
+            </div>
+            <?php                                                
+            // Disable newsletter, not used at the moment                                                
+            /**
+            <div class="line form-line">
+                <?php echo Phoenix_View_Helper_Html::checkbox(array('value' => '1', 'name' => 'find_ct_newsletter', 'class' => '')); ?>
+                <label for="id_find_ct_newsletter"><?php echo $this->translate('Inscription Newsletter'); ?></label>
+            </div>**/
+            ?>
+
+            <div class="line form-line">
+                <?php echo Phoenix_View_Helper_Html::checkbox(array('value' => '0', 'name' => 'find_actif', 'class' => '')); ?>
+                <label for="id_find_actif"><?php echo $this->translate('Contact inactif'); ?></label>
+            </div>
+
+            <div class="text-center">
+                <input type="submit" name="findbyfields" value="Recherche" class="btn btn-orange">
+            </div>
+    </form>
+</div>
+
+
+<script language="javascript">
+    $(document).ready(function () {
+        /**
+         * DIALOG / RECHERCHE CONTACT
+         */
+        $('#btn_adsearch').click(function (e) {
+            $('#id_dialog_search').dialog({
+                width: 400,
+                modal: true,
+                resizable: false
+            });
+        });
+
+        /**
+         * DIALOG / AJOUTER CONTACT
+         */
+        $('#id_btn_ajout_contact').live('click', function (e) {
+            AjaxComponent.ajaxDialog(baseUrl + '/client/contact/update', {}, {width: '500', title: 'Créer un nouveau contact', id: 'id_dialog_update_contact'});
+        });
+
+        /**
+         * DIALOG / MODIFIER CONTACT
+         */
+        $('.list .icon-edit').live('click', function (e) {
+            ct_id = $(this).attr("ct_id");
+            AjaxComponent.ajaxDialog(baseUrl + '/client/contact/update', {ct_id: ct_id}, {width: '500', title: 'Modifier le contact', id: 'id_dialog_update_contact'});
+        });
+
+        /**
+         * DIALOG / SWITCH STATUS CONTACT
+         */
+        $('.list .icon-delete').live('click', function (e) {
+            ct_id = $(this).attr("ct_id");
+
+            AjaxComponent.ajaxQuery(baseUrl + '/client/contact/switchstatus', 'ct_id=' + ct_id)
+                    .success(function (data) {
+                        Component.refreshPage();
+                    });
+        });
+
+        $('#id_findword').AjaxAutocomplete({
+            url: baseUrl + '/common/autocomplete/contact',
+            minLength: 3,
+            restrictive: false
+        });
+    })
+</script>

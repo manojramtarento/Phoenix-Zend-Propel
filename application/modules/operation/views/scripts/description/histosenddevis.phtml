@@ -1,0 +1,27 @@
+<table class="list list-main">
+    <thead>
+        <tr>
+            <th><span class="notsortable"><?php echo $this->translate('date'); ?></span></th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php
+        foreach ($this->mails as $mail) {
+            ?>
+            <tr>
+                <td><a href="javascript:void(0)" onclick="javascript:popupMail(<?php echo $mail->getMailId() ?>)"><?php echo $mail->getDateCreate('d/m/Y H:i:s') ?></a></td>
+            </tr>
+        <?php } ?>
+    </tbody>
+
+</table>
+
+
+<script language="javascript">
+    function popupMail(mailId) {
+        AjaxComponent.ajaxDialog('/operation/description/displaymail', {mail_id: mailId},
+        {title: 'Mail envoyé',
+            id: 'id_dialog_mail_sent'
+        });
+    }
+</script>

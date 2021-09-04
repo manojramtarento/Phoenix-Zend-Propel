@@ -1,0 +1,88 @@
+<?php
+$this->title = $this->translate('Listing des options');
+$this->headTitle($this->title);
+$iActivityKpiRanking = 0;
+$aAllOptionPackages = array();
+echo $this->FlashMessenger('error');
+echo $this->FlashMessenger('success');
+$this->headScript()->appendFile($this->baseUrl() . '/js/administration/roptionsdevis/OptionsManager.js');
+$this->headScript()->appendFile($this->baseUrl() . '/js/administration/roptionsdevis/listing.js');
+?>
+
+<div id="actions-bar">
+    <div class="unit size4of5">
+        <h1 class="page-title"><?php echo $this->translate('Configuration des options et des prestations liées'); ?></h1>
+        <p>
+            <strong><?php echo $this->translate('Aide'); ?></strong> : <?php echo $this->translate('Vous pouvez modifier les options en cliquant sur leur intitulé. Le nombre entre parenthèse indique le nombre de prestations actives liées à cette option'); ?>.
+        </p>
+    </div>
+</div>
+
+<div id="site-content">
+    <div id="content-bd">
+        <?php foreach ($this->activitiesKpisData as $aActivityData) { ?>
+            <?php echo ( ++$iActivityKpiRanking % 2) ? '<div class="line" >' : '' ?>
+            <div class="unit size1of2 <?php echo ($iActivityKpiRanking % 2) === 0 ? 'lastUnit' : '' ?>">
+                <div class="box box-blue activity-kpi-related-options-container">
+                    <div class="line box-hd">
+                        <h2 class="box-title title-icon icon-options"><?php echo $aActivityData['r_activity_kpi_libelle']; ?>
+                            <span class="admin-options-hd-activity">
+                                <a title="<?php echo $this->translate('activity_kpi_modification'); ?>" activity-data='<?php echo json_encode($aActivityData); ?>' href='javascript://' class="btn-modify-activity icon-list icon-edit-grey">
+                                </a>
+                            </span>
+                        </h2>
+                    </div>
+                    <div class="box-bd list-options">
+                        <?php
+                        foreach ($aActivityData['related_operation_options_packages'] as $oOptionPackage) {
+                            $aAllOptionPackages[$oOptionPackage->getROpOptionLibelle()] = array('value' => $oOptionPackage->getROpOptionId());
+                            echo Phoenix_View_Helper_Html::displayOptionsPackage($oOptionPackage, $this->numberOfLinkedServices);
+                        }
+                        ?>
+                    </div>
+                </div>
+            </div>
+            <?php echo ($iActivityKpiRanking % 2) === 0 ? '</div>' : '' ?>
+        <?php } ?>
+        <?php echo ( ++$iActivityKpiRanking % 2) ? '<div class="line" >' : '' ?>
+        <div class="unit size1of2 <?php echo ($iActivityKpiRanking % 2) === 0 ? 'lastUnit' : '' ?>">
+            <div class="box box-blue">
+                <div class="line box-hd">
+                    <h2 class="box-title title-icon icon-options"><?php echo $this->translate('label_divers'); ?></h2>
+                </div>
+                <div class="box-bd list-options">
+                    <?php
+                    foreach ($this->detachedOperationsOptions as $oOptionPackage) {
+                        $aAllOptionPackages[$oOptionPackage->getROpOptionLibelle()] = array('value' => $oOptionPackage->getROpOptionId());
+                        echo Phoenix_View_Helper_Html::displayOptionsPackage($oOptionPackage, $this->numberOfLinkedServices);
+                    }
+                    ?>
+                </div>
+            </div>
+        </div>
+        <?php echo ($iActivityKpiRanking % 2) === 0 ? '</div>' : '' ?>
+    </div>
+</div>
+
+
+<div id="id-dialog-modify-activity" title="<?php echo $this->translate('activity_kpi_modification'); ?>" class="ui-helper-hidden">
+    <form action="<?php echo $this->url(array('module' => 'administration', 'controller' => 'roptionsdevis', 'action' => 'updateactivitykpi')) ?>" method="POST">
+        <div class="section-bd">
+            <div class="line form-line">
+                <label class="unit size1of2 form-label"><?php echo $this->translate('activity_kpi_name'); ?> :</label>
+                <?php echo Phoenix_View_Helper_Html::input(array('name' => 'r_activity_kpi_libelle', 'class' => 'form-input unit size1of2 lastUnit')); ?>
+                <?php echo Phoenix_View_Helper_Html::input(array('name' => 'r_activity_kpi_id', 'type' => 'hidden')); ?>
+            </div>
+            <div class="line form-line">
+                <label class="unit size1of2 form-label"><?php echo $this->translate('options_groups'); ?> :</label>
+                <?php echo Phoenix_View_Helper_Html::checkbox(array('name' => 'select_all_options', 'value' => 1)) ?>
+                <?php echo Phoenix_View_Helper_Html::select(array('id' => 'id_attachedOptions', 'name' => 'attachedOptions[]', 'class' => 'form-select-multiple unit size1of2 lastUnit', 'multiple' => 'multiple', 'size' => 10), $aAllOptionPackages); ?>
+            </div>
+            <div class="text-center">
+                <input type="submit" name="validate" value="<?php echo $this->translate('Valider'); ?>" class="btn btn-orange">
+            </div>
+    </form>
+</div>
+
+<span class="ui-helper-hidden" id="change-option-translation" value="<?php echo $this->translate('Modifier l\'option N°'); ?>">
+</span>

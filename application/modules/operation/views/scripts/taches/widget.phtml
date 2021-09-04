@@ -1,0 +1,41 @@
+<?php
+if(isset($this->data) && is_array($this->data)) {
+    $datetime_now = new Datetime();
+    $date_now = $datetime_now->format('d/m/Y');
+?>  
+    <div class="unit size2of5">
+        <fieldset class="stats-op-fieldset">
+            <legend><span class="title-icon icon-chart"></span> <?php echo $this->translate('Gestion de vos tâches (assignées)');?></legend>
+            <table class="stats-op">
+                <thead>
+                    <tr>
+                        <th class="op-accepte"><?php echo $this->translate('Total');?></th>
+                        <th class="op-encours"><?php echo $this->translate('En alerte');?></th>
+                        <th class="op-refuse"><?php echo $this->translate('En retard');?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="op-accepte size1of3">
+                            <a href="<?php echo $this->url(array('module' => 'operation', 'controller' => 'taches', 'action' => 'index')); ?>?findbyfields=1&find_op_task_assign_to=<?php echo $this->userId; ?>&find_autocomplete_assign_to=X">
+                            <?php echo $this->data["nbTasks_assign_total"]; ?>
+                            </a>
+                        </td>
+                        <td class="op-encours size1of3">
+                            <a href="<?php echo $this->url(array('module' => 'operation', 'controller' => 'taches', 'action' => 'index')); ?>?findbyfields=1&find_op_task_assign_to=<?php echo $this->userId; ?>&find_autocomplete_assign_to=X&find_op_task_alerte_comp=infeql&find_op_task_alerte=<?php echo $date_now; ?>&find_op_task_done_comp=null">
+                            <?php echo $this->data["nbTasks_assign_alerte"]; ?>
+                            </a>
+                        </td>
+                        <td class="op-refuse size1of3">
+                            <a href="<?php echo $this->url(array('module' => 'operation', 'controller' => 'taches', 'action' => 'index')); ?>?findbyfields=1&find_op_task_assign_to=<?php echo $this->userId; ?>&find_autocomplete_assign_to=X&find_op_task_retard_comp=infeql&find_op_task_retard=<?php echo $date_now; ?>&find_op_task_done_comp=null">
+                            <?php echo $this->data["nbTasks_assign_retard"]; ?>
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </fieldset>
+    </div>
+<?php  
+}
+?>

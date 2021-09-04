@@ -1,0 +1,69 @@
+<?php 
+echo $this->FlashMessenger('error', 'inline'); ?>
+<!-- DIALOG / MODIFIER PRESTA NORMALE -->
+<form id="id_form_update_presta_manuelle" action="<?php echo $this->url(array('module' => 'couts', 'controller' => 'index', 'action' => 'updateprestamanuelle')) ?>" method="post">
+	<input type="hidden" name="submit_update_presta" value="1">
+    <input type="hidden" name="op_prest_id" value="<?php echo $this->op_prest_id; ?>">
+	
+	<div class="line form-line">
+		<label class="unit size1of3 form-label"><?php echo $this->translate('Opération'); ?> :</label>
+		<span class="form-text unit size2of3"><b><?php echo $this->op_prest_number; ?></b></span>
+	</div>
+	
+	<div class="line form-line">
+		<label class="unit size1of3 form-label"><?php echo $this->translate('Prestation'); ?> :</label>
+		<span class="form-text unit size2of3"><b><?php echo $this->op_prest_libelle; ?></b></span>
+	</div>
+	
+	<div class="line form-section">
+		<label class="unit size1of3 form-label"><?php echo $this->translate('Quantité'); ?> :</label>
+		<span class="form-text unit size2of3"><b><?php echo $this->op_prest_qreel; ?></b> (<?php echo $this->translate('estimé'); ?> : <?php echo $this->op_prest_qestim; ?>)</span>
+	</div>
+	
+	<div class="text-warning form-line"><?php echo $this->translate('Coût exprimé à l\'unité'); ?></div>
+	
+	<div class="line form-line">
+		<label class="unit size1of3 form-label" for="id_op_prest_cireel"><?php echo $this->translate('Coût interne'); ?> :</label>
+		<div class="unit size1of3 gutter10">
+			<?php echo Phoenix_View_Helper_Html::input(array('name' => 'op_prest_cireel', 'value' => $this->op_prest_cireel, 'class' => 'form-input size1of1 text-right')); ?>
+		</div>
+		<span class="unit form-text">€ (<?php echo $this->translate('estimé'); ?> : <?php echo Phoenix_Data_Convert::formatMoney($this->op_prest_ciestim, false, false); ?>)</span>
+	</div>
+	
+	<div class="line form-line">
+		<label class="unit size1of3 form-label" for="id_op_prest_cereel"><?php echo $this->translate('Coût externe'); ?> :</label>
+		<div class="unit size1of3 gutter10">
+			<?php echo Phoenix_View_Helper_Html::input(array('name' => 'op_prest_cereel', 'value' => $this->op_prest_cereel, 'class' => 'form-input size1of1 text-right')); ?>
+		</div>
+		<span class="unit form-text">€ (<?php echo $this->translate('estimé'); ?> : <?php echo Phoenix_Data_Convert::formatMoney($this->op_prest_ceestim, false, false); ?>)</span>
+	</div>
+	
+	<div class="line form-section">
+		<label class="unit size1of3 form-label"><?php echo $this->translate('Coût total'); ?> :</label>
+		<b><span id="cout_total" class="form-text unit size2of3"><?php echo ($this->op_prest_cireel + $this->op_prest_cereel); ?></span></b>
+	</div>
+	
+	<div class="text-center">
+		<input type="submit" value="<?php echo $this->translate('Valider'); ?>" class="btn btn-orange">
+	</div>
+</form>
+
+
+<script language="javascript">
+	function updateCoutTotal() {
+		var iInternalCost = $('#id_op_prest_cireel').val() || 0;		
+		var iExternalCost = $('#id_op_prest_cereel').val() || 0;
+		var iTotalCost = parseFloat(iInternalCost) + parseFloat(iExternalCost);
+		$('#cout_total').html(iTotalCost % 1 ? iTotalCost: parseInt(iTotalCost));
+	}
+	
+    $(document).ready(function() {
+        $('#id_form_update_presta_manuelle').ajaxForm({
+            divId:'id_dialog_update_presta_manuelle'
+        });
+		
+		$('#id_op_prest_cireel').change(updateCoutTotal);
+		
+		$('#id_op_prest_cereel').change(updateCoutTotal);
+    });
+</script>

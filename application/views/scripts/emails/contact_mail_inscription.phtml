@@ -1,0 +1,53 @@
+Merci <?php echo (($this->isSubscribed) ? 'd\'inscrire' : 'de désinscrire') . ' ' . $this->contact . ', ' . $this->contact_fonction . ' de l\'entité ' . $this->client->getClLibelle() ?>.
+<br /><br />
+Adresse e-Mail : <?php echo $this->contact_mail ?><br />
+Pays du compte client : <?php echo $this->pays ?><br />
+Opérations gérées :<br /><br />
+<table width="100%" style="border-collapse: collapse;">
+    <thead>
+        <tr>
+            <th style="border: 1px solid black;" align="left">
+                Numéro d\'opération
+            </th>
+            <th style="border: 1px solid black;" align="left">
+                Description de l\'opération
+            </th>
+            <th style="border: 1px solid black;" align="left">
+                Statut
+            </th>
+            <th style="border: 1px solid black;" align="left">
+                Métier
+            </th>
+            <th style="border: 1px solid black;" align="left">
+                Catégorie
+            </th>
+            <th style="border: 1px solid black;" align="left">
+                Mécanique
+            </th>
+            <th style="border: 1px solid black;" align="left">
+                Univers
+            </th>
+            <th style="border: 1px solid black;" align="left">
+                Média de participation
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($this->operations as $oOperation): ?>
+            <tr class="<?php echo $this->cycle(array('', 'alt'))->next() ?>">
+                <td style="border: 1px solid black;"><?php echo $oOperation->getOpNumber() ?></td>
+                <td style="border: 1px solid black;"><?php echo $oOperation->getOpLibelle() ?></td>
+                <td style="border: 1px solid black;"><?php echo ($oOperation->getROperationStatus()) ? $oOperation->getROperationStatus()->getOsLibelle() : '' ?></td>
+                <td style="border: 1px solid black;"><?php echo ($oOperation->getRCustomActivites()) ? $oOperation->getRCustomActivites()->getActLibelle() : '' ?></td>
+                <td style="border: 1px solid black;"><?php echo ($oOperation->getROperationType()) ? $oOperation->getROperationType()->getOtLibelle() : '' ?></td>
+                <td style="border: 1px solid black;"><?php echo ($oOperation->getROperationTypeSub()) ? $oOperation->getROperationTypeSub()->getOstLibelle() : '' ?></td>
+                <td style="border: 1px solid black;"><?php echo ($oOperation->getOperationUniverse()) ? $oOperation->getOperationUniverse()->getROperationUniverseLabel() : '' ?></td>
+                <td style="border: 1px solid black;"><?php echo ($oOperation->getOperationMedia()) ? $oOperation->getOperationMedia()->getROperationMediaLabel() : '' ?></td>
+            </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
+<br /><br />
+Merci,
+<br /><br />
+<?php echo ($this->client->getUserDc()) ? $this->client->getUserDc()->getUserNomPrenom() : ''; ?>

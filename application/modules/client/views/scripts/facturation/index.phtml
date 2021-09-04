@@ -1,0 +1,129 @@
+<?php
+$this->title = $this->translate('Facturation');
+$this->headTitle($this->title);
+?>
+<?php echo $this->partial('partials/actionsbar.phtml', array('cl_id' => $this->cl_id, 'cl_libelle' => $this->cl_libelle)); ?>
+<div id="site-content">
+    <?php echo $this->partial('partials/menu.phtml', array('cl_id' => $this->cl_id)); ?>
+    <div id="content-bd">
+        <div class="line">
+            <div class="unit size1of1 lastUnit">
+                <div class="box">
+                    <div class="box-hd">
+                        <h2 class="box-title"><?php echo $this->translate('Paramétrage facturation'); ?></h2>
+                    </div>
+                    <div class="box-bd">
+                        <form id="id_form_update" action="<?php echo $this->url(array('module' => 'client', 'controller' => 'facturation', 'action' => 'update'), null, true) ?>" model_name="ClientFactureOptions" primary_value="<?php echo $this->cl_fact_opt_id; ?>">
+                            <div class="line form-line">
+                                <label class="form-label unit size1of5"><?php echo $this->translate('N° de commande obligatoire (PO)'); ?> :</label>
+                                <div class="unit size4of5">
+                                    <?php echo Phoenix_View_Helper_Html::radio(array('name' => 'cl_fact_bdc_required', 'id' => 'bdc_oui', 'value' => 1, 'default_value' => $this->cl_fact_bdc_required)); ?>
+                                    <label class="col" for="bdc_oui"><?php echo $this->translate('Oui'); ?></label>
+
+                                    <?php echo Phoenix_View_Helper_Html::radio(array('name' => 'cl_fact_bdc_required', 'id' => 'bdc_non', 'value' => 0, 'default_value' => $this->cl_fact_bdc_required)); ?>
+                                    <label for="bdc_non"><?php echo $this->translate('Non'); ?></label>
+                                </div>
+                            </div>
+
+                            <div class="line form-line">
+                                <label class="form-label unit size1of5" for="id_cl_fact_bdc"><?php echo $this->translate('N° commande'); ?> :</label>
+                                <?php echo Phoenix_View_Helper_Html::input(array('name' => 'cl_fact_bdc', 'value' => $this->cl_fact_bdc, 'class' => 'form-input unit size1of5 lastUnit')); ?>
+                            </div>
+
+                            <div class="line form-line">
+                                <label class="form-label unit size1of5" for="id_cl_fact_tvaintra"><?php echo $this->translate('N° de TVA intracommunautaire'); ?> :</label>
+                                <?php echo Phoenix_View_Helper_Html::input(array('name' => 'cl_fact_tvaintra', 'value' => $this->cl_fact_tvaintra, 'class' => 'form-input unit size1of5 lastUnit')); ?>
+                            </div>
+
+                            <div class="line form-line">
+                                <label class="form-label unit size1of5" for="id_cl_fact_siret"><?php echo $this->translate('Numéro SIRET'); ?> :</label>
+                                <?php echo Phoenix_View_Helper_Html::input(array('name' => 'cl_fact_siret', 'value' => $this->cl_fact_siret, 'class' => 'form-input unit size1of5 lastUnit')); ?>
+                            </div>
+
+                            <div class="line form-line">
+                                <label class="form-label unit size1of5" for="id_cl_fact_country_name"><?php echo $this->translate('Pays du client ou de l\'entité à facturer'); ?> :</label>
+                                <?php echo Phoenix_View_Helper_Html::input(array('name' => 'cl_fact_country_id', 'type' => 'hidden', 'value' => $this->cl_fact_country_id, 'class' => 'form-input unit size1of5 lastUnit')); ?>
+                                <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'cl_fact_country_name', 'value' => $this->cl_fact_country_name, 'class' => 'no_update unit size1of5 form-input input-autocomplete lastUnit')) ?>
+                            </div>
+                            <?php if (Phoenix_Auth_User::getInstance()->isAllowed(AclFonctionnalites::INVOICE_FUND_RAISING_REF)) { ?>
+                            <div class="line form-line">
+                                <label class="form-label unit size1of5" for="id_cl_fact_adf"><?php echo $this->translate('Ref de compte ADF'); ?> :</label>
+                                <?php echo Phoenix_View_Helper_Html::input(array('name' => 'cl_fact_adf', 'value' => $this->cl_fact_adf, 'class' => 'form-input unit size1of5 lastUnit')); ?>
+                            </div>
+                            <?php 
+                        } ?>
+                            <div class="line form-line">
+                                <label class="form-label unit size1of5" for="id_cl_fact_compte"><?php echo $this->translate('Ref de compte facturation'); ?> :</label>
+                                <?php echo Phoenix_View_Helper_Html::input(array('name' => 'cl_fact_compte', 'value' => $this->cl_fact_compte, 'class' => 'form-input unit size1of5 lastUnit')); ?>
+                            </div>
+
+                            <div class="line form-line">
+                                <label class="form-label unit size1of5" for="id_cl_fact_rfa"><?php echo $this->translate('Client soumis à RFA'); ?> :</label>
+                                <?php echo Phoenix_View_Helper_Html::checkbox(array('name' => 'cl_fact_rfa', 'value' => '1', 'default_value' => $this->cl_fact_rfa, 'class' => '')); ?>
+                            </div>
+
+                            <div class="line form-line">
+                                <label class="form-label unit size1of5" for="id_cl_fact_rfa_descr"><?php echo $this->translate('Détail de la règle'); ?> :</label>
+                                <?php echo Phoenix_View_Helper_Html::textarea(array('name' => 'cl_fact_rfa_descr', 'value' => $this->cl_fact_rfa_descr, 'rows' => 4, 'cols' => 60, 'class' => 'form-textarea unit size1of5 lastUnit')); ?>
+                            </div>
+
+                            <div class="line form-line">
+                                <label class="form-label unit size1of5" for="id_cl_fact_echeance"><?php echo $this->translate('Langue du document relance'); ?> :</label>
+                                <?php echo Phoenix_View_Helper_Html::selectFromTable('r_languages', array('name' => 'cl_fact_lang', 'value' => $this->cl_fact_lang, 'class' => 'unit size1of5 form-select lastUnit'), array('name' => 'r_lang_libelle', 'value' => 'r_lang_code'), array('default_label' => $this->translate('à choisir') . '...', 'clause_where' => 'r_lang_code IN (\'FRA\', \'ENG\')')) ?>
+                            </div>
+
+                            <div class="line form-line">
+                                <label class="form-label unit size1of5" for="id_plan_fact_periode_id"><?php echo $this->translate('Périodicité'); ?> :</label>
+                                <?php echo Phoenix_View_Helper_Html::selectFromTable('r_plan_fact_periodes', array('name' => 'plan_fact_periode_id', 'value' => $this->plan_fact_periode_id, 'class' => 'form-select unit size1of5 lastUnit'), array('name' => 'r_plan_fact_periode_libelle', 'value' => 'r_plan_fact_periode_id'), array('default_label' => $this->translate('Choisir') . '...')); ?>
+                            </div>
+
+                            <div class="line form-line">
+                                <label class="form-label unit size1of5" for="id_plan_fact_periode_type_id"><?php echo $this->translate('Type'); ?> :</label>
+                                <?php echo Phoenix_View_Helper_Html::selectFromTable('r_plan_fact_periodes_type', array('name' => 'plan_fact_periode_type_id', 'value' => $this->plan_fact_periode_type_id, 'class' => 'form-select unit size1of5 lastUnit'), array('name' => 'r_pfpt_libelle', 'value' => 'r_pfpt_id'), array('default_label' => $this->translate('Choisir') . '...')); ?>
+                            </div>
+
+                        </form>
+
+                        <div class="line form-line">
+                            <label class="form-label unit size1of5" for="id_cl_fact_echeance"><?php echo $this->translate('Échéance de facturation'); ?> :</label>
+                            <?php echo Phoenix_View_Helper_Html::selectFromTable('r_facture_options_echeances', array('name' => 'cl_fact_echeance', 'value' => $this->cl_fact_echeance, 'model_name' => 'ClientFactureOptions', 'primary_value' => $this->cl_fact_opt_id, 'class' => 'unit size1of5 form-select lastUnit'), array('name' => 'fact_opt_echeance_libelle', 'value' => 'fact_opt_echeance_id'), array('clause_where' => 'actif = 1')) ?>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script language="javascript">
+    $('#id_form_update').formUpdate();
+
+    $('#id_cl_fact_echeance').updateField('/client/facturation/updateecheance');
+
+    function updateFields() {
+        if ($('#id_cl_fact_rfa').is(':checked')) {
+            $('#id_cl_fact_rfa_descr').removeAttr('disabled');
+        } else {
+            $('#id_cl_fact_rfa_descr').attr('disabled', 'disabled');
+        }
+    }
+
+    $(document).ready(function() {
+        $('#id_cl_fact_rfa').live('click', updateFields);
+        updateFields();
+
+        // changement du pays avec autocompletion
+        $('#id_cl_fact_country_name').AjaxAutocomplete({
+            url: baseUrl + '/common/autocomplete/country',
+            minLength: 3,
+            restrictive: true,
+            bindFieldId: 'id_cl_fact_country_id',
+            select: function(event, ui) {
+                // On indique le code a3
+                $('#id_cl_fact_country_id').change();
+                $('#id_cl_fact_country_name').notifyError(false);
+            }
+        });
+    })
+</script>

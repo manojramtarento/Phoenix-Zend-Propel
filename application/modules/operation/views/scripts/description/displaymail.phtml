@@ -1,0 +1,24 @@
+    <div class="line form-line">
+		<span class="unit size1of5 form-label bold"><?php echo $this->translate('Sujet');?> : </span>
+		<span class="unit size4of5"><?php echo $this->mail->getMailSubject() ?></span>
+	</div>
+
+    <div class="line form-line">
+		<span class="unit size1of5 form-label bold"><?php echo $this->translate('A');?> : </span>
+		<span class="unit size4of5"><?php echo $this->mail->getMailTo() ?></span>
+	</div>
+
+    <div class="line form-line">
+		<span class="unit size1of5 form-label bold"><?php echo $this->translate('Copie à');?> : </span>
+		<span class="unit size4of5"><?php echo $this->mail->getMailCc() ?></span>
+	</div>
+
+    <div class="line form-line">
+		<span class="unit size1of5 form-label bold"><?php echo $this->translate('Copie cachée à');?> : </span>
+		<span class="unit size4of5"><?php echo $this->mail->getMailBcc() ?></span>
+	</div>
+
+    <div class="line form-line">
+		<span class="unit size1of5 form-label bold"><?php echo $this->translate('Message');?> : </span>
+		<span class="unit size4of5"><?php echo $this->mail->getMailMessage() ?></span>
+	</div>

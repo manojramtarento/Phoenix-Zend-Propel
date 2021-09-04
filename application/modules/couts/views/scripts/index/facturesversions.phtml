@@ -1,0 +1,44 @@
+<?php
+foreach ($this->factures as $oInvoice) {
+    ?>
+    <tr>
+        <td width="16">
+            <form id="id_form_delete_facture_<?php echo $oInvoice['op_prest_achat_id']; ?>" action="<?php echo $this->url(array('module' => 'couts', 'controller' => 'index', 'action' => 'deletefacture')) . '?' . $_SERVER['QUERY_STRING'] ?>" enctype="multipart/form-data" method="post">
+                <a href="javascript:void(0)" class="icon-list icon-delete" onclick="deleteFacture(<?php echo $oInvoice['op_prest_achat_id']; ?>)" op_prest_achat_id="<?php echo $oInvoice['op_prest_achat_id']; ?>"  title="Supprimer la facture"><?php echo $this->translate('Supprimer la facture'); ?></a>
+                <input type="hidden" name="op_prest_achat_id" value="<?php echo $oInvoice['op_prest_achat_id']; ?>">
+            </form>
+        </td>
+        <td width="16">
+            <?php if (!empty($oInvoice['file_id'])) { ?>
+                <a href="javascript:void(0)" class="icon-list icon-zoom" file_id="<?php echo $oInvoice['file_id']; ?>" xtitle="Voir la facture"><?php echo $this->translate('Voir la facture'); ?></a>
+            <?php } ?>
+        </td>
+        <td><?php echo $oInvoice['date']; ?></td>
+        <td><?php echo $oInvoice['numero']; ?></td>
+        <td><?php echo $oInvoice['quantite']; ?></td>
+        <td><?php echo $oInvoice['cout_interne']; ?></td>
+        <td><?php echo $oInvoice['cout_externe']; ?></td>
+    </tr>
+<?php } ?>
+
+<script language="javascript">
+    $(document).ready(function () {
+
+        $('.list .icon-zoom').click(function (e) {
+            file_id = $(this).attr('file_id');
+            window.location = baseUrl + '/couts/index/downloadfacture/file_id/' + file_id;
+        });
+    });
+
+    function deleteFacture(op_prest_achat_id) {
+
+        Component.confirm('Êtes vous sûre de vouloir supprimer la facture ?',
+                function () {
+                    AjaxComponent.ajaxQuery(baseUrl + '/couts/index/deletefacture', {op_prest_achat_id: op_prest_achat_id}).success(function () {
+                        AjaxComponent.ajaxDiv(baseUrl + '/couts/index/facturesversions', {'op_prest_id': $('input[name="op_prest_id"]').val()}, 'id_div_facturesversions', null, true);
+                    });
+                });
+    }
+    ;
+
+</script>

@@ -1,0 +1,490 @@
+<?php
+$this->title = $this->translate('Gestion des factures');
+$this->headTitle($this->title);
+echo $this->FlashMessenger('error');
+echo $this->FlashMessenger('default');
+?>
+
+<div id="actions-bar">
+    <div class="unit size1of5">
+        <h1 class="page-title"><?php echo $this->title; ?></h1>
+    </div>
+    <div class="unit size2of5">
+        <div class="search">
+            <form action="" method="get">
+                <input type="text" name="findword" class="form-input" value="<?php echo $this->findWord; ?>" placeholder="<?php echo $this->translate('Rechercher'); ?>" autocomplete="off" />
+                <input type="submit" value="<?php echo $this->translate('OK'); ?>" class="btn btn-orange" />
+                <input type="button" value="<?php echo $this->translate('Recherche avancée'); ?>" class="btn btn-big btn-adsearch" id="btn_adsearch" />
+            </form>
+        </div>
+    </div>
+    <div class="unit size2of5">
+        <fieldset class="stats-op-fieldset large">
+            <legend><span class="title-icon icon-chart"></span></legend>
+            <table class="stats-op">
+                <thead>
+                    <tr>
+                        <th class="op-accepte size1of3"><?php echo $this->translate('Créé'); ?></th>
+                        <th class="op-accepte size1of3"><?php echo $this->translate('Validée'); ?></th>
+                        <th class="op-encours size1of3"><?php echo $this->translate('Éditée'); ?></th>
+                        <th class="op-refuse size1of3"><?php echo $this->translate('Encaissée'); ?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="op-cree"><?php echo Phoenix_Data_Convert::formatMoney($this->montant_cree, false, true, true) ?> </td>
+                        <td class="op-accepte"><?php echo Phoenix_Data_Convert::formatMoney($this->montant_valide, false, true, true) ?> </td>
+                        <td class="op-encours"><?php echo Phoenix_Data_Convert::formatMoney($this->montant_edite, false, true, true) ?> </td>
+                        <td class="op-refuse"><?php echo Phoenix_Data_Convert::formatMoney($this->montant_encaisse, false, true, true) ?> </td>
+                    </tr>
+                </tbody>
+            </table>
+        </fieldset>
+    </div>
+</div>
+<div id="site-content">
+    <div class="content-list">
+
+        <form name="form_gecid_ventes" id="id_form_gecid_ventes" action="/comptabilite/factures/gecidventes" >
+            <input type="hidden" value="1" name="export">
+        </form>
+        <form method="post" id="id_form_checked_factures" action="">
+            <div class="list-actions">
+                <div class="unit col">
+                    <a class="icon icon-32 icon-excel" href="<?php echo $this->url(array('format' => 'csv', 'module' => 'comptabilite', 'controller' => 'factures', 'action' => 'exportcsv'), null, false) . '?' . $_SERVER['QUERY_STRING'] ?>" title="<?php echo $this->translate('Exporter au format Excel'); ?>"><?php echo $this->translate('Exporter au format Excel'); ?></a>
+                </div>
+                <div class="unit col">
+                    <input type="button" class="btn btn-orange btn-big" id="id_submit_gecid" value="<?php echo $this->translate('Import vers CEGID'); ?>" />
+                </div>
+                <div class="unit col">
+                    <input type="button" class="btn btn-orange btn-big" id="id_submit_encaissement" name="submit_encaissement" value="<?php echo $this->translate('Encaissement'); ?>" />
+                </div>
+                <div class="unit col">
+                    <input type="button" class="btn btn-orange btn-big" id="id_submit_edition" name="submit_edition" value="<?php echo $this->translate('Edition'); ?>" />
+                </div>
+                <div class="unit col">
+                    <input type="submit" class="btn btn-orange btn-big" id="id_submit_comptage" name="submit_comptage" value="<?php echo $this->translate('Calculer'); ?>" />
+                </div>
+                <div class="unit col">
+                    <input type="button" class="btn btn-orange btn-big" id="id_submit_reedition" name="submit_reedition" value="<?php echo $this->translate('Réédition'); ?>" />
+                </div>
+                <div class="unit rightUnit">
+                    <div class="unit col">
+                        <?php echo $this->NotifySearch()->link() ?>
+                    </div>
+                    <div class="unit">
+                        <?php echo $this->paginationControl($this->paginator, 'Sliding', '/partials/pagination.phtml'); ?>
+                    </div>
+                </div>
+            </div>
+            <table class="list list-main" id='invoiceslist' display-invoice-warning-message="<?php echo $this->translate('Le(s) contact(s) de facturation est/sont inactif(s)'); ?>">
+                <thead>
+                    <tr>
+                        <th class="check-column column-noborder"><input type="checkbox"  id="id_check_all_edit" /></th>
+                        <th width="26"></th>
+                        <th colspan="4" style="text-align:center;"><span class="notsortable"><?php echo $this->translate('Date'); ?></span></th>
+                        <th width="100"><?php echo My_View_Helper_Html::UrlOrderBy('fact_reference', $this->translate('N° Facture')); ?></th>
+                        <th width="100"><?php echo My_View_Helper_Html::UrlOrderBy('fact_num_cmd', $this->translate('N° Commande')); ?></th>
+                        <th width="100" style="text-align:center;"><span class="notsortable"><?php echo $this->translate('Motifs SPE'); ?></span></th>
+                        <th><?php echo My_View_Helper_Html::UrlOrderBy('cl_libelle', $this->translate('Client')); ?></th>
+                        <th width="65"><?php echo My_View_Helper_Html::UrlOrderBy('op_number', $this->translate('N° OP')); ?></th>
+                        <th width="100"><?php echo My_View_Helper_Html::UrlOrderBy('op_number', $this->translate('Nom de l\'opération')); ?></th>
+                        <th width="100"><?php echo My_View_Helper_Html::UrlOrderBy('ot_libelle', $this->translate('Offre')); ?></th>
+                        <th width="110"><?php echo My_View_Helper_Html::UrlOrderBy('r_fact_type_libelle', $this->translate('Type facture')); ?></th>
+                        <th colspan="4" style="text-align:center;"><span class="notsortable"><?php echo $this->translate('Montants'); ?></span></th>
+                        <th width="70"><?php echo My_View_Helper_Html::UrlOrderBy('r_fact_stat_libelle', $this->translate('État')); ?></th>
+                    </tr>
+                    <tr class="sub-head">
+                        <td colspan="2"></td>
+                        <td align="center" class="column-border"><?php echo My_View_Helper_Html::UrlOrderBy('fact_date_validation', $this->translate('Validation')); ?></td>
+                        <td class="column-border"><?php echo My_View_Helper_Html::UrlOrderBy('fact_date_edition', $this->translate('Édition')); ?></td>
+                        <td class="column-border"><?php echo My_View_Helper_Html::UrlOrderBy('fact_date_echeance', $this->translate('Échéance')); ?></td>
+                        <td ><?php echo My_View_Helper_Html::UrlOrderBy('fact_date_encaisse', $this->translate('Encaissement')); ?></td>
+                        <td colspan="8"></td>
+                        <td align="center" class="column-border"><?php echo My_View_Helper_Html::UrlOrderBy('fact_montant_ht', $this->translate('Ht')); ?></td>
+                        <td class="column-border"><?php echo My_View_Helper_Html::UrlOrderBy('fact_montant_ttc', $this->translate('TTC')); ?></td>
+                        <td class="column-border" width="80"><?php echo My_View_Helper_Html::UrlOrderBy('fact_montant_encaisse', $this->translate('Encaissé')); ?></td>
+                        <td width="80"><?php echo My_View_Helper_Html::UrlOrderBy('fact_solde', $this->translate('Solde')); ?></td>
+                        <td colspan="4"></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    $aParams = $this->getParams();
+                    foreach ($this->paginator as $aInvoice) {
+                        $iInvoiceId = $aInvoice['fact_id'];
+                        ?>
+                        <tr class="<?php echo $this->cycle(array('', 'alt'))->next() ?>">
+                            <td class="check-column"><?php
+                                echo Phoenix_View_Helper_Html::checkbox(array('name' => 'check_facture[' . $iInvoiceId . ']', 'class' => 'class_check_facture', 'value' => $iInvoiceId, 'default_value' => isset($aParams['check_facture'][$iInvoiceId]) ? $aParams['check_facture'][$iInvoiceId] : ''));
+                                echo $this->getParam('check_facture[' . $iInvoiceId . ']')
+                                ?></td>
+                            <td width="100">
+                                <a href="<?php echo $this->url(array('action' => 'facturepdf', 'fact_id' => $iInvoiceId)) ?>" class="icon-list icon-zoom display-invoice" invoice_id = "<?php echo $iInvoiceId ?>" title="<?php echo $this->translate('Visualiser'); ?>"><?php echo $this->translate('Visualiser'); ?></a>
+                                <?php if ($aInvoice['fact_status_id'] == RFactureStatuts::VALIDATED) { ?><a href="javascript:void(0)" onclick="javascript:popupEdition(<?php echo $iInvoiceId ?>,<?php echo $aInvoice['cl_id'] ?>,<?php echo $aInvoice['op_id'] ?>)" class="icon-list icon-edit" title="<?php echo $this->translate('Edition'); ?>"><?php echo $this->translate('Edition'); ?></a><?php } ?>
+                                <?php if (in_array($aInvoice['fact_status_id'], array(RFactureStatuts::EDITED, RFactureStatuts::ENCAISSE_PARTIEL))) { ?><a href="javascript:void(0)" onclick="javascript:popupEncaissement(<?php echo $iInvoiceId ?>)" class="icon-list icon-encaisser" title="<?php echo $this->translate('Encaisser'); ?>"><?php echo $this->translate('Encaisser'); ?></a><?php } ?>
+                                <?php if (in_array($aInvoice['fact_status_id'], array(RFactureStatuts::ENCAISSE, RFactureStatuts::ENCAISSE_PARTIEL))) { ?><a href="javascript:void(0)" onclick="javascript:popupDecaissement(<?php echo $iInvoiceId ?>)" class="icon-list icon-decaisser" title="<?php echo $this->translate('Décaisser'); ?>"><?php echo $this->translate('Décaisser'); ?></a><?php } ?>
+                            </td>
+                            <td><?php echo $aInvoice['fact_date_validation_fr'] ?></td>
+                            <td><?php echo $aInvoice['fact_date_edition_fr'] ?></td>
+                            <td><?php echo $aInvoice['fact_date_echeance_fr'] ?></td>
+                            <td><?php echo $aInvoice['fact_date_encaisse_fr'] ?></td>
+                            <td><?php echo $aInvoice['fact_reference'] ?></td>
+                            <td><?php echo $aInvoice['fact_num_cmd'] ?></td>
+                            <td><?php echo $this->aMotifs[$aInvoice['fact_id']] ?></td>
+                            <td><?php echo $aInvoice['cl_libelle'] ?></td>
+                            <td><a href="<?php echo $this->url(array('action' => 'index', 'controller' => 'facturation', 'module' => 'operation', 'op_id' => $aInvoice['op_id'])) ?>" target="_blank"><?php echo $aInvoice['op_number'] ?></a></td>
+                            <td><?php echo $aInvoice['op_libelle'] ?></td>
+                            <td><?php echo $aInvoice['ot_libelle'] ?></td>
+                            <td><?php echo $aInvoice['r_fact_type_libelle'] ?></td>
+                            <td><?php echo Phoenix_Data_Convert::formatMoney($aInvoice['fact_montant_ht'], false, true, true) ?></td>
+                            <td><?php echo Phoenix_Data_Convert::formatMoney($aInvoice['fact_montant_ttc'], false, true, true) ?> </td>
+                            <td><?php echo Phoenix_Data_Convert::formatMoney($aInvoice['fact_montant_encaisse'], false, true, true) ?> </td>
+                            <td><?php echo Phoenix_Data_Convert::formatMoney($aInvoice['fact_solde'], false, true, true) ?> </td>
+                            <td><?php echo $aInvoice['r_fact_stat_libelle'] ?></td>
+                        </tr>
+                    <?php } ?>
+                </tbody>
+            </table>
+        </form>
+    </div>
+</div>
+
+<!-- DIALOG / ADVANCED SEARCH -->
+<div id="id_dialog_search" title="<?php echo $this->translate('Recherche avancée'); ?>" style="display:none;">
+    <form action="" method="get">
+        <div class="line">
+            <div class="unit size1of2 gutter10">
+                <div class="section">
+                    <div class="section-hd">
+                        <h2 class="section-title"><?php echo $this->translate('Références d\'opération'); ?></h2>
+                    </div>
+                    <div class="section-bd">
+                        <div class="line form-line">
+                            <label class="unit size1of2 form-label" for="id_autocomplete_cl_id"><?php echo $this->translate('Nom du client'); ?> :</label>
+                            <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_cl_id', 'type' => 'hidden')); ?>
+                            <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'autocomplete_cl_id', 'class' => 'unit size1of2 form-input input-autocomplete lastUnit')) ?>
+                        </div>
+
+                        <div class="line form-line">
+                            <label class="unit size1of2 form-label" for="id_find_op_number"><?php echo $this->translate('N° d\'opération'); ?> :</label>
+                            <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_op_number', 'class' => 'form-input unit size1of2 lastUnit')); ?>
+                        </div>
+                    </div>
+                </div>
+                <div class="section">
+                    <div class="section-hd">
+                        <h2 class="section-title"><?php echo $this->translate('Date de création'); ?></h2>
+                    </div>
+                    <div class="section-bd">
+                        <div class="line form-line">
+                            <label class="unit size1of2 form-label" for="id_find_fact_date_create_min"><?php echo $this->translate('Date début'); ?> :</label>
+                            <div class="unit size1of2 date">
+                                <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_fact_date_create_min', 'class' => 'date-input', 'placeholder' => $this->translate('JJ/MM/AAAA'), 'maxlenght' => '10')); ?>
+                            </div>
+                        </div>
+                        <div class="line form-line">
+                            <label class="unit size1of2 form-label" for="id_find_fact_date_create_max"><?php echo $this->translate('Date fin'); ?> :</label>
+                            <div class="unit size1of2 date">
+                                <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_fact_date_create_max', 'class' => 'date-input', 'placeholder' => $this->translate('JJ/MM/AAAA'), 'maxlenght' => '10')); ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section-hd">
+                    <h2 class="section-title"><?php echo $this->translate('Passage au statut'); ?></h2>
+                </div>
+                <div class="section-bd">
+                    <div class="line form-line">
+                        <?php echo My_View_Helper_Html::selectFromTable('r_facture_statuts', array('name' => 'find_fact_status_histo_id', 'class' => 'unit size1of2 form-select'), array('value' => 'r_fact_stat_id', 'name' => 'r_fact_stat_libelle'), array('default_label' => $this->translate('Tout statut'))) ?>
+                    </div>
+                    <div class="line form-line">
+                        <div class="unit size1of2 date">
+                            <?php echo $this->translate('Date min'); ?>. :
+                        </div>
+                        <div class="unit size1of2 date">
+                            <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_fact_date_status_min', 'value' => $this->getParam('find_fact_date_status_min'), 'class' => 'date-input', 'placeholder' => $this->translate('JJ/MM/AAAA'), 'maxlenght' => '10')); ?>
+                        </div>
+                    </div>
+                    <div class="line form-line">
+                        <div class="unit size1of2 date">
+                            <?php echo $this->translate('Date max'); ?>. :
+                        </div>
+                        <div class="unit  date">
+                            <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_fact_date_status_max', 'value' => $this->getParam('find_fact_date_status_max'), 'class' => 'date-input', 'placeholder' => $this->translate('JJ/MM/AAAA'), 'maxlenght' => '10')); ?>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-hd">
+                        <h2 class="section-title"><?php echo $this->translate('Montant'); ?></h2>
+                    </div>
+                    <div class="section-bd">
+                        <div class="line form-line">
+                            <label class="form-label unit size1of2" for="id_find_fact_montant_ttc_min"><?php echo $this->translate('Montant TTC supérieur à'); ?> :</label>
+                            <div class="unit size1of2 lastUnit">
+                                <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_fact_montant_ttc_min', 'class' => 'form-input size1of2')); ?>
+                            </div>
+                        </div>
+                        <div class="line form-line">
+                            <label class="form-label unit size1of2" for="id_find_fact_montant_ttc_max"><?php echo $this->translate('Montant TTC inférieur à'); ?> :</label>
+                            <div class="unit size1of2 lastUnit">
+                                <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_fact_montant_ttc_max', 'class' => 'form-input size1of2')); ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section">
+                    <div class="section-hd">
+                        <h2 class="section-title"><?php echo $this->translate('Plan de facturation'); ?></h2>
+                    </div>
+                    <div class="section-bd">
+                        <div class="line form-line">
+                            <label class="form-label unit size1of2" for="id_find_plan_fact_periode_id"><?php echo $this->translate('Périodicité'); ?> :</label>
+                            <?php echo Phoenix_View_Helper_Html::selectFromTable('r_plan_fact_periodes', array('name' => 'find_plan_fact_periode_id', 'class' => 'form-select unit size1of2 lastUnit'), array('name' => 'r_plan_fact_periode_libelle', 'value' => 'r_plan_fact_periode_id'), array('default_label' => $this->translate('Choisir') . '...')); ?>
+                        </div>
+                        <div class="line form-line">
+                            <label class="form-label unit size1of2" for="id_find_plan_fact_periode_type_id"><?php echo $this->translate('Type'); ?> :</label>
+                            <?php echo Phoenix_View_Helper_Html::selectFromTable('r_plan_fact_periodes_type', array('name' => 'find_plan_fact_periode_type_id', 'class' => 'form-select unit size1of2 lastUnit'), array('name' => 'r_pfpt_libelle', 'value' => 'r_pfpt_id'), array('default_label' => $this->translate('Choisir') . '...')); ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="unit size1of2 lastUnit">
+                <div class="section">
+                    <div class="section-hd">
+                        <h2 class="section-title"><?php echo $this->translate('Filtres'); ?></h2>
+                    </div>
+                    <div class="section-bd">
+                        <div class="line form-line">
+                            <label class="unit size1of2 form-label" for="id_find_fact_is_echu"><?php echo $this->translate('Echu'); ?> :</label>
+                            <?php echo Phoenix_View_Helper_Html::checkbox(array('name' => 'find_fact_is_echu', 'value' => 1, 'class' => 'form-checkbox unit size1of2 lastUnit')); ?>
+                        </div>
+                        <div class="line form-line">
+                            <label class="unit size1of2 form-label" for="id_find_act_id"><?php echo $this->translate('Activité métier'); ?> :</label>
+                            <?php echo Phoenix_View_Helper_Html::selectFromTable('r_custom_activites', array('name' => 'find_act_id', 'class' => 'form-select unit size1of2 lastUnit'), array('value' => 'act_id', 'name' => 'act_libelle'), array('default_label' => $this->translate('Choisir') . '...')); ?>
+                        </div>
+                        <div class="line form-line">
+                            <label class="unit size1of2 form-label" for="id_find_op_type_id"><?php echo $this->translate('Mécanique'); ?> :</label>
+                            <?php echo Phoenix_View_Helper_Html::selectFromTable('r_operation_type', array('name' => 'find_op_type_id', 'class' => 'form-select unit size1of2 lastUnit'), array('value' => 'ot_id', 'name' => 'ot_libelle', 'class' => 'act_id'), array('default_label' => $this->translate('Choisir') . '...')); ?>
+                        </div>
+                        <div class="line form-section">
+                            <label class="unit size1of2 form-label" for=""> <?php echo $this->translate('N° Facture'); ?> :</label>
+                            <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'find_fact_reference', 'class' => 'form-select unit size1of2 lastUnit')); ?>
+                        </div>
+                        <div class="line form-line">
+                            <label class="unit size1of2 form-label" for="id_find_fact_status_id"><?php echo $this->translate('Statut'); ?> :</label>
+                            <?php echo Phoenix_View_Helper_Html::selectFromTable('r_facture_statuts', array('name' => 'find_fact_status_id', 'class' => 'form-select unit size1of2 lastUnit'), array('value' => 'r_fact_stat_id', 'name' => 'r_fact_stat_libelle'), array('default_label' => $this->translate('Choisir') . '...')); ?>
+                        </div>
+                        <div class="line form-line">
+                            <label class="unit size1of2 form-label" for="id_find_r_fact_type_id"><?php echo $this->translate('Type'); ?> :</label>
+                            <?php echo Phoenix_View_Helper_Html::selectFromTable('r_facture_types', array('name' => 'find_r_fact_type_id', 'class' => 'form-select unit size1of2 lastUnit'), array('value' => 'r_fact_type_id', 'name' => 'r_fact_type_libelle'), array('default_label' => $this->translate('Choisir') . '...')); ?>
+                        </div>
+                        <div class="line form-line">
+                            <label class="unit size1of2" for="id_find_fact_date_echeance_fr"><?php echo $this->translate('Encaissement'); ?> :</label>
+                            <div class="unit size1of2 date">
+                                <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_fact_date_encaisse_fr', 'class' => 'date-input', 'placeholder' => $this->translate('JJ/MM/AAAA'), 'maxlenght' => '10')); ?>
+                            </div>
+                        </div>
+                        <div class="line form-line">
+                            <label class="unit size1of2" for="id_find_fact_date_echeance_fr"><?php echo $this->translate('Échéance'); ?> :</label>
+                            <div class="unit size1of2 date">
+                                <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_fact_date_echeance_fr', 'class' => 'date-input', 'placeholder' => $this->translate('JJ/MM/AAAA'), 'maxlenght' => '10')); ?>
+                            </div>
+                        </div>
+                        <div class="line form-line">
+                            <label class="unit size1of2 form-label" for=""><?php echo $this->translate('Import CEGID'); ?> :</label>
+                            <?php echo Phoenix_View_Helper_Html::select(array('name' => '', 'class' => 'form-select unit size1of2 lastUnit'), array(), array('default_label' => $this->translate('Choisir') . '...')); ?>
+                        </div>
+                        <div class="line form-section">
+                            <label class="unit size1of2 form-label" for=""><?php echo $this->translate('Paiement partiel'); ?> :</label>
+                            <?php echo Phoenix_View_Helper_Html_Select::selectOuiNon(array('name' => 'find_fact_has_paiement_partiel', 'class' => 'form-select unit size1of2 lastUnit')); ?>
+                        </div>
+                        <div class="line form-section">
+                            <label class="unit size1of2 form-label" for=""> <?php echo $this->translate('N° Commande'); ?> :</label>
+                            <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'find_fact_num_cmd', 'class' => 'form-select unit size1of2 lastUnit')); ?>
+                        </div>
+
+                        <div class="line form-line">
+                            <label class="form-label unit size1of2" for="id_op_cp_id"><?php echo $this->translate('Gestionnaire'); ?> :</label>
+                            <?php echo Phoenix_View_Helper_Html_Select::selectUsersByuserType(RUserTypes::PROJECT_MANAGER_USER_TYPE, array('name' => 'find_op_cp_id', 'class' => 'form-select unit size1of2 lastUnit'), array('default_label' => $this->translate('Choisir') . '...'), $this->oldCpUsers); ?>
+                        </div>
+
+                        <div class="line form-line">
+                            <label class="unit size1of2 form-label" for="id_find_fact_has_no_motifs"><?php echo $this->translate('Sans motif'); ?> :</label>
+                            <?php echo Phoenix_View_Helper_Html::checkbox(array('name' => 'find_fact_has_no_motifs', 'value' => 1)); ?>
+                        </div>
+                        <div class="line form-section">
+                            <div class="section col">
+                                <label class="unit size1of2 form-label" for=""><?php echo $this->translate('Motifs SPE'); ?> :</label>
+                                <a href="javascript:void(0)" onclick="javascript:Component.resetSelect('id_find_r_facture_motifs')" ><img src="/img/icon_delete.png" title="<?php echo $this->translate('tout désélectionner'); ?>"></a>
+                                <?php echo My_View_Helper_Html::selectFromTable('r_facture_motifs', array('name' => 'find_r_facture_motifs_id[]', 'class' => 'unit size1of2', 'id' => 'id_find_r_facture_motifs', 'multiple' => 'multiple', 'size' => 5), array('value' => 'r_fact_motif_id', 'name' => 'r_fact_motif_libelle')) ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="text-center">
+            <input type="submit" name="findbyfields" value="<?php echo $this->translate('Rechercher'); ?>" class="btn btn-orange">
+        </div>
+    </form>
+</div>
+<div id="id_dialog_search" title="<?php echo $this->translate('Recherche avancée'); ?>" style="display:none;">
+</div>
+<div class="unit push3of5 size2of5" style="margin-top:10px">
+    <fieldset class="stats-op-fieldset large">
+        <legend><span class="title-icon icon-chart"></span> <?php echo $this->translate('Sélectionné'); ?> :</legend>
+        <table class="stats-op">
+            <thead>
+                <tr>
+                    <th class="op-accepte size1of3"><?php echo $this->translate('Créé'); ?></th>
+                    <th class="op-accepte size1of3"><?php echo $this->translate('Validée'); ?></th>
+                    <th class="op-encours size1of3"><?php echo $this->translate('Éditée'); ?></th>
+                    <th class="op-refuse size1of3"><?php echo $this->translate('Encaissée'); ?></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="op-cree"><?php echo Phoenix_Data_Convert::formatMoney($this->montant_cree_checked) ?> </td>
+                    <td class="op-accepte"><?php echo Phoenix_Data_Convert::formatMoney($this->montant_valide_checked) ?> </td>
+                    <td class="op-encours"><?php echo Phoenix_Data_Convert::formatMoney($this->montant_edite_checked) ?> </td>
+                    <td class="op-refuse"><?php echo Phoenix_Data_Convert::formatMoney($this->montant_encaisse_checked) ?> </td>
+                </tr>
+            </tbody>
+        </table>
+    </fieldset>
+</div>
+
+<?php $this->headScript()->appendFile($this->baseUrl() . '/js/commonFeatures.js'); ?>
+
+<script language="javascript">
+
+    function getSerializedCheckboxes() {
+        return $('.class_check_facture').serialize();
+    }
+
+    function popupEdition(fact_id, cl_id, op_id) {
+        AjaxComponent.ajaxDialog('/comptabilite/factures/edition', {fact_id: fact_id, cl_id: cl_id, op_id: op_id},
+        {id: 'id_popup_edition', width: 600,
+            modal: true,
+            title: '<?php echo $this->translate('Edition'); ?>',
+            resizable: false
+        });
+    }
+
+    // Display popup collection
+    function popupEncaissement(fact_id) {
+        AjaxComponent.ajaxDialog('/comptabilite/factures/encaissement', {fact_id: fact_id},
+        {id: 'id_popup_encaissement', width: 400,
+            modal: true,
+            title: '',
+            resizable: false});
+    }
+
+    // Disbursement popup display
+    function popupDecaissement(fact_id) {
+
+        Component.confirm('<?php echo $this->translate('Voulez-vous décaisser la facture'); ?> ?',
+                function () {
+                    AjaxComponent.ajaxQuery('/comptabilite/factures/decaissement', {fact_id: fact_id});
+
+                }
+        );
+    }
+
+    $(document).ready(function () {
+        //-- DIALOG / ADVANCED SEARCH -->
+        $('#btn_adsearch').click(function (e) {
+            $('#id_dialog_search').dialog({
+                width: 800,
+                modal: true,
+                resizable: false
+            });
+        });
+        $("#id_find_op_type_id").chained("#id_find_act_id");
+        $('#id_check_all_edit').bindCheckboxes('class_check_facture');
+
+        // Count selected invoices
+        $('#id_submit_comptage').click(function () {
+            $('#id_form_checked_factures').attr('action', '/comptabilite/factures/index/?' + queryString);
+        })
+
+        // Disbursement of the selected invoices
+        $('#id_submit_encaissement').click(function () {
+            Component.confirm("<?php echo $this->translate('Confirmez-vous l\'encaissement des factures sélectionnées'); ?> ?",
+                    function () {
+                        AjaxComponent.ajaxQuery('/comptabilite/factures/encaissementgroup', getSerializedCheckboxes())
+                                .success(function (data) {
+                                });
+                    }
+            )
+        });
+
+        // Reedition of the selected invoices
+        $('#id_submit_reedition').click(function () {
+            Component.confirm("<?php echo $this->translate('Confirmez-vous la réédition de la facture sélectionnée'); ?> ?",
+                    function () {
+                        if ($('.class_check_facture:checked').length == 0) {
+                            Component.modalDialog('<ul><li><?php echo addslashes($this->translate('Aucune facture n\'a été séléctionné pour la réédition')); ?></li></ul>', {type: 'error'});
+                            return false;
+                        }
+                        if ($('.class_check_facture:checked').length > 1) {
+                            Component.modalDialog('<ul><li><?php echo addslashes($this->translate('Vous ne pouvez pas rééditer plus d\'une facture à la fois')); ?></li></ul>', {type: 'error'});
+                            return false;
+                        } else {
+                            AjaxComponent.ajaxDialog('/comptabilite/factures/reedition/', getSerializedCheckboxes(),
+                                    {id: 'id_popup_redition', width: 400,
+                                        modal: true,
+                                        title: '<?php echo $this->translate('Reedition'); ?>',
+                                        resizable: false
+                                    });
+                        }
+                    }
+
+            )
+        });
+
+        // Edition of the selected invoices
+        $('#id_submit_edition').click(function () {
+            Component.confirm("<?php echo $this->translate('Confirmez-vous l\'édition des factures sélectionnées'); ?> ?",
+                    function () {
+                        AjaxComponent.ajaxQuery('/comptabilite/factures/editiongroup', getSerializedCheckboxes())
+                                .success(function (data) {
+                                });
+                    }
+            )
+        })
+
+        $('#id_submit_gecid').click(function () {
+            AjaxComponent.ajaxDialog('/comptabilite/factures/genjdv', {}, {width: 300, height: 'auto', title: '<?php echo $this->translate('Générer le journal de ventes'); ?>', id: 'id_div_jdv'});
+        });
+
+        $('#id_find_fact_has_no_motifs').click(function () {
+
+            if ($(this).is(':checked')) {
+                $('#id_find_r_facture_motifs').attr('disabled', true);
+            } else {
+                $('#id_find_r_facture_motifs').removeAttr('disabled');
+            }
+        });
+
+        if ($('#id_find_fact_has_no_motifs').is(':checked')) {
+            $('#id_find_r_facture_motifs').attr('disabled', true);
+        } else {
+            $('#id_find_r_facture_motifs').removeAttr('disabled');
+        }
+
+        // Autocomplete client fields
+        $('#id_autocomplete_cl_id').AjaxAutocomplete({
+            url: baseUrl + '/common/autocomplete/client',
+            minLength: 3,
+            restrictive: true,
+            bindFieldId: 'id_find_cl_id',
+        });
+
+    });
+
+
+</script>

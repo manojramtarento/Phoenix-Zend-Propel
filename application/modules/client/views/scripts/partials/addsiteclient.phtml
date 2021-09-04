@@ -1,0 +1,48 @@
+<div class="line form-section">
+    <label class="form-label unit size1of3" for=""><?php echo $this->translate('Intitulé adresse');?> :</label>
+    <?php echo Phoenix_View_Helper_Html::input(array('name' => 'cl_site_libelle', 'value' => $this->cl_site_libelle, 'class' => 'form-input unit '. $this->size_class .' lastUnit')); ?>
+</div>
+
+<div class="line form-line">
+    <label class="form-label unit size1of3" for=""><?php echo $this->translate('Adresse 1');?> :</label>
+    <?php echo Phoenix_View_Helper_Html::input(array('name' => 'cl_site_addr_1', 'value' => $this->cl_site_addr_1, 'class' => 'form-input unit '. $this->size_class .' lastUnit')); ?>
+</div>
+
+<div class="line form-line">
+    <label class="form-label unit size1of3" for=""><?php echo $this->translate('Adresse 2');?> :</label>
+    <?php echo Phoenix_View_Helper_Html::input(array('name' => 'cl_site_addr_2', 'value' => $this->cl_site_addr_2, 'class' => 'form-input unit '. $this->size_class .' lastUnit')); ?>
+</div>
+
+<div class="line form-line">
+    <label class="form-label unit size1of3" for=""><?php echo $this->translate('Adresse 3');?> :</label>
+    <?php echo Phoenix_View_Helper_Html::input(array('name' => 'cl_site_addr_3', 'value' => $this->cl_site_addr_3, 'class' => 'form-input unit '. $this->size_class .' lastUnit')); ?>
+</div>
+
+<div class="line form-line">
+    <label class="form-label unit size1of3" for=""><?php echo $this->translate('Code postal');?> :</label>
+    <?php echo Phoenix_View_Helper_Html::input(array('name' => 'cl_site_zipcode', 'value' => $this->cl_site_zipcode, 'class' => 'form-input unit '. $this->size_class .' lastUnit')); ?>
+</div>
+
+<div class="line form-line">
+    <label class="form-label unit size1of3" for=""><?php echo $this->translate('Ville');?> :</label>
+    <?php echo Phoenix_View_Helper_Html::input(array('name' => 'cl_site_town', 'value' => $this->cl_site_town, 'class' => 'form-input unit '. $this->size_class .' lastUnit')); ?>
+</div>
+
+<div class="line form-line">
+    <label class="form-label unit size1of3" for=""><?php echo $this->translate('Pays');?> :</label>
+    <?php echo Phoenix_View_Helper_Html::input(array('name' => 'cl_site_country_a3', 'type' => 'hidden', 'value' => $this->cl_site_country_a3, 'class' => 'form-input unit '. $this->size_class .' lastUnit')); ?>
+    <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'cl_site_country', 'id' => 'cl_site_country', 'class' => 'unit '. $this->size_class .' form-input input-autocomplete lastUnit')) ?>
+</div>
+
+
+<script language="javascript">
+    $(document).ready(function(){
+        // changement du pays avec autocompletion
+        $('#cl_site_country').AjaxAutocomplete({
+            url: baseUrl+'/common/autocomplete/country',
+            minLength: 3,
+            restrictive:true,
+			bindFieldId:'id_cl_site_country_a3'
+        });
+    })
+</script>

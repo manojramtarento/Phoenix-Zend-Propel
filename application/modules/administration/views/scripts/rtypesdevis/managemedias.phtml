@@ -1,0 +1,53 @@
+<table class="list">
+    <thead>
+        <tr>
+            <th width="15" class="column-noborder"></th>
+            <th width=""><span class="notsortable"><?php echo $this->translate('Libellé'); ?></span></th>
+            <th width="8%"><span class="notsortable"><?php echo $this->translate('Actif'); ?></span></th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php
+        foreach ($this->oROperationMedias as $oROperationMedia):
+            $sROperationMediaId = $oROperationMedia->getROperationMediaId();
+            ?>
+
+            <tr class="class_form_media" action="<?php echo $this->url(array('module' => 'administration', 'controller' => 'rtypesdevis', 'action' => 'updatemedia')) ?>" model_name="ROperationMedias" primary_value="<?php echo $sROperationMediaId; ?>">
+                <td width="15"></td>
+                <td><?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'id' => 'id_r_operation_media_' . $sROperationMediaId, 'name' => 'r_operation_media_label', 'class' => 'form-input input-editable size1of1', 'value' => $oROperationMedia->getROperationMediaLabel())) ?></td>
+                <td><?php echo Phoenix_View_Helper_Html::checkbox(array('name' => 'r_operation_media_actif', 'id' => 'id_r_operation_media_actif_' . $sROperationMediaId, 'value' => 1, 'class' => 'form-input input-editable size1of1', 'default_value' => $oROperationMedia->getROperationMediaActif())) ?></td>
+            </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
+
+<div class="section">
+    <div class="section-hd">
+        <h2 class="section-title"><?php echo $this->translate('Ajouter un nouveau média'); ?></h2>
+    </div>
+
+    <div class="section-bd">
+        <form id="id_form_new_media" action="<?php echo $this->url(array('module' => 'administration', 'controller' => 'rtypesdevis', 'action' => 'managemedias')) ?>" method="post">
+            <input type="hidden" name="submit_new_media" value="1">
+
+            <div class="line form-line">
+                <label class="unit size1of3 form-label" for='id_r_operation_media_label'><?php echo $this->translate('Libellé'); ?> :</label>
+                <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'r_operation_media_label', 'value' => '', 'class' => 'unit size2of3 form-input lastUnit')) ?>
+            </div>
+
+            <div class="text-center">
+                <input type="submit" value="<?php echo $this->translate('Ajouter'); ?>" class="btn btn-orange">
+            </div>
+        </form>
+    </div>
+</div>
+
+<script language="javascript">
+    $(document).ready(function() {
+        $('.class_form_media').formUpdate({});
+
+        $('#id_form_new_media').ajaxForm({
+            divId: 'id_dialog_manage_medias'
+        });
+    });
+</script>

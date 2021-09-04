@@ -1,0 +1,22 @@
+<?php
+
+$iOperationId = $this->getParam('op_id');
+$aMenu = array(
+    array('module' => 'operation','controller' => 'description','action' => 'index','params' => array('op_id'=>$iOperationId),'label' => 'Description'),
+    array('module' => 'operation','controller' => 'prestations','action' => 'index','params' => array('op_id'=>$iOperationId),'label' => 'Prestations'),
+    array('module' => 'operation','controller' => 'facturation','action' => 'index','params' => array('op_id'=>$iOperationId),'label' => 'Plan de facturation'),
+    array('module' => 'operation','controller' => 'courriers','action' => 'index','params' => array('op_id'=>$iOperationId),'label' => 'Lots courriers'),
+    array('module' => 'operation','controller' => 'flux','action' => 'index','params' => array('op_id'=>$iOperationId),'label' => 'Flux sortants'),
+    array('module' => 'operation','controller' => 'kpi','action' => 'index','params' => array('op_id'=>$iOperationId),'label' => 'KPI'),
+    array('module' => 'operation','controller' => 'statsprod','action' => 'index','params' => array('op_id'=>$iOperationId),'label' => 'Stats production OP'),
+    array('module' => 'operation','controller' => 'paramop','action' => 'index','params' => array('op_id'=>$iOperationId),'label' => 'Param Op'),
+);
+?>      
+<div id="content-nav">
+	<ul class="nav"> 
+    <?php foreach($aMenu as $aItem){
+        echo $this->renderMenu($aItem,'controller');
+    }
+    ?>
+    </ul>
+</div>

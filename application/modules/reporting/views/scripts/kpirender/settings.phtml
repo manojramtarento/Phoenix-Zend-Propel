@@ -1,0 +1,144 @@
+<?php
+$this->title = $this->translate('Paramétrages');
+$this->headTitle($this->title);
+
+$this->headScript()->appendFile($this->baseUrl() . '/js/kpi/settings.js');
+
+echo $this->FlashMessenger('error');
+
+echo $this->FlashMessenger('default');
+?>
+
+<div id="actions-bar" class="actions-bar">
+    <div class="unit size1of5">
+        <h1 class="page-title"><?php echo $this->title; ?></h1>
+    </div>
+    <div class="unit size1of5">
+        <form id="kpi_settings_select">
+            <label class="unit size1of2 form-label"><?php echo $this->translate('KPIS'); ?>:</label>
+            <?php echo Phoenix_View_Helper_Html::selectFromTable('user_kpi_settings', array('name' => 'select_user_kpi_settings', 'class' => 'form-select'), array('name' => 'user_kpi_settings_name', 'value' => 'user_kpi_settings_id'), array('clause_where' => "user_kpi_settings_user_id='" . Phoenix_Auth_User::getInstance()->getUserId() . "'", 'clause_order' => 'user_kpi_settings_id', 'default_label' => $this->translate('choisir') . '...')) ?>
+        </form>
+    </div>
+</div>
+
+<div id="site-content">
+    <div class="content-bd">
+        <form  id="kpi_form_settings">
+            <div class="line">
+                <div class="line form-line">
+                    <div class="unit size2of5">
+                        <div class="box box-blue">
+                            <div class="line box-hd">
+                                <h2 class="box-title title-icon icon-doc"><?php echo $this->translate('Indicateurs disponibles'); ?></h2>
+                            </div>
+                        </div>
+                        <div class="box-bd">
+                            <table class="list list-sortable list-simple">
+                                <tbody id="sortable1" class="connectedSortable ui-sortable list-kpis-settings">
+                                    <?php foreach ($this->indicators as $iIndicatorId => $aIndicator) { ?>
+                                        <?php if (!in_array($iIndicatorId, array_keys($this->userKpiSettingsParams))) { ?>
+                                            <tr class="ui-state-default"><td class="column-handle" title="Déplacer l'indicateur"></td><td><?php echo $aIndicator['type']; ?></td><td width="100%" id="<?php echo 'ind' . $iIndicatorId; ?>"><input id="IndicatorId" type="hidden" value="<?php echo $iIndicatorId; ?>" /><?php echo $aIndicator['name']; ?></td></tr>
+                                        <?php } ?>
+                                    <?php } ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="unit size3of5">
+                        <div class="box-blue">
+                            <div class="line box-hd box-with-action-button">
+                                <h2 class="box-title title-icon icon-doc"><?php echo $this->translate('Indicateurs à afficher'); ?></h2>
+                            </div>
+                            <div class="box-action-button">
+                                <?php if ($this->userKpiSettingsParams) { ?>
+                                    <a href="#delete-kpi-settings" id="kpi-settings-deletor" confirmation_message='<?php echo $this->translate('Confirmez-vous la suppression du paramétrage du kpi') ?>'><img src="/img/icon_delete.png" title="<?php echo $this->translate('Supprimer l\'indicateur'); ?>"></a>
+                                <?php } ?>
+                            </div>
+                        </div>
+                        <div class="box-with-action-button">
+                            <table class="list list-sortable list-simple">
+                                <tbody id="sortable2" class="connectedSortable ui-sortable list-kpis-settings" >
+                                    <?php foreach ($this->userKpiSettingsParams AS $iIndicatorKey => $aIndicatorSettings) { ?>
+                                        <tr style="" class="ui-state-default">
+                                            <td class="column-handle" title="Déplacer l'indicateur"></td>
+                                            <td><?php echo $this->indicators[$iIndicatorKey]['type']; ?></td>
+                                            <td id="ind<?php echo $iIndicatorKey; ?>" width="100%">
+                                                <div class="line form-line">
+                                                    <label class="form-label unit size1of3"><?php echo $this->translate('Titre'); ?> : </label>
+                                                    <div class="unit size2of3 date lastUnit">
+                                                        <input value="<?php echo $this->translate($aIndicatorSettings['name']); ?>" name="indicatorName[<?php echo $iIndicatorKey; ?>]" type="text">
+                                                    </div>
+                                                </div>
+                                                <div class="line form-line">
+                                                    <label class="form-label unit size1of3"><?php echo $this->translate('Description'); ?> :</label>
+                                                    <div class="unit size2of3 date lastUnit">
+                                                        <p><?php echo $this->translate($this->indicators[$iIndicatorKey]['description']); ?></p>
+                                                    </div>
+                                                </div>
+                                                <?php if (in_array('kpi_month', array_keys($this->indicators[$iIndicatorKey]['filters']))) { ?>
+                                                    <div class = "unit size1of5">
+                                                        <label class = "unit size1of3" ><?php echo $this->translate('Mois'); ?> :</label>
+                                                        <select class="unit size1of3" type="text" name="filters[<?php echo $iIndicatorKey; ?>][kpi_month]" id="kpi_month" value="<?php echo $this->kpi_month ?>">
+                                                            <?php for ($iMonth = 1; $iMonth <= 12; $iMonth++) { ?>
+                                                                <option value="<?php echo $iMonth; ?>" <?php echo ($iMonth == (isset($aIndicatorSettings['filters']['kpi_month']) ? $aIndicatorSettings['filters']['kpi_month'] : '')) ? 'selected' : ''; ?>><?php echo str_pad($iMonth, 2, '0', STR_PAD_LEFT); ?></option>
+                                                            <?php } ?>
+                                                        </select>
+                                                    </div>
+                                                <?php } ?>
+                                                <?php if (in_array('kpi_year', array_keys($this->indicators[$iIndicatorKey]['filters']))) { ?>
+                                                    <div class="unit size1of5">
+                                                        <label class="unit size1of3" ><?php echo $this->translate('Année'); ?> :</label>
+                                                        <select class="unit size1of3" type="text" name="filters[<?php echo $iIndicatorKey; ?>][kpi_year]" id="kpi_year" value="<?php echo $this->kpi_year ?>">
+                                                            <?php for ($iYear = 1995; $iYear <= 2025; $iYear++) { ?>
+                                                                <option value="<?php echo $iYear; ?>" <?php echo ($iYear == (isset($aIndicatorSettings['filters']['kpi_year']) ? $aIndicatorSettings['filters']['kpi_year'] : '')) ? 'selected' : ''; ?>><?php echo $iYear; ?></option>
+                                                            <?php } ?>
+                                                        </select>
+                                                    </div>
+                                                <?php } ?>
+                                                <?php if (in_array('activites_id', array_keys($this->indicators[$iIndicatorKey]['filters']))) { ?>
+                                                    <div class="unit size1of5">
+                                                        <label class="unit size1of3" > <?php echo $this->translate('Activités'); ?>:</label>
+                                                        <?php echo Phoenix_View_Helper_Html::selectFromTable('r_activity_kpi', array('name' => 'filters[' . $iIndicatorKey . '][activites_id]', 'class' => 'unit size1of3', 'value' => isset($aIndicatorSettings['filters']['activites_id']) ? $aIndicatorSettings['filters']['activites_id'] : ''), array('name' => 'r_activity_kpi_libelle', 'value' => 'r_activity_kpi_id'), array('default_label' => $this->translate('choisir') . '...')) ?>
+                                                    </div>
+                                                <?php } ?>
+                                                <?php if (in_array('status_taux_id', array_keys($this->indicators[$iIndicatorKey]['filters']))) { ?>
+                                                    <div class="unit size1of5">
+                                                        <label class="unit size1of3" > <?php echo $this->translate('Status'); ?> :</label>
+                                                        <?php echo Phoenix_View_Helper_Html::select(array('name' => 'filters[' . $iIndicatorKey . '][status_taux_id]', 'class' => 'unit size1of3', 'value' => isset($aIndicatorSettings['filters']['status_taux_id']) ? $aIndicatorSettings['filters']['status_taux_id'] : ''), $this->statusTaux, array('default_label' => $this->translate('Choisir') . '...')); ?>
+                                                    </div>
+                                                <?php } ?>
+                                                <?php if (in_array('client', array_keys($this->indicators[$iIndicatorKey]['filters']))) { ?>
+                                                    <div class="unit size2of3">
+                                                        <label class="unit size2of4 form-label" for="id_autocomplete_client"><?php echo $this->translate('Nom du client'); ?> :</label>
+                                                        <?php echo Phoenix_View_Helper_Html::input(array('name' => 'filters[' . $iIndicatorKey . '][client]', 'id' => 'id_filters_' . $iIndicatorKey . '_client', 'value' => isset($aIndicatorSettings['filters']['client']) ? $aIndicatorSettings['filters']['client'] : '', 'type' => 'hidden')); ?>
+                                                        <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'autocomplete_filters_' . $iIndicatorKey . '_client', 'value' => !empty($aIndicatorSettings['filters']['client']) ? ClientsQuery::create()->findOneByClId($aIndicatorSettings['filters']['client'])->getClLibelle() : '', 'class' => 'unit size2of4 form-input input-autocomplete lastUnit')) ?>
+                                                        <script language="javascript">
+                                                            $(function () {
+                                                                // Changement du client basé sur recherche avec autocompletion
+                                                                $('#id_<?php echo 'autocomplete_filters_' . $iIndicatorKey . '_client'; ?>').AjaxAutocomplete({
+                                                                    url: baseUrl + '/common/autocomplete/client',
+                                                                    minLength: 3,
+                                                                    restrictive: true,
+                                                                    bindFieldId: '<?php echo 'id_filters_' . $iIndicatorKey . '_client'; ?>'
+                                                                });
+                                                            });
+                                                        </script>
+                                                    </div>
+                                                <?php } ?>
+                                                <input id="IndicatorId" value="<?php echo $iIndicatorKey; ?>" type="hidden">
+                                                <input id="IndicatorName" value="<?php echo $aIndicatorSettings['name']; ?>" type="hidden">
+                                                <input class="IndicatorPosition" name="position[<?php echo $iIndicatorKey; ?>]" value="<?php echo $aIndicatorSettings['position']; ?>" type="hidden"></td></tr>
+                                    <?php } ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div id="id_div_btn_save_settings" class="line form-line center">
+                    <input type="hidden" id="id_user_kpi_setting_id" name="user_kpi_setting_id" value="<?php echo $this->userSettingsId; ?>" />
+                    <input id="id_btn_save_settings" type="submit" value="<?php echo $this->translate('Sauvegarder') ?>" class="btn btn-orange unit"/>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

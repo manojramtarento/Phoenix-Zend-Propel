@@ -1,0 +1,54 @@
+﻿;;*********************************************************************************************************
+;;**************************************       PROD               *****************************************
+;;*********************************************************************************************************
+[prod]
+
+http_host='http://'
+
+; Hidden mail by environnement
+mail.hidden_address=""
+
+;serveur AD
+ldap.serveur1.host = ""
+ldap.serveur1.port = ""
+ldap.serveur1.baseDn = ""
+ldap.serveur1.accountCanonicalForm = ""
+ldap.serveur1.accountDomainNameShort = ""
+
+;; Default connection (phoenix)
+resources.db.adapter = PDO_Mysql
+resources.db.params.host =
+resources.db.params.username =
+resources.db.params.password =
+resources.db.params.dbname =
+resources.db.params.charset = utf8
+resources.db.params.pdoType = mysql
+
+;; Arthur param settings
+arthur.db.param.adapter = Sqlsrv
+arthur.db.param.params.host =
+arthur.db.param.params.username =
+arthur.db.param.params.password =
+arthur.db.param.params.dbname =
+arthur.db.param.params.pdoType = dblib
+
+;; Arthur consos settings
+arthur.db.consos.adapter = Sqlsrv
+arthur.db.consos.params.host =
+arthur.db.consos.params.username =
+arthur.db.consos.params.password =
+arthur.db.consos.params.dbname =
+
+;; CompilUO settings
+compiluo.db.adapter = Sqlsrv
+compiluo.db.params.host =
+compiluo.db.params.username =
+compiluo.db.params.password =
+compiluo.db.params.dbname =
+
+;; CompilData settings
+compildata.db.adapter = Sqlsrv
+compildata.db.params.host =
+compildata.db.params.username =
+compildata.db.params.password =
+compildata.db.params.dbname =

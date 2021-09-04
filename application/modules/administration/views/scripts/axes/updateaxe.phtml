@@ -1,0 +1,53 @@
+<!-- DIALOG / AJOUT / MODIFICATION -->
+<form id="id_form_update_axe" action="<?php echo $this->url(array('module' => 'administration', 'controller' => 'axes', 'action' => 'updateaxe')) ?>" method="post">
+    <input type="hidden" name="submit_update_axe" value="1">
+    <input type="hidden" name="axe_table_name" value="<?php echo $this->sTableName; ?>">
+    <input type="hidden" name="axe_id" value="<?php echo $this->iAxeId; ?>">
+
+    <input type="hidden" name="<?php echo $this->aAxesFormWidgets[0]['field_name'] ?>" value="<?php echo isset($this->aAxesFormWidgets[0]['field_value']) ? $this->aAxesFormWidgets[0]['field_value'] : '' ?>">
+
+    <div class="line form-line">
+        <label class="unit size1of3 form-label" for='<?php echo $this->aAxesFormWidgets[1]['field_id'] ?>'><?php echo $this->translate('Tag'); ?> :</label>
+        <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => $this->aAxesFormWidgets[1]['field_name'], 'value' => isset($this->aAxesFormWidgets[1]['field_value']) ? $this->aAxesFormWidgets[1]['field_value'] : '', 'class' => 'unit size1of3 form-input lastUnit')) ?>
+    </div>
+
+    <div class="line form-line">
+        <label class="unit size1of3 form-label" for='<?php echo $this->aAxesFormWidgets[2]['field_id'] ?>'><?php echo $this->translate('Libellé'); ?> :</label>
+        <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => $this->aAxesFormWidgets[2]['field_name'], 'value' => isset($this->aAxesFormWidgets[2]['field_value']) ? $this->aAxesFormWidgets[2]['field_value'] : '', 'class' => 'unit size2of3 form-input lastUnit')) ?>
+    </div>
+
+    <div class="line form-line">
+        <label class="unit size1of3 form-label" for='<?php echo $this->aAxesFormWidgets[3]['field_id'] ?>'><?php echo $this->translate('Actif'); ?></label>
+        <?php
+        $sValue = isset($this->aAxesFormWidgets[3]['field_value']) ? $this->aAxesFormWidgets[3]['field_value'] : '';
+        echo Phoenix_View_Helper_Html::checkbox(array('name' => $this->aAxesFormWidgets[3]['field_name'], 'value' => 1, 'default_value' => $sValue))
+        ?>
+    </div>
+
+    <?php
+    if (isset($this->aAxesFormWidgets['additional_inputs'])) {
+        foreach ($this->aAxesFormWidgets['additional_inputs'] as $aFieldInputSetting) {
+            ?>
+
+            <div class="line form-line">
+                <label class="unit size1of3 form-label"><?php echo $this->translate($aFieldInputSetting['field_label']); ?> : </label>
+                <?php echo $aFieldInputSetting['field_render'] ?>
+            </div>
+            <?php
+        }
+    }
+    ?>
+
+    <div class="text-center">
+        <input type="submit" value="<?php echo $this->translate('Valider'); ?>" class="btn btn-orange">
+    </div>
+</form>
+
+
+<script language="javascript">
+    $(document).ready(function () {
+        $('#id_form_update_axe').ajaxForm({
+            divId: 'id_dialog_update_axe'
+        });
+    });
+</script>

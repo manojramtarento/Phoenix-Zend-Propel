@@ -1,0 +1,78 @@
+<div class = "col">
+    <a class = "icon icon-32 icon-excel ui-menu" href = "<?php echo $this->url(array('format' => 'csv', 'kpi_month' => $this->kpi_month, 'kpi_year' => $this->kpi_year, 'activites_id' => $this->activites_id), null, false) ?>" title = "<?php echo $this->translate('Exporter au format Excel'); ?>"><?php echo $this->translate('Exporter au format Excel'); ?></a>
+    <br/>
+    <p>
+        <?php echo $this->translate('L\'information entre parenthèses représente le delta avec l\'année n-1 sur la même période'); ?>
+    </p>
+</div>
+</br>
+<table class="list list-kpis">
+    <?php $sMoney = ' €'; ?>
+    <?php if (count($this->dataActivityTable)) { ?>
+        <thead>
+            <tr>
+                <th>Options</th>
+                <th title="<?php echo $this->translate('Nb op mois en cours (delta année n-1)'); ?>"><?php echo $this->translate('Nb op mois en cours'); ?></th>
+                <th title="<?php echo $this->translate('Nb op cumul année en cours (delta année n-1)'); ?>"><?php echo $this->translate('Nb op cumul année en cours'); ?></th>
+                <th title="<?php echo $this->translate('CA vendu mois en cours (delta année n-1)'); ?>"><?php echo $this->translate('CA vendu mois en cours'); ?></th>
+                <th title="<?php echo $this->translate('Coût interne mois en cours (delta année n-1)'); ?>"><?php echo $this->translate('Coût interne mois en cours'); ?></th>
+                <th><?php echo $this->translate('CA vendu cumul'); ?></th>
+                <th><?php echo $this->translate('Coût interne cumul'); ?></th>
+                <th title="<?php echo $this->translate('Rentabilité n (n-1) %'); ?>"><?php echo $this->translate('Rentabilité'); ?></th>
+            </tr>
+        </thead>
+    <?php } ?>
+    <?php foreach ($this->dataActivityTable as $sOptions => $oDataActivity) { ?>
+        <tr>
+            <td><?php echo $oDataActivity->getOptions(); ?></td>
+            <td>
+                <?php echo $oDataActivity->getNbOpCurrentMonth() . '&nbsp;&nbsp;(' . $oDataActivity->getDeltaNbOpMonth() . ')'; ?>
+                <?php if ($oDataActivity->getDeltaNbOpMonth() > 0) { ?>
+                    <span class="arrow green-arrow">↑</span>
+                <?php } elseif ($oDataActivity->getDeltaNbOpMonth() < 0) { ?>
+                    <span class="arrow red-arrow">↓</span>
+                <?php } else { ?>
+                    <span class="arrow orange-arrow">→</span>
+                <?php } ?></td>
+            <td>
+                <?php echo $oDataActivity->getNbOpCurrentYear() . '&nbsp;&nbsp;(' . $oDataActivity->getDeltaNbOpYear() . ')'; ?>
+                <?php if ($oDataActivity->getDeltaNbOpYear() > 0) { ?>
+                    <span class="arrow green-arrow">↑</span>
+                <?php } elseif ($oDataActivity->getDeltaNbOpYear() < 0) { ?>
+                    <span class="arrow red-arrow">↓</span>
+                <?php } else { ?>
+                    <span class="arrow orange-arrow">→</span>
+                <?php } ?>
+            </td>
+            <td>
+                <?php echo number_format($oDataActivity->getSoldCurrentMonth(), 0, '', ' ') . '&nbsp;&nbsp;(' . number_format($oDataActivity->getDeltaSoldMonth(), 0, '', ' ') . ')' . $sMoney; ?>
+                <?php if ($oDataActivity->getDeltaSoldMonth() > 0) { ?>
+                    <span class="arrow green-arrow">↑</span>
+                <?php } elseif ($oDataActivity->getDeltaSoldMonth() < 0) { ?>
+                    <span class="arrow red-arrow">↓</span>
+                <?php } else { ?>
+                    <span class="arrow orange-arrow">→</span>
+                <?php } ?>
+            </td>
+            <td>
+                <?php echo number_format($oDataActivity->getRealizedChargesForCurrentMonth(), 0, '', ' ') . '&nbsp;&nbsp;(' . number_format($oDataActivity->getDeltaRealizedChargesForMonth(), 0, '', ' ') . ')' . $sMoney; ?>
+                <?php if ($oDataActivity->getDeltaRealizedChargesForMonth() > 0) { ?>
+                    <span class="arrow green-arrow">↑</span>
+                <?php } elseif ($oDataActivity->getDeltaRealizedChargesForMonth() < 0) { ?>
+                    <span class="arrow red-arrow">↓</span>
+                <?php } else { ?>
+                    <span class="arrow orange-arrow">→</span>
+                <?php } ?>
+            </td>
+            <td>
+                <?php echo number_format($oDataActivity->getSoldCurrentYear(), 0, '', ' ') . $sMoney; ?>
+            </td>
+            <td>
+                <?php echo number_format($oDataActivity->getRealizedChargesForCurrentYear(), 0, '', ' ') . $sMoney; ?>
+            </td>
+            <td>
+                <?php echo $oDataActivity->getProfitability(); ?>
+            </td>
+        </tr>
+    <?php } ?>
+</table>

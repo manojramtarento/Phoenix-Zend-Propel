@@ -1,0 +1,39 @@
+<?php
+$aTopTenData = array_slice($this->aTopTenData['dataList'], 0, 10, true);
+$iTotal = array_sum($this->aTopTenData['dataList']);
+if ($iTotal) {
+    ?>
+    <div class="block-graph noborder-block top-10-block">
+        <div class="top-10-title-bloc"><?php echo $this->sKpiTitle; ?></div>
+        <div class="top-10-content-bloc">
+            <table>
+                <?php
+                arsort($aTopTenData);
+                foreach ($aTopTenData as $sKey => $iNumber) {
+                    ?>
+                    <tr>
+                        <td class="table-row-value"><?php echo Phoenix_Data_Convert::formatNumber((($this->bDisplayOnlyPourcentage) ? $iNumber . '%' : $iNumber), false, false); ?></td>
+                        <td class="table-row-libelle"><?php echo $sKey; ?></td>
+                        <td class="">
+                            <div class="progress-bar-container">
+                                <?php
+                                $iPourcentage = round(($iNumber * 100) / $iTotal);
+                                $iPourcentageWidth = ($iPourcentage * 300) / 100;
+                                ?>
+                                <div class="progress-bar" style="width:<?php echo $iPourcentageWidth; ?>px; background-color:<?php echo $this->sColorCode; ?>;"></div>
+                                <div class="progress-bar-container-arrow">
+                                    <img src="<?php echo ROOT_PATH . '/public/img/pdfgen/' . $this->sImageName; ?>" height="20">
+                                </div>
+                            </div>
+
+                        </td>
+                        <?php if (!$this->bDisplayOnlyPourcentage) { ?>
+                            <td class="top-10-row-pourcentage" style="color:<?php echo $this->sColorCode; ?>;"><?php echo $iPourcentage; ?>%</td>
+                        <?php } ?>
+                    </tr>
+                <?php } ?>
+            </table>
+        </div>
+        <div class="top-10-legend"><?php echo ($this->sKpiLegend) ? $this->sKpiLegend : ''; ?></div>
+    </div>
+<?php } ?>

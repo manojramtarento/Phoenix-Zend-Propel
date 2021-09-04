@@ -1,0 +1,52 @@
+<!-- DIALOG / CHANGEMENT DE STATUT -->
+<form method="post" id="id_form_change_statut">
+	<div class="form-section">
+		<div class="line form-line">
+			<label for="" class="form-label unit size1of3"><?php echo $this->translate('Statut');?> :</label>	
+			<?php echo Phoenix_View_Helper_Html::selectFromTable('r_operation_status', array('name' => 'hs_new_statut_id', 'class' => 'form-select unit size2of3 lastUnit'), array('name' => 'os_libelle', 'value' => 'os_id')); ?>
+		</div>
+		<!-- uniquement si staut passé en refusé -->
+		<div class="line form-line">
+			<label for="" class="form-label unit size1of3"><?php echo $this->translate('Motif');?> :</label>	
+			<?php echo Phoenix_View_Helper_Html::selectFromTable('r_operation_statut_refus', array('name' => 'hs_refus_id', 'class' => 'form-select unit size2of3 lastUnit'), array('name' => 'r_op_statut_refus_motif', 'value' => 'r_op_statut_refus_id'), array('default_label' => $this->translate('Choisir un motif'))); ?>
+		</div>
+	</div>
+	<input type="hidden" name="op_id" value="<?php echo $this->op_id ?>">
+	<div id="btn_submit">
+		<input type="submit" id="id_submit_statut" value="<?php echo $this->translate('Valider'); ?>" class="btn btn-orange push1of3" />
+	</div>
+</form>
+
+
+<script language="javascript">
+	
+	$(document).ready(function(){
+		$("#id_hs_refus_id option").addClass('3');
+		$("#id_hs_refus_id").chained("#id_hs_new_statut_id");
+	
+		$("#id_hs_new_statut_id").val(<?php echo $this->op_status_id ?>);
+	
+		$("#id_submit_statut").click(function() {
+			$('#btn_submit').loader('show');
+		});
+	
+		$('#id_form_change_statut').ajaxForm({
+			action:baseUrl+'/operation/description/modifierstatut',
+			success:function(data){
+				//affichage du message dans popup
+
+				$('#id_dialog_modifier_statut').dialog('close');
+
+				// maj affichage du statut
+				AjaxComponent.ajaxQuery(baseUrl+'/operation/description/updatestatutview', {
+					op_id : <?php echo $this->op_id ?>
+				}).success(function(html){
+					$('#id_div_histostatut').html(html);
+				});
+			},
+			complete:function() {
+				$('#btn_submit').loader('hide');
+			}
+		});
+	})
+</script>

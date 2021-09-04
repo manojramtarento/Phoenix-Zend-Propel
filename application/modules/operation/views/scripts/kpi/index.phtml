@@ -1,0 +1,283 @@
+<?php
+$this->title = $this->translate('KPI');
+$this->headTitle($this->title);
+$this->headScript()->appendFile($this->baseUrl() . '/js/operation/description/index.js');
+
+echo $this->FlashMessenger('error', 'popup');
+?>
+<?php echo $this->partial('partials/actionsbar.phtml', array('operation' => $this->operation)); ?>
+<input type="hidden" id="id_input_op_id" value="<?php echo $this->operation->getOpId() ?>" />
+<input type="hidden" id="id_input_op_cl_id" value="<?php echo $this->operation->getOpClId() ?>" />
+
+<div id="site-content">
+    <?php echo $this->partial('partials/menu.phtml'); ?>
+
+    <div id="content-bd">
+        <div class="list-actions">
+            <div class="unit col">
+                <a class="icon icon-32 icon-excel" href="<?php echo $this->url(array('format' => 'csv'), null, false) ?>" title="<?php echo $this->translate('Exporter au format Excel'); ?>"><?php echo $this->translate('Exporter au format Excel'); ?></a>
+            </div>
+        </div>
+        <div class="line">
+            <div class="unit size1of2 lastUnit">
+                <div class="box box-blue">
+                    <div class="box-hd">
+                        <h2 class="box-title title-icon icon-layers"><?php echo $this->translate('Demandes sur l\'opération'); ?></h2>
+                    </div>
+                    <div class="box-bd bd-grey">
+                        <div class="box">
+                            <div class="box-hd">
+                                <div class="line">
+                                    <h2 class="box-title unit size4of5 title-icon icon-cube"><?php echo $this->translate('Participations'); ?></h2>
+                                    <h2 class="box-title unit size1of5"></h2>
+                                </div>
+                            </div>
+                            <div class="box-bd">
+                                <div style="overflow:auto;max-height:150px;">
+                                    <table class="list">
+
+                                        <tr class="<?php echo $this->cycle(array('', 'alt'))->next() ?> " >
+                                            <td ><?php echo $this->translate('Courriers reçus'); ?></td>
+                                            <td><?php echo Phoenix_Data_Convert::formatNumber(!empty($this->participation_courriers) ? $this->participation_courriers : '0') ?></td>
+                                        </tr>
+
+                                        <tr class="<?php echo $this->cycle(array('', 'alt'))->next() ?> " >
+                                            <td><?php echo $this->translate('Web'); ?></td>
+                                            <td><?php echo Phoenix_Data_Convert::formatNumber(!empty($this->participation['WEB']) ? $this->participation['WEB'] : '0') ?></td>
+                                        </tr>
+
+                                        <tr class="<?php echo $this->cycle(array('', 'alt'))->next() ?> " >
+                                            <td><?php echo $this->translate('Sms'); ?></td>
+                                            <td><?php echo Phoenix_Data_Convert::formatNumber(!empty($this->participation['SMS']) ? $this->participation['SMS'] : '0') ?></td>
+                                        </tr>
+
+                                        <tr class="<?php echo $this->cycle(array('', 'alt'))->next() ?> " >
+                                            <td><?php echo $this->translate('Audiotel'); ?></td>
+                                            <td><?php echo Phoenix_Data_Convert::formatNumber(!empty($this->participation['AUD']) ? $this->participation['AUD'] : '0') ?></td>
+                                        </tr>
+
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="box">
+                            <div class="box-hd">
+                                <div class="line">
+                                    <h2 class="box-title unit size4of5 title-icon icon-cube"><?php echo $this->translate('Nombre total de demandes saisies'); ?></h2>
+                                    <h2 class="box-title unit size1of5"><?php echo Phoenix_Data_Convert::formatNumber(!empty($this->total_dem) ? $this->total_dem : '0') ?></h2>
+                                </div>
+                            </div>
+                            <?php if (!empty($this->repartition_dem_support)) { ?>
+                                <div class="box-bd">
+                                    <div style="overflow:auto;">
+                                        <table class="list ">
+
+                                            <thead>
+                                                <tr>
+                                                    <th class="column-noborder"><span><?php echo $this->translate('Répartition par support de participations'); ?></span></th>
+                                                    <th class="column-noborder"></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+
+                                                <?php foreach ($this->repartition_dem_support as $oSupport) { ?>
+                                                    <tr class="<?php echo $this->cycle(array('', 'alt'))->next() ?> " >
+                                                        <td><?php echo $oSupport->type_integration_libelle ?></td>
+                                                        <td><?php echo Phoenix_Data_Convert::formatNumber($oSupport->volume) ?></td>
+                                                    </tr>
+                                                <?php } ?>
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            <?php } ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="line">
+            <div class="unit size1of2 lastUnit">
+                <div class="box box-blue">
+                    <div class="box-hd">
+                        <h2 class="box-title title-icon icon-layers"><?php echo $this->translate('Dossiers uniques traités'); ?></h2>
+                    </div>
+                    <div class="box-bd bd-grey">
+                        <div class="box">
+                            <div class="box-hd">
+                                <div class="line">
+                                    <h2 class="box-title unit size4of5 title-icon icon-cube"><?php echo $this->translate('Nombre total de dossiers traités'); ?></h2>
+                                    <h2 class="box-title unit size1of5"><?php echo Phoenix_Data_Convert::formatNumber(!empty($this->total) ? $this->total : '0') ?></h2>
+                                </div>
+                            </div>
+                            <?php if (!empty($this->repartition_support)) { ?>
+                                <div class="box-bd">
+                                    <div style="overflow:auto;">
+                                        <table class="list ">
+
+                                            <thead>
+                                                <tr>
+                                                    <th class="column-noborder"><span><?php echo $this->translate('Répartition par support de participations'); ?></span></th>
+                                                    <th class="column-noborder"></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+
+                                                <?php foreach ($this->repartition_support as $oSupport) { ?>
+                                                    <tr class="<?php echo $this->cycle(array('', 'alt'))->next() ?> " >
+                                                        <td><?php echo $oSupport->type_integration_libelle ?></td>
+                                                        <td><?php echo Phoenix_Data_Convert::formatNumber($oSupport->volume) ?></td>
+                                                    </tr>
+                                                <?php } ?>
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            <?php } ?>
+                        </div>
+
+                        <div class="box">
+                            <div class="box-hd">
+                                <div class="line">
+                                    <h2 class="box-title unit size4of5 title-icon icon-cube"><?php echo $this->translate('Conformes'); ?></h2>
+                                    <h2 class="box-title unit size1of5"><?php echo Phoenix_Data_Convert::formatNumber(!empty($this->conformes) ? $this->conformes : '0') ?></h2>
+                                </div>
+                            </div>
+
+                            <div class="box-bd">
+                                <?php if (!empty($this->cf_avec_primes)) { ?>
+                                    <div class="box">
+                                        <div class="box-hd">
+                                            <div class="line">
+                                                <h2 class="box-title unit size4of5 title-icon icon-cube"><?php echo $this->translate('Conformes avec primes'); ?></h2>
+                                                <h2 class="box-title unit size1of5"><?php echo Phoenix_Data_Convert::formatNumber(!empty($this->cf_avec_primes) ? $this->cf_avec_primes : '0') ?></h2>
+                                            </div>
+                                        </div>
+                                        <div class="box-bd">
+                                            <div style="overflow:auto;">
+                                                <table class="list ">
+                                                    <thead>
+                                                        <tr>
+                                                            <th  class="column-noborder"><span class="notsortable"><?php echo $this->translate('Répartition par combinaison de primes'); ?></span></th>
+                                                            <th class="column-noborder"></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+
+                                                        <?php foreach ($this->repartition_primes as $oPrime) { ?>
+                                                            <tr class="<?php echo $this->cycle(array('', 'alt'))->next() ?> " >
+                                                                <td><?php echo $oPrime->primes ?></td>
+                                                                <td><?php echo Phoenix_Data_Convert::formatNumber($oPrime->volume) ?></td>
+                                                            </tr>
+                                                        <?php } ?>
+
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php } ?>
+                                <?php if (!empty($this->cf_sans_primes)) { ?>
+                                    <div class="box">
+                                        <div class="box-hd">
+                                            <div class="line">
+                                                <h2 class="box-title unit size4of5 title-icon icon-cube"><?php echo $this->translate('Conformes sans primes'); ?></h2>
+                                                <h2 class="box-title unit size1of5"><?php echo Phoenix_Data_Convert::formatNumber(!empty($this->cf_sans_primes) ? $this->cf_sans_primes : '0') ?></h2>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php } ?>
+
+                            </div>
+                        </div>
+
+                        <div class="box">
+                            <div class="box-hd">
+                                <div class="line">
+                                    <h2 class="box-title unit size4of5 title-icon icon-cube"><?php echo $this->translate('Non conformes'); ?></h2>
+                                    <h2 class="box-title unit size1of5"><?php echo Phoenix_Data_Convert::formatNumber(!empty($this->non_conformes) ? $this->non_conformes : '0') ?></h2>
+                                </div>
+                            </div>
+                            <div class="box-bd">
+                                <?php if (!empty($this->remediables)) { ?>
+                                    <div class="box">
+                                        <div class="box-hd">
+                                            <div class="line">
+                                                <h2 class="box-title unit size4of5 title-icon icon-cube"><?php echo $this->translate('Remediables'); ?></h2>
+                                                <h2 class="box-title unit size1of5"><?php echo Phoenix_Data_Convert::formatNumber(!empty($this->remediables) ? $this->remediables : '0') ?></h2>
+                                            </div>
+                                        </div>
+                                        <div class="box-bd">
+                                            <div style="overflow:auto;">
+                                                <table class="list ">
+                                                    <thead>
+                                                        <tr>
+                                                            <th  class="column-noborder"><span class="notsortable"><?php echo $this->translate('Répartition par premier motif remédiable'); ?></span></th>
+                                                            <th class="column-noborder"></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+
+                                                        <?php foreach ($this->repartition_remediables as $oRemediable) { ?>
+                                                            <tr class="<?php echo $this->cycle(array('', 'alt'))->next() ?> " >
+                                                                <td><?php echo $oRemediable->anomalies_libelle ?></td>
+                                                                <td><?php echo Phoenix_Data_Convert::formatNumber($oRemediable->volume) ?></td>
+                                                            </tr>
+                                                        <?php } ?>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php } ?>
+                                <?php if (!empty($this->irremediables)) { ?>
+                                    <div class="box">
+                                        <div class="box-hd">
+                                            <div class="line">
+                                                <h2 class="box-title unit size4of5 title-icon icon-cube"><?php echo $this->translate('Irrémediables'); ?></h2>
+                                                <h2 class="box-title unit size1of5"><?php echo Phoenix_Data_Convert::formatNumber(!empty($this->irremediables) ? $this->irremediables : '0') ?></h2>
+                                            </div>
+                                        </div>
+                                        <div class="box-bd">
+                                            <div style="overflow:auto;">
+                                                <table class="list ">
+                                                    <thead>
+                                                        <tr>
+                                                            <th  class="column-noborder"><span class="notsortable"><?php echo $this->translate('Répartition par premier motif irrémédiable'); ?></span></th>
+                                                            <th class="column-noborder"></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+
+                                                        <?php foreach ($this->repartition_irremediables as $oIrremediable) { ?>
+                                                            <tr class="<?php echo $this->cycle(array('', 'alt'))->next() ?> " >
+                                                                <td><?php echo $oIrremediable->anomalies_libelle ?></td>
+                                                                <td><?php echo Phoenix_Data_Convert::formatNumber($oIrremediable->volume) ?></td>
+                                                            </tr>
+                                                        <?php } ?>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php } ?>
+                            </div>
+                        </div>
+
+                        <div class="box">
+                            <div class="box-hd">
+                                <div class="line">
+                                    <h2 class="box-title unit size4of5 title-icon icon-cube"><?php echo $this->translate('Demandes d\'informations'); ?></h2>
+                                    <h2 class="box-title unit size1of5"><?php echo Phoenix_Data_Convert::formatNumber(!empty($this->sans_statut) ? $this->sans_statut : '0') ?></h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

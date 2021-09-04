@@ -1,0 +1,135 @@
+<div id='validation_errors_container' class="errors-msg" hidden="hidden">
+</div>
+
+
+<!-- DIALOG / MODIFIER PRESTA D'ACHAT -->
+<form id="id_form_purchase_service" action="<?php echo $this->url(array('module' => 'couts', 'controller' => 'index', 'action' => 'updateprestaachat')) . '?' . $_SERVER['QUERY_STRING'] ?>" enctype="multipart/form-data" method="post">
+    <input type="hidden" name="submit_update_presta" value="1">
+    <input type="hidden" name="op_prest_id" value="<?php echo $this->op_prest_id; ?>">
+
+    <div class="line form-line">
+        <label class="unit size1of4 form-label" for="id_op_prest_achat_num_facture"><?php echo $this->translate('Numéro de facture'); ?> :</label>
+        <?php echo Phoenix_View_Helper_Html::input(array('name' => 'op_prest_achat_num_facture', 'value' => $this->op_prest_achat_num_facture, 'class' => 'form-input size1of4 lastUnit')); ?>
+    </div>
+
+    <div class="line form-line">
+        <label class="unit size1of4 form-label" for="id_op_prest_achat_date_facture"><?php echo $this->translate('Date de la facture'); ?> :</label>
+        <div class="unit size2of4 lastUnit date">
+            <?php echo Phoenix_View_Helper_Html::input(array('name' => 'op_prest_achat_date_facture', 'value' => $this->op_prest_achat_num_facture, 'class' => 'date-input', 'placeholder' => 'JJ/MM/AAAA', 'maxlenght' => '10')); ?>
+        </div>
+    </div>
+
+    <div class="line form-line">
+        <label class="unit size1of4 form-label" for="id_op_prest_achat_quantite"><?php echo $this->translate('Quantité'); ?> :</label>
+        <?php echo Phoenix_View_Helper_Html::input(array('name' => 'op_prest_achat_quantite', 'value' => $this->op_prest_achat_quantite, 'class' => 'form-input size1of4 lastUnit text-right')); ?>
+    </div>
+
+    <div class="line form-line">
+        <label class="unit size1of4 form-label" for="id_op_prest_achat_cout_externe"><?php echo $this->translate('Coût facture (unitaire externe)'); ?> :</label>
+        <div class="unit size1of4 col">
+            <?php echo Phoenix_View_Helper_Html::input(array('name' => 'op_prest_achat_cout_externe', 'value' => $this->op_prest_achat_cout_externe, 'class' => 'form-input size1of1 text-right')); ?>
+        </div>
+        <span class="unit form-text">€ (<?php echo $this->translate('estimé'); ?> : <?php echo Phoenix_Data_Convert::formatMoney($this->op_prest_ceestim, false, false); ?>)</span>
+    </div>
+
+    <div class="line form-line">
+        <label class="unit size1of4 form-label" for="id_op_prest_achat_cout_interne"><?php echo $this->translate('Coût interne'); ?> :</label>
+        <div class="unit size1of4 col">
+            <?php echo Phoenix_View_Helper_Html::input(array('name' => 'op_prest_achat_cout_interne', 'value' => $this->op_prest_achat_cout_interne, 'class' => 'form-input size1of1 text-right')); ?>
+        </div>
+        <span class="unit form-text">€ (<?php echo $this->translate('estimé'); ?> : <?php echo Phoenix_Data_Convert::formatMoney($this->op_prest_ciestim, false, false); ?>)</span>
+    </div>
+
+    <div class="line form-section">
+        <label class="unit size1of4 form-label"><?php echo $this->translate('Ajout  facture'); ?> :</label>
+        <div class="unit size3of4 lastUnit">
+            <?php echo Phoenix_View_Helper_Html::input(array('type' => 'file', 'name' => 'facture')); ?>
+        </div>
+    </div>
+
+    <div class="line form-section">
+        <label class="unit size1of4 form-label"></label>
+        <div class="unit size3of4 lastUnit">
+            <?php echo Phoenix_View_Helper_Html::checkbox(array('name' => 'op_prest_couts_valides', 'value' => 1, 'default_value' => $this->op_prest_couts_valides)); ?>
+            <label for="id_op_prest_couts_valides"> <?php echo $this->translate('Finaliser les coûts'); ?></label>
+        </div>
+    </div>
+
+    <div class="line form-section">
+        <input type="submit" value="<?php echo $this->translate('Valider'); ?>" class="btn btn-orange push1of4">
+    </div>
+</form>
+<div class="section">
+    <div class="section-hd">
+        <h2 class="section-title"><?php echo $this->translate('Factures d\'achat déjà associées'); ?></h2>
+    </div>
+
+    <div class="section-bd">
+        <table class="list list-simple">
+            <thead>
+                <tr>
+                    <th width="26" class="column-noborder"></th>
+                    <th width="26" class="column-noborder"></th>
+                    <th><span class="notsortable"><?php echo $this->translate('Date facture'); ?></span></th>
+                    <th><span class="notsortable"><?php echo $this->translate('Numéro'); ?></span></th>
+                    <th><span class="notsortable"><?php echo $this->translate('Quantité'); ?></span></th>
+                    <th><span class="notsortable"><?php echo $this->translate('Cout int.'); ?></span></th>
+                    <th><span class="notsortable"><?php echo $this->translate('Cout ext.'); ?></span></th>
+                </tr>
+            </thead>
+            <tbody id="id_div_facturesversions">
+                <?php echo $this->partial('/index/facturesversions.phtml', array('factures' => $this->factures)) ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<script language="javascript">
+    $(document).ready(function() {
+        $('#id_form_purchase_service').submit(function() {
+            $('#validation_errors_container').html('');
+            $('#validation_errors_container').attr('hidden', 'hidden');
+            var aFormData = $('input[name="op_prest_id"]').serializeArray();
+            var sServiceId = aFormData[0].value;
+
+            $.ajax({
+                type: "POST",
+                url: baseUrl + '/couts/index/updateprestaachat',
+                data: new FormData(this),
+                processData: false,
+                contentType: false
+            }).success(function(sResponse) {
+                if (sResponse.action === 0 && typeof sResponse.msg !== 'undefined') {
+                    $('#validation_errors_container').html(sResponse.msg);
+                    $('#validation_errors_container').removeAttr('hidden');
+                } else {
+                    AjaxComponent.ajaxDiv(baseUrl + '/couts/index/facturesversions', {'op_prest_id': sServiceId}, 'id_div_facturesversions', null, true);
+                    // Empty the field inputs
+                    $('#id_op_prest_achat_num_facture').val('');
+                    $('#id_op_prest_achat_date_facture').val('');
+                    $('#id_op_prest_achat_quantite').val('');
+                    $('#id_op_prest_achat_cout_externe').val('');
+                    $('#id_op_prest_achat_cout_interne').val('');
+                    $('#id_facture').val('');
+                }
+                $("#id_dialog_update_presta_achat").dialog({close: function() {
+                        Component.refreshPage();
+                    }});
+            });
+
+            return false;
+        });
+
+
+
+
+        $('#id_op_prest_achat_date_facture').datepicker({
+            showOn: "button",
+            buttonText: "",
+            altFormat: "yyyy-mm-dd"
+        });
+
+    });
+
+</script>

@@ -1,0 +1,128 @@
+<form id="id_form_search" method="post">
+    <div class="line form-line">
+        <label class="unit size1of6 form-label" for="find_date"><?php echo $this->translate('Date'); ?> :</label>
+        <div class="unit size1of2">
+            <div class="unit size1of4">
+                <?php echo Phoenix_View_Helper_Html_Select::selectComparateur(array('name' => 'find_date_comp', 'class' => 'form-select')) ?>
+            </div>
+            <div class="unit size3of4 date">
+                <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_date', 'value' => $this->getParam('find_date'), 'class' => 'date-input', 'placeholder' => $this->translate('JJ/MM/AAAA'), 'maxlenght' => '10')); ?>
+            </div>
+        </div>
+        <input type="submit" class="btn btn-big btn-orange" id="id_btn_search">
+    </div>
+    <input type="hidden" name="op_id" value="<?php echo $this->opId ?>">
+    <input type="hidden" name="file_type" value="<?php echo $this->fileType ?>">
+</form>
+
+<table class="list list-main">
+    <thead>
+        <tr>
+            <th><span class="notsortable"><?php echo $this->translate('date'); ?></span></th>
+            <th><span class="notsortable"><?php echo $this->translate('fichier'); ?></span></th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php
+        $aDefaultStatsDonwloaderAction = array('module' => 'operation', 'controller' => 'description', 'action' => 'getstatfile');
+        $aNewStatsPdfDownloaderAction = array('module' => 'statistics', 'controller' => 'index', 'action' => 'downloadstatisticspdf');
+        foreach ($this->stats as $stat) {
+
+            $aRedirectionParameters = array();
+            $aRedirectionParameters['file_id'] = $stat->getFileId();
+            switch ($stat->getFileCategoryId()) {
+                case RFileCategories::STAT_EXCEL:
+                    $icon = 'icon-excel';
+                    $aRedirectionParameters += $aDefaultStatsDonwloaderAction;
+                    break;
+                case RFileCategories::STAT_PDF:
+                    $icon = 'icon-pdf';
+                    $aRedirectionParameters += $aDefaultStatsDonwloaderAction;
+                    break;
+                case RFileCategories::STAT_JSON:
+                    $icon = 'icon-pdf';
+                    $aRedirectionParameters += $aNewStatsPdfDownloaderAction;
+                    break;
+            }
+            ?>
+
+            <tr>
+                <td><?php echo $stat->getDateCreate('d/m/Y H:i:s') ?></td>
+                <td><a href="<?php echo $this->url(($aRedirectionParameters), null, true) ?>" title="<?php echo $this->translate('Voir les statistiques'); ?>" class="link-icon title-icon <?php echo $icon ?>"></a></td>
+            </tr>
+        <?php } ?>
+    </tbody>
+</table>
+
+
+<div class="pagination">
+    <?php
+    //print_r($this);
+    if ($this->stats->getNbResults()) {
+        $lastItemNumber = $this->stats->getLastIndex();
+        $firstItemNumber = $this->stats->getFirstIndex();
+        if ($firstItemNumber < 1) {
+            $firstItemNumber = 1;
+        }
+        ?>
+        <!-- First page link -->
+        <?php if ($this->stats->getPreviousPage()) { ?>
+            <a href="javascript:paginate(<?php echo $this->stats->getFirstPage() ?>,<?php echo $this->opId ?>,<?php echo $this->fileType ?>)" class="page-first" title="<?php echo $this->translate('Première page'); ?>">
+                &lt;&lt;
+            </a>
+        <?php } ?>
+
+        <!-- Previous page link -->
+        <?php if ($this->stats->getPreviousPage()) { ?>
+            <a href="javascript:paginate(<?php echo $this->stats->getPreviousPage() ?>,<?php echo $this->opId ?>,<?php echo $this->fileType ?>)" class="page-prev" title="<?php echo $this->translate('Page précédente'); ?>">
+                &lt;
+            </a>
+        <?php } ?>
+
+        <span class="page-current"><?php echo $firstItemNumber; ?> à <?php echo $lastItemNumber; ?></span>
+        <span class="page-total">sur <?php echo $this->stats->getNbResults() ?></span>
+
+        <!-- Next page link -->
+        <?php if ($this->stats->getNextPage()) { ?>
+            <a href="javascript:paginate(<?php echo $this->stats->getNextPage() ?>,<?php echo $this->opId ?>,<?php echo $this->fileType ?>)" class="page-next" title="<?php echo $this->translate('Page suivante'); ?>">
+                &gt;
+            </a>
+        <?php } ?>
+
+        <!-- Last page link -->
+        <?php if ($this->stats->getNextPage()) { ?>
+            <a href="javascript:paginate(<?php echo $this->stats->getLastPage() ?>,<?php echo $this->opId ?>,<?php echo $this->fileType ?>)" class="page-last" title="<?php echo $this->translate('Dernière page'); ?>">
+                &gt;&gt;
+            </a>
+        <?php } ?>
+    <?php } else { ?>
+        <?php echo $this->translate('Pas de résultat'); ?>
+    <?php } ?>
+</div>
+
+<script language="javascript">
+
+    function paginate(page, opId, fileType) {
+        AjaxComponent.ajaxDiv(
+                '/operation/description/statistiques',
+                {page: page, op_id: opId, file_type: fileType, find_date: $('#id_find_date').val(), find_date_comp: $('#id_find_date_comp').val()},
+        'id_dialog_statistiques'
+                );
+    }
+
+    AjaxComponent.ajaxForm(
+            '/operation/description/statistiques',
+            'id_form_search',
+            'id_dialog_statistiques'
+            );
+
+
+    // -- date picker
+    $.datepicker.setDefaults($.datepicker.regional[ "fr" ]);
+    $('.date .date-input').datepicker({
+        showOn: "button",
+        buttonText: "",
+        altFormat: "yyyy-mm-dd"
+    });
+
+</script>

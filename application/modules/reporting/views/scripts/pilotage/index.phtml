@@ -1,0 +1,152 @@
+<?php
+$this->title = $this->translate('Indicateurs de pilotages');
+$this->headTitle($this->title);
+//print_r($_SESSION);
+echo $this->FlashMessenger('error');
+
+echo $this->FlashMessenger('default');
+
+$bDisplayResult = (isset($this->paginator) && $this->paginator->count() != 0) ? true : false;
+?>
+
+<div id="actions-bar" class="actions-bar-indicators">
+    <div class="unit size1of5">
+        <h1 class="page-title"><?php echo $this->title; ?></h1>
+    </div>
+
+    <div class="unit size2of5">
+        <form method="get" id="pilotage_form" action ="<?php echo $this->url(array('module' => 'reporting', 'controller' => 'pilotage'), null, true) ?>" >
+            <div class="line">
+                <div class="unit size1of1 gutter10">
+                    <div class="section">
+                        <div class="section-hd">
+                            <h2 class="section-title"><?php echo $this->translate('Indicateurs'); ?></h2>
+                        </div>
+                        <div class="section-bd">
+                            <div class="line form-line align-fields-inblock">
+                                <label class="unit size1of2 form-label" for="id_find_indicateur_id"> <?php echo $this->translate('Indicateurs'); ?> :</label>
+                                <?php echo Phoenix_View_Helper_Html::select(array('name' => 'find_indicateur_id', 'class' => 'form-select unit size1of2', 'disabled' => $this->DisableSelectList), $this->aIndicateurNames, array('default_label' => $this->translate('Choisir') . '...')) ?>
+                            </div>
+                            <div class="line form-line align-fields-inblock">
+                                <label class="unit size1of2 form-label" for="id_find_indicateur_group_by_id"> <?php echo $this->translate('Afficher par'); ?> :</label>
+                                <?php echo Phoenix_View_Helper_Html::select(array('name' => 'find_indicateur_group_by_id', 'class' => 'form-select unit size1of2'), $this->aIndicateurGroupments, array('default_label' => $this->translate('Choisir') . '...')); ?>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="date-filter" class="section">
+                        <div class="section-hd">
+                            <h2 class="section-title"><?php echo $this->translate('Période'); ?></h2>
+                        </div>
+                        <div class="section-bd">
+                            <div class="line form-line align-fields-inblock">
+                                <label class="unit size1of2 form-label" for="id_find_date_min"><?php echo $this->translate('Date début'); ?> :</label>
+                                <div class="unit size1of2 date">
+                                    <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_date_min', 'class' => 'date-input-min size1of2', 'id' => 'data-min-date', 'placeholder' => $this->translate('JJ/MM/AAAA'), 'maxlenght' => '10')); ?>
+                                </div>
+                            </div>
+                            <div class="line form-line align-fields-inblock">
+                                <label class="unit size1of2 form-label" for="id_find_date_date_max"><?php echo $this->translate('Date fin'); ?> :</label>
+                                <div class="unit size1of2 date">
+                                    <?php echo Phoenix_View_Helper_Html::input(array('name' => 'find_date_max', 'class' => 'date-input-max size1of2', 'id' => 'data-max-date', 'placeholder' => $this->translate('JJ/MM/AAAA'), 'maxlenght' => '10')); ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center">
+
+                        <input type="submit" name="findbyfields" value="<?php echo $this->translate('Afficher le rapport') ?>" class="btn btn-orange">
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="site-content" style = "clear: both">
+    <div class="content-list">
+        <?php if (isset($this->paginator)) { ?>
+            <div class="list-actions">
+                <?php if ($bDisplayResult) { ?>
+                    <div class = "unit col">
+                        <a class = "icon icon-32 icon-excel" href = "<?php echo $this->url(array('format' => 'csv'), null, false) . '?' . $_SERVER['QUERY_STRING'] ?>" title = "<?php echo $this->translate('Exporter au format Excel'); ?>"><?php echo $this->translate('Exporter au format Excel'); ?></a>
+                    </div>
+                <?php } ?>
+
+                <div class="unit rightUnit">
+                    <div class="unit col">
+                        <?php echo $this->NotifySearch()->link() ?>
+                    </div>
+                    <div class="unit">
+                        <?php echo $this->paginationControl($this->paginator, 'Sliding', '/partials/pagination.phtml'); ?>
+                    </div>
+                </div>
+            </div>
+            <table class="list list-main">
+                <thead>
+                    <tr>
+                        <?php if ($bDisplayResult) { ?>
+                            <?php foreach ($this->header as $sKey => $sElement) { ?>
+                                <th><?php echo My_View_Helper_Html::UrlOrderBy($sKey, $sElement); ?></th>
+                            <?php } ?>
+                        <?php } ?>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($this->paginator as $aIndicator) { ?>
+                        <tr class="<?php echo $this->cycle(array('', 'alt'))->next() ?>">
+                            <?php foreach ($aIndicator as $sIndicatorElement) { ?>
+                                <?php if (is_array($sIndicatorElement) && $sIndicatorElement[0] === 'montant') { ?>
+                                    <td><span style="white-space: nowrap;text-align : right;display:inline-block;width:100%"><?php echo $sIndicatorElement[1] ?></span></td>
+                                    <?php } else { ?>
+                                    <td><?php echo $sIndicatorElement ?></td>
+                                <?php } ?>
+                            <?php } ?>
+                        <tr/>
+                    <?php } ?>
+                </tbody>
+            </table>
+        <?php } ?>
+    </div>
+</div>
+
+<script language="javascript">
+    $(document).ready(function () {
+
+        // chainage de la select du gouper par/ au champs indicateurs
+        $('#id_find_indicateur_group_by_id').chained('#id_find_indicateur_id');
+        toogleFilterDate();
+        $('#id_find_indicateur_id').change(
+                function () {
+                    $('#id_find_indicateur_group_by_id option:selected').prop("selected", false);
+                    toogleFilterDate();
+                }
+        );
+    });
+
+    function toogleFilterDate() {
+        if ($('#id_find_indicateur_id option:selected').hasClass('filter_date')) {
+            $('#date-filter').show();
+        } else {
+            $('#date-filter').hide();
+        }
+    }
+
+    $('#pilotage_form').submit(function () {
+        if ($('#id_find_indicateur_id').is(':disabled')) {
+            Component.modalDialog('<ul><li><?php echo addslashes($this->translate('Vous n\'avez pas le droit d\'accès aux indicateurs de pilotage')); ?></li></ul>', {type: "error"});
+            return false;
+        }
+
+        if ($('#id_find_indicateur_id').val() === '') {
+            Component.modalDialog('<ul><li><?php echo addslashes($this->translate('Merci de préciser le nom de l\'indicateurs avant d\'afficher le rapport')); ?></li></ul>', {type: "warning"});
+            return false;
+        }
+
+        if ($('#id_find_indicateur_group_by_id').val() === '') {
+            Component.modalDialog('<ul><li><?php echo addslashes($this->translate('Merci de préciser le critère "Afficher par" avant d\'afficher le rapport')); ?></li></ul>', {type: 'warning'});
+            return false;
+        }
+        return true;
+    });
+</script>

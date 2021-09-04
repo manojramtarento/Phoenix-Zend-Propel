@@ -1,0 +1,62 @@
+<form method="post" id="id_form_encaissement">
+	<input type="hidden" name="fact_id" value="<?php echo $this->getParam('fact_id') ?>" />
+	<div class="line form-line" >
+		<label class="unit size1of3 form-label" for=""><?php echo $this->translate('Facture');?> :</label>
+		<?php echo $this->facture->getFactReference() ?>
+	</div>	
+	<div class="line form-line" >
+		<label class="unit size1of3 form-label" for=""><?php echo $this->translate('Montant TTC');?> :</label>
+		<?php echo Phoenix_Data_Convert::formatMoney($this->facture->getFactMontantTtc()) ?> 
+	</div>	
+	<div class="line form-line" >
+		<label class="unit size1of3 form-label" for=""><?php echo $this->translate('Montant encaissé');?> :</label>
+		<?php echo Phoenix_Data_Convert::formatMoney($this->facture->getFactMontantEncaisse()) ?> 
+	</div>	
+	<div class="line form-line" >
+		<label class="unit size1of3 form-label" for=""><?php echo $this->translate('A payer');?> :</label>
+		<input type="hidden" id="id_input_a_payer" value="<?php echo $this->facture->getFactMontantTtc() - $this->facture->getFactMontantEncaisse() ?>"> 
+		<?php echo Phoenix_Data_Convert::formatMoney($this->facture->getFactMontantTtc() - $this->facture->getFactMontantEncaisse()) ?> 
+	</div>	
+	<!--<div class="line form-line">
+		<label class="unit size1of3 form-label" for=""><?php echo $this->translate('Type');?> :</label>
+	<?php echo Phoenix_View_Helper_Html::select(array('name' => '', 'class' => 'form-select unit size2of3 lastUnit'), array('total' => array('1'), 'partiel' => array('0')), array('default_label' => $this->translate('choisir').'...')); ?>
+	</div>-->
+	<div class="line form-line">
+		<label class="unit size1of3 form-label" for=""><?php echo $this->translate('Encaissement');?> :</label>
+		<div class="unit size2of3 lastUnit">
+			<?php echo Phoenix_View_Helper_Html::input(array('name' => 'fact_montant_encaisse', 'value' => '', 'class' => 'form-input size1of2')); ?>
+		</div>
+	</div>			
+	<div class="line form-section" id="id_div_fact_encaissement_total">
+		<?php echo Phoenix_View_Helper_Html::checkbox(array('value' => '1', 'default_value' => '', 'name' => 'fact_encaissement_total', 'class' => '')); ?>
+		<label for=""><?php echo $this->translate('En cas d\'encaissement partiel, choix de ne pas relancer le client pour le montant restant à payer (faire valider par la DAF)');?></label>
+	</div>
+	<div class="text-center">
+		<input type="hidden" value="1" name="form_submit" class="btn btn-orange">
+		<input type="submit" value="<?php echo $this->translate('Valider');?>" class="btn btn-orange">
+	</div>
+</form>
+
+
+<script language="javascript">
+	$(document).ready(function(){
+	
+		$('#id_form_encaissement').ajaxForm({action:'/comptabilite/factures/encaissement',divId:'id_popup_encaissement'});
+	
+		$('#id_fact_montant_encaisse').keyup(function(event){
+			var input=$('#id_fact_montant_encaisse').val();
+			input=input.replace(' ','');
+			input=input.replace(',','.');
+			
+			if(input < parseFloat($('#id_input_a_payer').val())){
+				
+				$('#id_div_fact_encaissement_total').show();
+			}else{
+				$('#id_div_fact_encaissement_total').hide();
+				$('#id_fact_encaissement_total').removeAttr('checked');
+			}
+		});
+	})
+
+
+</script>

@@ -1,0 +1,30 @@
+<?php 
+$this->title = "Prestations de l'opération";
+$this->headTitle($this->title);
+$this->headScript()->appendFile($this->baseUrl() . '/js/prestations.js');
+?>
+<script language="javascript">
+    var op_id =<?php echo $this->operation->getOpId() ?>;
+</script>
+<?php echo $this->partial('partials/actionsbar.phtml', array('operation' => $this->operation)); ?>
+
+<div id="site-content">
+    <?php echo $this->partial('partials/menu.phtml'); ?>
+    <div id="content-bd">
+        <div class="form-section">
+            <h1 class="page-title title-icon icon-doc">Param op</h1>
+        </div>
+        <div id="id_div_ajax_content">
+            <h1> En construction </h1>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+

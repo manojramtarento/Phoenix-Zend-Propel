@@ -1,0 +1,286 @@
+<?php
+$this->title = $this->translate('Fiche client');
+$this->headTitle($this->title);
+$bClientStatisticsIsAllowed = Phoenix_Auth_User::getInstance()->isAllowed(AclFonctionnalites::CLIENT_STATISTICS);
+echo $this->FlashMessenger('error');
+?>
+<?php echo $this->partial('partials/actionsbar.phtml', array('cl_id' => $this->cl_id, 'cl_libelle' => $this->cl_libelle)); ?>
+<div id="site-content">
+    <?php echo $this->partial('partials/menu.phtml', array('cl_id' => $this->cl_id)); ?>
+    <div id="content-bd">
+        <div class="line">
+            <div class="unit <?php echo $bClientStatisticsIsAllowed ? 'size1of2':'size1of1 lastunit' ?>">
+                <div class="box box-blue">
+                    <div class="box-hd">
+                        <h2 class="box-title"><?php echo $this->translate('Informations générales'); ?></h2>
+                    </div>
+                    <div class="box-bd">
+                        <form id="id_form_update" action="<?php echo $this->url(array('module' => 'client', 'controller' => 'fiche', 'action' => 'modification'), null, true) ?>" model_name="Clients" primary_value="<?php echo $this->getParam('cl_id'); ?>">
+                            <div class="line form-line">
+                                <label class="form-label unit size1of2" for="id_cl_libelle"><?php echo $this->translate('Nom du client'); ?> :</label>
+                                <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'cl_libelle', 'value' => $this->cl_libelle, 'class' => 'form-input unit size1of2 lastUnit')) ?>
+                            </div>
+
+                            <div class="line form-line">
+                                <label class="form-label unit size1of2" for="id_cl_type_id"><?php echo $this->translate('Catégorie'); ?> :</label>
+                                <?php echo Phoenix_View_Helper_Html::selectFromTable('View_Rclient_Types_Listing', array('name' => 'cl_type_id', 'value' => $this->cl_type_id, 'class' => 'form-select unit size1of2 lastUnit'), array('name' => 'cl_type_libelle', 'value' => 'cl_type_id'), array('default_label' =>$this->translate('choisir').'...','clause_order' => 'ordre asc', 'clause_where' => 'actif <> 0')) ?>
+                            </div>
+
+                            <div class="line form-line">
+                                <label class="form-label unit size1of2" for="id_cl_activity_id"><?php echo $this->translate('Secteur d\'activité'); ?> :</label>
+                                <?php echo Phoenix_View_Helper_Html::selectFromTable('View_Rclient_Activites_Listing', array('name' => 'cl_activity_id', 'value' => $this->cl_activity_id, 'class' => 'form-select unit size1of2 lastUnit'), array('name' => 'cl_activity_libelle', 'value' => 'cl_activity_id'), array('default_label' => $this->translate('choisir').'...','clause_order' => array('cl_type_id desc','parent_cl_activity_id asc','ordre asc'), 'clause_where' => 'actif <> 0')) ?>
+                            </div>
+
+                            <div class="line form-line">
+                                <label class="form-label unit size1of2" for="id_cl_dc_id"><?php echo $this->translate('Directeur de clientèle souhaité'); ?> :</label>
+                                <?php echo Phoenix_View_Helper_Html_Select::selectUsersByuserType(RUserTypes::KEY_ACCOUNT_MANAGER_USER_TYPE, array('name' => 'cl_dc_id', 'value' => $this->cl_dc_id, 'class' => 'form-select unit size1of2 lastUnit'), array('default_label' => $this->translate('Choisir') . '...'), array($this->cl_dc_id)); ?>
+                            </div>
+
+                            <div class="line form-line">
+                                <label class="form-label unit size1of2" for="id_cl_ct_gestion"><?php echo $this->translate('Contact de gestion par défaut'); ?> :</label>
+                                <!-- 32655 : Migration phoenix/migration des modules concaténation mysql -->
+                                <?php echo Phoenix_View_Helper_Html::selectFromTable('contacts', array('name' => 'cl_ct_gestion', 'value' => $this->cl_ct_gestion, 'class' => 'form-select unit size1of2 lastUnit'), array('name' => "CONCAT(COALESCE(ct_lastname,'') , ' ' , COALESCE(ct_firstname,''))", 'value' => 'ct_id'), array('clause_where' => "cl_id='" . $this->cl_id . "'", 'default_label' => 'Choisir...')); ?>
+                            </div>
+
+                            <div class="line form-line">
+                                <label class="form-label unit size1of2" for="id_cl_ct_facturation"><?php echo $this->translate('Chargé de facturation par défaut'); ?> :</label>
+                                <!-- 32655 : Migration phoenix/migration des modules concaténation mysql -->
+                                <?php echo Phoenix_View_Helper_Html::selectFromTable('contacts', array('name' => 'cl_ct_facturation', 'value' => $this->cl_ct_facturation, 'class' => 'form-select unit size1of2 lastUnit'), array('name' => "CONCAT(COALESCE(ct_lastname,'') , ' ' , COALESCE(ct_firstname,''))", 'value' => 'ct_id'), array('clause_where' => "cl_id='" . $this->cl_id . "'", 'default_label' => 'Choisir...')); ?>
+                            </div>
+                            <div class="line form-line">
+                                <label class="form-label unit size1of2" for="id_cl_exclude_of_q3_campaign"><?php echo $this->translate('Exclure le client des campagnes Q3'); ?> :</label>
+                                <?php echo Phoenix_View_Helper_Html::checkbox(array('name' => 'cl_exclude_of_q3_campaign', 'value' => '1', 'default_value' => $this->cl_exclude_of_q3_campaign, 'class' => '')); ?>
+                            </div>
+                        </form>
+
+                        <form id="frm-client-update-logo" method="post" action="" enctype="multipart/form-data">
+                            <div class="line form-line">
+                                <label class="form-label unit size1of2" for="id_cl_logo">Ajouter / Modifier un logo :</label>
+                                <?php echo Phoenix_View_Helper_Html::input(array('type' => 'file', 'name' => 'cl_logo', 'size' => '37', 'class' => 'form-input unit size1of2 lastUnit')) ?>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="box box-blue">
+                    <div class="box-hd">
+                        <h2 class="box-title"><?php echo $this->translate('Sites client'); ?></h2>
+                    </div>
+                    <div class="box-bd">
+                        <div id="sites_list"></div>
+
+                        <div class="text-center">
+                            <input type="submit" value="<?php echo $this->translate('Ajouter une adresse'); ?>" class="btn btn-orange" id="btn_new_address" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+<?php if($bClientStatisticsIsAllowed){  ?>
+            <div class="unit size1of2 lastUnit">
+                <div class="box">
+                    <div class="box-hd">
+                        <h2 class="box-title title-icon icon-chart"><?php echo $this->translate('Statistiques client'); ?></h2>
+                    </div>
+                    <div class="box-bd">
+                        <div class="section">
+                            <div class="section-hd">
+                                <h2 class="section-title"><?php echo $this->translate('Répartition des opérations par typologie'); ?></h2>
+                            </div>
+                            <div id="graphData_nbOpByType" class="section-bd text-center">
+                                <img src="<?php echo $this->url(array('module' => 'client', 'controller' => 'fiche', 'action' => 'getgraph1', 'cl_id' => $this->cl_id), null, true); ?>" alt="<?php echo $this->translate('Pas de données'); ?>">
+                            </div>
+                        </div>
+                        <div class="section">
+                            <div class="section-hd">
+                                <h2 class="section-title"><?php echo $this->translate('label_operation_distribution_by_business'); ?></h2>
+                            </div>
+                            <div id="graphData_nbOpByAct" class="section-bd text-center">
+                                <img src="<?php echo $this->url(array('module' => 'client', 'controller' => 'fiche', 'action' => 'getgraph2', 'cl_id' => $this->cl_id), null, true); ?>" alt="<?php echo $this->translate('Pas de données'); ?>">
+                            </div>
+                        </div>
+
+                        <div class="section-separator"></div>
+
+                        <table class="list">
+                            <tbody>
+                                <tr class="noborder">
+                                    <td class="column-border"></td>
+                                    <?php foreach ($this->stats['byyear'] as $year => $data) { ?>
+                                        <td class="column-border section-title"><?php echo $year; ?></td>
+                                    <?php } ?>
+                                </tr>
+
+                                <tr class="alt noborder">
+                                    <td class="column-border"><?php echo $this->translate('Nombre de devis créés'); ?></td>
+                                    <?php foreach ($this->stats['byyear'] as $data) { ?>
+                                        <td class="column-border"><?php echo $data['nb_devis_crees']; ?></td>
+                                    <?php } ?>
+                                </tr>
+
+                                <tr class="noborder">
+                                    <td class="column-border">
+                                        <span title='<?php echo $this->translate('Sur les devis créés précédemment, combien sont arrivés à terme'); ?>'><?php echo $this->translate('Taux de transformation'); ?></title>
+                                    </td>
+                                    <?php foreach ($this->stats['byyear'] as $year => $data) { ?>
+                                        <td class="column-border">
+                                            <?php
+                                            if (!empty($data['nb_devis_crees']) && !empty($data['nb_devis_crees_et_acceptes'])) {
+                                                $text = "Sur les " . $data['nb_devis_crees'] . " devis créés en " . $year . ", " . $data['nb_devis_crees_et_acceptes'] . " ont étaient acceptés/cloturés";
+                                                $taux_transfo = round(($data['nb_devis_crees_et_acceptes'] / $data['nb_devis_crees']) * 100);
+
+                                                echo "<span title='$text'>$taux_transfo %</span>";
+                                            } else {
+                                                echo "N.C";
+                                            }
+                                            ?>
+                                        </td>
+                                    <?php } ?>
+                                </tr>
+
+                                <tr class="alt noborder">
+                                    <td class="column-border"><?php echo $this->translate('Nombre d\'opérations acceptées'); ?></td>
+                                    <?php foreach ($this->stats['byyear'] as $data) { ?>
+                                        <td class="column-border"><?php echo $data['nb_devis_acceptes']; ?></td>
+                                    <?php } ?>
+                                </tr>
+
+                                <tr class="noborder">
+                                    <td class="column-border"><?php echo $this->translate('Chiffre facturé'); ?></td>
+                                    <?php foreach ($this->stats['byyear'] as $data) { ?>
+                                        <td class="column-border"><?php echo Phoenix_Data_Convert::formatMoney($data['chiffre_facture']); ?> </td>
+                                    <?php } ?>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="section-separator"></div>
+                        <table class="list">
+                            <tbody>
+                                <tr class="noborder">
+                                    <td colspan="2" class="section-title"><?php echo $this->translate('Solde de compte'); ?></td>
+                                </tr>
+                                <tr class="alt noborder">
+                                    <td><?php echo $this->translate('Réalisé'); ?></td>
+                                    <td align="right"><?php echo Phoenix_Data_Convert::formatMoney($this->stats['global']['solde_realise']); ?> </td>
+                                </tr>
+                                <tr class="noborder">
+                                    <td><?php echo $this->translate('Facturé'); ?></td>
+                                    <td align="right"><?php echo Phoenix_Data_Convert::formatMoney($this->stats['global']['solde_facture']); ?> </td>
+                                </tr>
+                                <tr class="alt noborder">
+                                    <td><?php echo $this->translate('Encaissé'); ?></td>
+                                    <td align="right"><?php echo Phoenix_Data_Convert::formatMoney($this->stats['global']['solde_encaisse']); ?> </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="section-separator"></div>
+                        <table class="list">
+                            <tbody>
+                                <tr class="noborder">
+                                    <td colspan="2" class="section-title"><?php echo $this->translate('Chiffre d\'affaire'); ?></td>
+                                </tr>
+                                <tr class="alt noborder">
+                                    <td><?php echo $this->translate('CA à T'); ?></td>
+                                    <td align="right"><?php echo Phoenix_Data_Convert::formatMoney($this->stats['global']['ca_n']); ?> </td>
+                                </tr>
+                                <tr class="noborder">
+                                    <td>CA à N-1 à T equ</td>
+                                    <td align="right"><?php echo Phoenix_Data_Convert::formatMoney($this->stats['global']['ca_n1']); ?> </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="section-separator"></div>
+                        <table class="list">
+                            <tbody>
+                                <tr class="noborder">
+                                    <td class="section-title"><?php echo $this->translate('Trésorerie consolidée'); ?></td>
+                                    <td align="right"><?php echo Phoenix_Data_Convert::formatMoney($this->stats['global']['tresorerie_consolidee']); ?> </td>
+                                </tr>
+                                <tr class="noborder">
+                                    <td colspan="2" style="font-size:10px;"><?php echo $this->translate('Total des fonds dispos (hors découverts)') ?></td>
+                                </tr>
+                                <tr class="noborder">
+                                    <td class="section-title"><?php echo $this->translate('Découverts consolidés'); ?></td>
+                                    <td align="right"><?php echo Phoenix_Data_Convert::formatMoney($this->stats['global']['consolidated_overdrafts']); ?> </td>
+                                </tr>
+                                <tr class="noborder">
+                                    <td colspan="2" style="font-size:10px;"><?php echo $this->translate('Total des autorisations de découvert accordés') ?></td>
+                                </tr>
+                                <tr class="noborder">
+                                    <td class="section-title"><?php echo $this->translate('Fonds requis à date consolidés'); ?></td>
+                                    <td align="right"><?php echo Phoenix_Data_Convert::formatMoney($this->stats['global']['required_cash']); ?> </td>
+                                </tr>
+                                <tr class="noborder">
+                                    <td colspan="2" style="font-size:10px;"><?php echo $this->translate('Total des fonds requis') ?></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+<?php } ?>
+        </div>
+    </div>
+</div>
+
+<script language="javascript">
+
+    $(document).ready(function() {
+        refreshSitesList();
+    })
+
+    function refreshSitesList() {
+        AjaxComponent.ajaxDiv(baseUrl + '/client/fiche/sites', {cl_id: <?php echo $this->cl_id; ?>}, 'sites_list');
+    }
+
+
+
+    $('#id_form_update').formUpdate();
+
+    /**
+     * Update logo
+     */
+    $('#id_cl_logo').change(function(e) {
+        $('#frm-client-update-logo').submit();
+    });
+
+    /**
+     * DIALOG / AJOUTER ADRESSE
+     */
+    $('#btn_new_address').live('click', function(e) {
+        AjaxComponent.ajaxDialog(baseUrl + '/client/fiche/updatesite', {cl_id: <?php echo $this->cl_id; ?>}, {width: '500', title: 'Créer un nouveau site client', id: 'id_dialog_update_site', close: refreshSitesList});
+    });
+
+    /**
+     * DIALOG / MODIFIER ADRESSE
+     */
+    $('.address-title .icon-edit').live('click', function(e) {
+        site_id = $(this).attr("site_id");
+        AjaxComponent.ajaxDialog(baseUrl + '/client/fiche/updatesite', {cl_site_id: site_id}, {width: '500', title: 'Modifier le site client', id: 'id_dialog_update_site', close: refreshSitesList});
+    });
+
+    /**
+     * DIALOG / SUPPRIMER ADRESSE
+     */
+    $('.address-title .icon-delete').live('click', function(e) {
+        site_id = $(this).attr("site_id");
+        Component.confirm(<?php echo json_encode($this->translate('Confirmez-vous le changement de statut du site client (actif/inactif) ?')); ?>,function() {
+            AjaxComponent.ajaxQuery(baseUrl + '/client/fiche/switchsite', 'cl_site_id=' + site_id).success(refreshSitesList);
+        });
+    });
+
+    // Callback that creates and populates the pie chart
+    function drawCharts() {
+        var options = {
+            'width': 550,
+            'is3D': true,
+            'height': 200
+        };
+
+        AjaxComponent.ajaxQuery(baseUrl + '/client/fiche/getgraphdata1', {cl_id: <?php echo $this->cl_id; ?>}).success(function(json_data) {
+            Graphs.createPieChart('graphData_nbOpByType', json_data, options);
+        });
+
+        AjaxComponent.ajaxQuery(baseUrl + '/client/fiche/getgraphdata2', {cl_id: <?php echo $this->cl_id; ?>}).success(function(json_data) {
+            Graphs.createPieChart('graphData_nbOpByAct', json_data, options);
+        });
+    }
+</script>

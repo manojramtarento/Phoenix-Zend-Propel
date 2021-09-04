@@ -1,0 +1,44 @@
+<label class="form-label unit size1of3"><?php echo $this->translate('Statut '); ?>:</label>
+<?php echo Phoenix_View_Helper_Html::getOperationStatusIcon((int) $this->operation->getOpstatusId(), 'unit col ') ?>
+<input type="button" class="btn" id="id_btn_change_statut" value="<?php echo $this->translate('Modifier statut'); ?>" />
+<div style="overflow:auto;max-height:110px;margin-top:20px;">
+    <table class="list list-simple">
+        <tr>
+            <th><span class="notsortable"><?php echo $this->translate('Date'); ?></span></th>
+            <th><span class="notsortable"><?php echo $this->translate('Ancien'); ?></span></th>
+            <th><span class="notsortable"><?php echo $this->translate('Nouveau'); ?></span></th>
+        </tr>
+        <?php
+        foreach ($this->operation->getOperationStatutss() as $status) {
+            $username = $this->translate('Inconnu');
+
+            // Get the user who has modified the status
+            if ($status->getUserId() != null) {
+                $oUsers = $status->getUsers();
+                if ($oUsers instanceof Users) {
+                    $username = $oUsers->getUserNomPrenom();
+                }
+            }
+            ?>
+            <tr class="<?php echo $this->cycle(array('', 'alt'))->next() ?>">
+                <td><?php echo Phoenix_Data_Convert::formatdateFromSqlServer($status->getDateCreate()) ?></td>
+                <td><?php echo ($status->getOldROperationStatus() != null ? $status->getOldROperationStatus()->getOsLibelle() : '') ?></td>
+                <td>
+                    <span title="<?php echo $this->translate('Effectué par') ?> <?php echo $username; ?>">
+                        <?php echo ($status->getNewROperationStatus() != null ? $status->getNewROperationStatus()->getOsLibelle() : '') ?>
+                    </span>
+                </td>
+            </tr>
+        <?php } ?>
+    </table>
+</div>
+
+<script language="javascript">
+    $('#id_btn_change_statut').click(function () {
+        AjaxComponent.ajaxDialog(
+                baseUrl + '/operation/description/modifierstatut',
+                {op_id: $('#id_input_op_id').val(), op_status_id:<?php echo $this->operation->getOpstatusId() ?>},
+        {width: '300', title: 'Modifier le statut', id: 'id_dialog_modifier_statut'}
+        );
+    })
+</script>

@@ -1,0 +1,28 @@
+<!-- DIALOG / AJOUT / MODIFICATION -->
+<form id="id_form_update_rclienttype" action="<?php echo $this->url(array('module' => 'administration', 'controller' => 'rclienttypes', 'action' => 'update')) ?>" method="post">
+    <input type="hidden" name="submit_update_rclienttype" value="1">
+    <input type="hidden" name="cl_type_id" value="<?php echo $this->cl_type_id; ?>">
+
+    <div class="line form-line">
+        <label class="unit size1of3 form-label" for='id_cl_type_libelle'><?php echo $this->translate('Libellé');?> :</label>
+		<?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'cl_type_libelle', 'value' => $this->cl_type_libelle, 'class' => 'unit size2of3 form-input lastUnit')) ?>
+    </div>
+	
+	<div class="line form-line">
+		<label class="unit size1of3 form-label" for='id_actif'><?php echo $this->translate('Prestation active');?></label>
+		<?php echo Phoenix_View_Helper_Html::checkbox(array('name' => 'actif', 'value' => 1, 'default_value' => $this->actif)) ?>
+	</div>
+	
+    <div class="text-center">
+        <input type="submit" value="<?php echo $this->translate('Valider'); ?>" class="btn btn-orange">
+    </div>
+</form>
+
+
+<script language="javascript">
+    $(document).ready(function() {
+        $('#id_form_update_rclienttype').ajaxForm({
+            divId:'id_dialog_update_rclienttype'
+        });
+    });
+</script>

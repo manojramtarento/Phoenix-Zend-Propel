@@ -1,0 +1,26 @@
+<div class="line form-line dialog-warning">
+    <?php if ($this->isSharedTemplate): ?>
+        <span class="ui-dialog-content"><?php echo $this->translate('shared_template_alteration_warning') ?>.</span>
+    <?php endif; ?>
+</div>
+
+<div class="line form-line">
+    <label class="form-label unit size1of3"><?php echo $this->translate('Template'); ?> :</label>
+    <div id="id_template_list" class="size2of3 unit lastUnit">
+        <?php if ($this->template instanceof ROperationTypeSubTpl): ?>
+            <div id="id_template" action="<?php echo $this->url(array('module' => 'administration', 'controller' => 'rtypesdevis', 'action' => 'updatetemplate')) ?>" model_name="ROperationTypeSubTpl" primary_value="<?php echo $this->template->getOstTplId(); ?>">
+                <?php echo Phoenix_View_Helper_Html::input(array('type' => 'hidden', 'name' => 'ost_tpl_id', 'value' => $this->template->getOstTplId())); ?>
+                <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'ost_tpl_libelle', 'class' => 'form-input size4of5 input-editable lastUnit', 'value' => $this->template->getOstTplLibelle())); ?>
+            </div>
+        <?php endif; ?>
+    </div>
+</div>
+<div class="line form-line">
+    <label class="form-label unit size1of3"></label>
+    <div class="size2of3 unit lastUnit">
+        <?php if (is_null($this->template) || $this->isSharedTemplate): ?>
+            <input id="btn_create_template" type="button" new_template_popup_title="<?php echo $this->translate('new_template_popup_title') ?>" class="btn btn-orange size3of5" value="<?php echo $this->translate('btn_new_template'); ?>" />
+        <?php endif; ?>
+    </div>
+
+</div>

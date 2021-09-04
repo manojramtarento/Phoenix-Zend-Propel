@@ -1,0 +1,102 @@
+<?php
+$this->title = 'Listing des types clients';
+$this->headTitle($this->title);
+?>
+<div id="actions-bar">
+    <div class="unit size1of5">
+        <h1 class="page-title"><?php echo $this->title; ?></h1>
+        <input href="#" id="btn_new" type="button" class="btn btn-orange btn-big" value="<?php echo $this->translate('Nouveau type de client'); ?>" />
+    </div>
+    <div class="unit size3of5">
+        <div class="search">
+            <form action="<?php echo $this->BaseUrl() ?>/administration/rclienttypes/listing" method="get">
+                <input type="text" name="findword" class="form-input" value="<?php if (isset($_REQUEST["findword"])) echo $_REQUEST["findword"]; ?>" placeholder="<?php echo $this->translate('Rechercher'); ?>" autocomplete="off" />
+                <input type="submit" value="<?php echo $this->translate('OK'); ?>" class="btn btn-orange" />
+                <input type="button" value="<?php echo $this->translate('Recherche avancée'); ?>" class="btn btn-big btn-adsearch" id="btn_adsearch" />
+            </form>
+        </div>
+    </div>
+</div>
+<div id="site-content">
+    <div class="content-list">
+        <div class="list-actions">
+            <div class="unit col">
+                <a class="icon icon-32 icon-excel" href="<?php echo $this->url(array('format' => 'csv'), null, false) . '?' . $_SERVER['QUERY_STRING'] ?>" title="<?php echo $this->translate('Exporter au format Excel'); ?>"><?php echo $this->translate('Exporter au format Excel'); ?></a>
+            </div>
+            <div class="unit rightUnit">
+                <div class="unit col">
+                    <?php echo $this->NotifySearch()->link() ?>
+                </div>
+                <div class="unit">
+                    <?php echo $this->paginationControl($this->paginator, 'Sliding', '/partials/pagination.phtml'); ?>
+                </div>
+            </div>
+        </div>
+        <table class="list list-main">
+            <thead>
+                <tr>
+                    <th width="26" class="column-noborder"></th>
+                    <th>
+                        <?php echo My_View_Helper_Html::UrlOrderBy('cl_type_id', $this->translate('ID')) ?>
+                    </th>
+                    <th>
+                        <?php echo My_View_Helper_Html::UrlOrderBy('cl_type_libelle', $this->translate('Libellé Prestation')) ?>
+                    </th>
+            </thead>
+            <tbody>
+                <?php foreach ($this->paginator as $prestation) { ?>
+                    <tr class="<?php echo $this->cycle(array('', 'alt'))->next() ?>">
+                        <td><?php echo "<a href='#edit' class='icon-list icon-edit' cl_type_id='" . $prestation['cl_type_id'] . "' title='" . $this->translate('Éditer') . "'><?php echo $this->translate('Éditer');?></a>"; ?></td>
+                        <td align="left"><?php echo $prestation['cl_type_id']; ?></td>
+                        <td><?php echo $prestation['cl_type_libelle']; ?></td>
+                    </tr>
+                <?php } ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div id="id_dialog_search" title="<?php echo $this->translate('Recherche avancée'); ?>" style="display:none;">
+    <form action="<?php echo $this->BaseUrl() ?>/administration/rclienttypes/listing" method="get" style="border:1px black">
+        <div class="line form-line">
+            <label class="unit size1of2 form-label" for='id_find_cl_type_id'><?php echo $this->translate('ID Type'); ?> :</label>
+            <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'find_cl_type_id', 'class' => 'unit size1of2 form-input lastUnit')) ?>
+        </div>
+        <div class="line form-line">
+            <label class="unit size1of2 form-label" for='id_find_cl_type_libelle'><?php echo $this->translate('Intitulé du type'); ?> :</label>
+            <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'find_cl_type_libelle', 'class' => 'unit size1of2 form-input lastUnit')) ?>
+        </div>
+
+        <div class="text-center">
+            <input type="submit" name="findbyfields" value="<?php echo $this->translate('Recherche'); ?>" class="btn btn-orange">
+        </div>
+    </form>
+</div>
+
+
+<script language="javascript">
+    $(document).ready(function() {
+        $('#btn_adsearch').click(function(e) {
+            $('#id_dialog_search').dialog({
+                width: 400,
+                modal: true,
+                resizable: false
+            });
+        });
+
+        //-- DIALOG / CREATION -->
+        $('#btn_new').live('click', function(e) {
+            AjaxComponent.ajaxDialog(baseUrl + '/administration/rclienttypes/update', {}, {width: '500', title: '<?php echo $this->translate('Créer un nouveau type de client'); ?>', id: 'id_dialog_update_rclienttype', close: function() {
+                    Component.refreshPage();
+                }});
+        });
+
+        //-- DIALOG / MODIFICATION -->
+        $('.list .icon-edit').live('click', function(e) {
+            cl_type_id = $(this).attr("cl_type_id");
+            AjaxComponent.ajaxDialog(baseUrl + '/administration/rclienttypes/update', {cl_type_id: cl_type_id}, {width: '500', title: '<?php echo $this->translate('Modifier le type de client N°'); ?>' + cl_type_id, id: 'id_dialog_update_rclienttype', close: function() {
+                    Component.refreshPage();
+                }});
+        });
+    })
+</script>

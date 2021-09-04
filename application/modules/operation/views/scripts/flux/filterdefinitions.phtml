@@ -1,0 +1,13 @@
+<?php foreach ($this->paginator as $docType) { ?>
+    <tr class="<?php echo $this->cycle(array('', 'alt'))->next() ?>" data-href="<?php echo $this->url(array('module' => 'operation', 'controller' => 'flux', 'action' => 'listing', 'op_id' => $this->op_id, 'doc_type' => 1)) ?>" >
+        <td><?php echo $this->translate('VAHINE CD STAR AC'); ?></td>
+        <td><?php echo $this->translate('Envoi de produits'); ?></td>
+        <td><?php echo $this->translate('Papier'); ?></td>
+        <td><?php echo $this->translate('Etiquette T3'); ?></td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+        <td>21.77 €</td>
+    </tr>
+<?php } ?>

@@ -1,0 +1,38 @@
+<?php
+$aJsonResponse = json_decode($this->jsonResponse, true);
+$aCategories = $aJsonResponse['axis']['x']['categories'];
+$sJsonResponse = str_replace('"{tooltipFormatGraphProduct}"', 'tooltipFormatGraphProduct', $this->jsonResponse);
+?>
+
+<script language="javascript">
+
+    function tooltipFormatGraphProduct(value, ratio, id, index) {
+        var aSoldCurrentMonth = ChartGraphProduct.data.values('CA mois en cours');
+        var aNbLastOpYears = <?php echo json_encode($this->aNbOperationLastYear); ?>;
+        var aNbLastCumulYears = <?php echo json_encode($this->aNbCumulLastYear); ?>;
+        var aCategories = <?php echo json_encode($aCategories); ?>;
+        var format = d3.format(".0f");
+
+        switch (id) {
+            case 'CA cumul\u00e9 ann\u00e9e N':
+                if (aSoldCurrentMonth && aSoldCurrentMonth[index] > 0) {
+                    return format(value + aSoldCurrentMonth[index]);
+                }
+                return format(value);
+            case 'CA cumul\u00e9 ann\u00e9e N-1':
+                if (aCategories[index] && aNbLastCumulYears[aCategories[index]]) {
+                    return format(aNbLastCumulYears[aCategories[index]]);
+                }
+                return 0;
+            case 'Nombre d\'op ann\u00e9e N-1':
+                if (aCategories[index] && aNbLastOpYears[aCategories[index]]) {
+                    return format(aNbLastOpYears[aCategories[index]]);
+                }
+                return 0;
+        }
+        return format(value);
+    }
+
+    var ChartGraphProduct = c3.generate(<?php echo $sJsonResponse ?>);
+
+</script>

@@ -1,0 +1,157 @@
+<?php
+$this->title = $this->translate('Accueil');
+$this->headTitle($this->title);
+
+$DISPLAY = 8;
+$CHARS_MAX = 67;
+
+$datetime_now = new Datetime();
+
+$link_couts = $this->url(array('module' => 'couts', 'controller' => 'index', 'action' => 'index'), null, true);
+$bCostsIsAllowed = Phoenix_Auth_User::mvcActionIsAllowed('couts','index','index');
+$link_tasks = $this->url(array('module' => 'operation', 'controller' => 'taches', 'action' => 'index'), null, true);
+$bTasksIsAllowed = Phoenix_Auth_User::mvcActionIsAllowed('operation','taches','index');
+$sLinkStatistics = $this->url(array('module' => 'reporting', 'controller' => 'index', 'action' => 'index'), null, true);
+$bStatisticsIsAllowed = Phoenix_Auth_User::mvcActionIsAllowed('reporting','index','index');
+?>
+
+<div id="site-content">
+    <div id="content-bd">
+        <div class="form-section">
+            <h1 class="page-title"><?php echo $this->translate('Bonjour'); ?> <?php echo $this->user->getFirstName(); ?></h1>
+        </div>
+        <?php if ($bCostsIsAllowed || $bTasksIsAllowed){ ?>
+        <div class="line"> 
+            <?php if ($bCostsIsAllowed) { ?>
+            <div class="unit <?php echo $bTasksIsAllowed ?'size1of2':'size1of1 lastUnit' ?>">
+                <div class="box">
+                    <div class="box-hd">
+                        <h2 class="box-title"><?php echo $this->translate('Coûts en attente de validation'); ?></h2>
+                    </div>
+                    <div class="box-bd">
+                        <table class="list list-main">
+                            <thead>
+                                <tr>
+                                    <th colspan="2"><span class="notsortable"><?php echo $this->translate('N° Opération'); ?></span></th>
+                                    <th><span class="notsortable"><?php echo $this->translate('Nom prestation'); ?></span></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                $nbCouts = count($this->couts);
+
+                                $display_couts = array_slice($this->couts, 0, $DISPLAY);
+                                foreach ($display_couts as $cout) {
+                                    $isBloquant = ($cout['nb_factures_en_attente'] > 0);
+
+                                    $class = '';
+                                    if ($isBloquant) {
+                                        $class = 'text-ko';
+                                    }
+                                    ?>
+                                    <tr class="<?php echo $this->cycle(array('', 'alt'))->next() ?>"  data-href="<?php echo $link_couts; ?>">
+                                        <td width="22" align="center"><?php echo Phoenix_View_Helper_Html::getCoutStatusIcon($isBloquant); ?></td>
+                                        <td width="60"><span class="<?php echo $class; ?>"><?php echo $cout['op_number']; ?></span></td>
+                                        <td><span class="<?php echo $class; ?>"><?php echo Phoenix_Data_Convert::getShortString($cout['r_p_libelle'], $CHARS_MAX); ?></span></td>
+                                    </tr>
+                                <?php } ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="rightUnit gutter10">
+                    <?php
+                    if ($nbCouts > count($display_couts)) {
+                        echo "<span class='icon-list icon-attention'></span> Autres coûts à valider...";
+                    }
+                    ?>
+                    <a href="<?php echo $link_couts; ?>" class="btn btn-orange"><?php echo $this->translate('Accès à l\'interface dédiée'); ?></a>
+                </div>
+            </div>
+            <?php } if ($bTasksIsAllowed) { ?>
+            <div class="unit <?php echo $bCostsIsAllowed ?'size1of2':'size1of1' ?> lastUnit">
+                <div class="box">
+                    <div class="box-hd">
+                        <h2 class="box-title"><?php echo $this->translate('Tâches à réaliser'); ?></h2>
+                    </div>
+                    <div class="box-bd">
+                        <table class="list list-main">
+                            <thead>
+                                <tr>
+                                    <th colspan="2"><span class="notsortable"><?php echo $this->translate('N° Opération'); ?></span></th>
+                                    <th><span class="notsortable"><?php echo $this->translate('Nom prestation'); ?></span></th>
+                                    <th><span class="notsortable"><?php echo $this->translate('Deadline'); ?></span></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                $nbTasks = count($this->taches);
+
+                                $display_tasks = array_slice($this->taches, 0, $DISPLAY);
+                                foreach ($display_tasks as $task) {
+                                    $isValidated = !empty($task['op_task_done']);
+
+                                    $status = OperationTasks::STATUS_PROGRESS;
+                                    if ($isValidated) {
+                                        $status = OperationTasks::STATUS_FINISHED;
+                                    } else {
+                                        $datetime = new DateTime($task['op_task_retard']);
+                                        if ($datetime_now > $datetime) {
+                                            $status = OperationTasks::STATUS_LATE;
+                                        } else {
+                                            $datetime = new DateTime($task['op_task_alerte']);
+                                            if ($datetime_now > $datetime) {
+                                                $status = OperationTasks::STATUS_WARNING;
+                                            }
+                                        }
+                                    }
+
+                                    $class = '';
+                                    if ($status == OperationTasks::STATUS_LATE || $status == OperationTasks::STATUS_WARNING) {
+                                        $class = 'text-ko';
+                                    }
+                                    ?>
+                                    <tr class="<?php echo $this->cycle(array('', 'alt'))->next() ?>" data-href="<?php echo $link_tasks; ?>">
+                                        <td width="22" align="center"><?php echo Phoenix_View_Helper_Html::getTaskStatusIcon($status); ?></td>
+                                        <td width="60"><span class='<?php echo $class; ?>'><?php echo $task['op_number']; ?></span></td>
+                                        <td><span class='<?php echo $class; ?>'><?php echo Phoenix_Data_Convert::getShortString($task['r_op_task_type_libelle'], $CHARS_MAX); ?></span></td>
+                                        <td><span class='<?php echo $class; ?>'><?php echo Phoenix_Data_Convert::formatDateFromSqlServer2($task['op_task_deadline']); ?></span></td>
+
+                                    <?php } ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="rightUnit">
+                    <div style="margin-bottom:5px;">
+                        <?php
+                        if ($nbTasks > count($display_tasks)) {
+                            echo "<span class='icon-list icon-attention'></span> Autres tâches à consulter...";
+                        }
+                        ?>
+                        <a href="<?php echo $link_tasks; ?>" class="btn btn-orange"><?php echo $this->translate('Accès à l\'interface dédiée'); ?></a>
+                    </div>
+                </div>
+            </div>
+             <?php } ?>
+        </div>
+        <?php } if ($bStatisticsIsAllowed) {?>
+        <div class="line" style="margin-top:20px;">
+            <div class="unit size1of1 lastUnit">
+                <div class="box">
+                    <div class="box-hd">
+                        <h2 class="box-title"><?php echo $this->translate('Principale statistiques de suivi'); ?></h2>
+                    </div>
+                    <div class="box-bd">
+                        <div class="line">
+                            <div class="unit size1of1 lastUnit">
+                                <a href="<?php echo $sLinkStatistics ?>" class="btn btn-orange"><?php echo $this->translate('Accès à l\'interface dédiée'); ?></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <?php } ?>
+    </div>
+</div>

@@ -1,0 +1,72 @@
+<?php
+foreach ($this->operations as $sStatut => $aOperations) {
+    $sCurrentDc = '';
+    ?>
+
+    Les devis suivants ont été passés en statut <?php echo $sStatut ?> depuis le <?php echo $this->date_debut ?> :
+    <?php foreach ($aOperations as $aOperation) { ?>
+
+        <?php
+        if ($sCurrentDc != $aOperation['dc_nom'] . ' ' . $aOperation['dc_prenom']) {
+            $sCurrentDc = $aOperation['dc_nom'] . ' ' . $aOperation['dc_prenom'];
+            echo '<br /><br /><br />';
+            echo $sCurrentDc . ' : ';
+        }
+        ?>
+
+        <br />
+        <br />
+        <table style="margin-left:35px">
+            <tr>
+                <?php
+                $oZendDate = new Zend_Date($aOperation['date_statut'], 'yyyyMMdd', 'fr_FR');
+                $aOperation['date_statut'] = $oZendDate->toString('dd/MM/YYYY à HH:mm:ss');
+                ?>
+                <td>Date du changement de statut : </td><td><?php echo $aOperation['date_statut'] ?></td>
+            </tr>
+            <?php echo $aOperation['dc_nom'] . ' ' . $aOperation['dc_prenom'] ?></td>
+
+        <tr>
+            <td>Numéro d'opération : </td><td><?php echo $aOperation['op_number'] ?></td>
+        </tr>
+        <tr>
+            <td>Nom du gestionnaire de projets clients : </td><td><?php echo $aOperation['cp_nom'] . ' ' . $aOperation['cp_prenom'] ?></td>
+        </tr>
+        <tr>
+            <td>Nom du client : </td><td><?php echo $aOperation['cl_libelle'] ?></td>
+        </tr>
+        <tr>
+            <td>Intitulé de l'offre : </td><td><?php echo $aOperation['op_libelle'] ?></td>
+        </tr>
+        <tr>
+            <td>Métier :  </td><td><?php echo $aOperation['business'] ?></td>
+        </tr>
+        <tr>
+            <td>Catégorie : </td><td><?php echo $aOperation['category'] ?></td>
+        </tr>
+        <tr>
+            <td>Mécanique : </td><td><?php echo $aOperation['mecanic'] ?></td>
+        </tr>
+        <tr>
+            <td>Complexité projet : </td><td><?php echo $aOperation['project_complexity'] ?></td>
+        </tr>
+        <tr>
+            <td>Média : </td><td><?php echo $aOperation['media'] ?></td>
+        </tr>
+        <tr>
+            <td>Univers : </td><td><?php echo $aOperation['universe'] ?></td>
+        </tr>
+        <tr>
+            <td>Montant estimé CA HT  : </td><td><b><?php echo Phoenix_Data_Convert::formatMoney(isset($aOperation['Montant CA estimé HT']) ? $aOperation['Montant CA estimé HT'] : 0, false, true, true) ?></b></td>
+        </tr>
+        <tr>
+            <td>Montant estimé TTC : </td><td><b><?php echo Phoenix_Data_Convert::formatMoney(isset($aOperation['Montant estimé TTC']) ? $aOperation['Montant estimé TTC'] : 0, false, true, true) ?></b></td>
+        </tr>
+        </table>
+        <br />
+        <br />
+    <?php } ?>
+    <br />
+    <br />
+
+<?php } ?>

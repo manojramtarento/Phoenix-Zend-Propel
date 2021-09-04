@@ -1,0 +1,49 @@
+<!-- DIALOG / CHOIX PAYS -->
+<form method="post"  id="id_form_facture_motifs">
+    <div class="form-section" style="height:220px;overflow:auto;">
+        <table class="list list-main">
+            <thead>
+                <tr>
+                    <th width="40" class="check-column"><input id="check_all_motifs" type="checkbox" /></th>
+                    <th><span class="notsortable"><?php echo $this->translate('Motifs'); ?></span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($this->aMotifs as $aMotif) { ?>
+                    <tr class="tr-check <?php echo $this->cycle(array('', 'alt'))->next() ?>">
+                        <td class="check-column">
+                            <input class="checkbox_motifs" type="checkbox" name="r_fact_motif_libelle[]" value="<?php echo $aMotif['r_fact_motif_id'] ?>" <?php echo ($aMotif['is_selected'] == 1 ? 'checked="checked"' : '') ?>>
+                        </td>
+                        <td><?php echo $aMotif['r_fact_motif_libelle'] ?></td>
+                    </tr>
+                <?php } ?>
+            </tbody>
+        </table>
+    </div>
+    <div class="text-center">
+        <input type="hidden" name="fact_id" value="<?php echo $this->iFactId ?>" />
+        <input type="hidden" name="submit_facture_motifs" value="1" />
+        <input type="submit" value="<?php echo $this->translate('Valider'); ?>" class="btn btn-orange" />
+    </div>
+</form>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#check_all_motifs').bindCheckboxes('checkbox_motifs');
+        $('#id_popup_modif_fact_motifs').on('dialogclose', function (event, ui) {
+            refreshFactures();
+        });
+
+        $('#id_form_facture_motifs').submit(function () {
+            AjaxComponent.ajaxDiv('/operation/facturation/popupmodifffacturemotifs', $(this).serialize(), '')
+                    .success(function (response) {
+                        if (response.option != 'bKeepOpened') {
+                            //Ne pas fermer le fenêtre de choix des motifs ni ne pas rafraichir le volet des factures si une erreur a surgit
+                            $('#id_popup_modif_fact_motifs').dialog('close');
+                        }
+                    });
+            return false;
+        });
+    });
+</script>

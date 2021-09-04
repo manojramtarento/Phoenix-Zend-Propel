@@ -1,0 +1,48 @@
+
+<?php
+$this->jsonResponse = str_replace('"{tooltipFormatGraphActivity}"', 'tooltipFormatGraphActivity', $this->jsonResponse);
+?>
+
+<script language="javascript">
+
+    function tooltipFormatGraphActivity(value, ratio, id, index) {
+        var aRealizedCurrent = ChartAcivity.data.values('Co\u00fbt interne N');
+        var aRealizedPast = ChartAcivity.data.values('Co\u00fbt interne N - 1');
+        var aDiffCurrent = ChartAcivity.data.values('DIFF N');
+        var aDiffPast = ChartAcivity.data.values('DIFF N - 1');
+        var format = d3.format(".0f");
+
+        switch (id) {
+            case 'Co\u00fbt interne N':
+                if (aDiffCurrent[index] > 0) {
+                    return format(value + aDiffCurrent[index]);
+                }
+                return format(value);
+            case 'Co\u00fbt interne N - 1':
+                if (aDiffPast[index] > 0) {
+                    return format(value + aDiffPast[index]);
+                }
+                return format(value);
+            case  'CA Vendu N' :
+                if (aDiffCurrent[index] > 0) {
+                    return format(aRealizedCurrent[index]);
+                }
+                return format(value + aRealizedCurrent[index] - aDiffCurrent[index]);
+            case 'CA Vendu N - 1' :
+                if (aDiffPast[index] > 0) {
+                    return format(value + aRealizedPast[index]);
+                }
+                return format(value + aRealizedPast[index] - aDiffPast[index]);
+            case 'DIFF N - 1':
+            case 'DIFF N':
+                return null;
+            default:
+                return format(value);
+
+        }
+    }
+
+    var ChartAcivity = c3.generate(<?php echo $this->jsonResponse ?>);
+
+</script>
+

@@ -1,0 +1,311 @@
+<div class="line">
+    <div class="unit size1of1 lastUnit">
+        <div class="box box-blue">
+            <div class="line box-hd">
+                <h2 class="unit box-title title-icon icon-reload"><?php echo $this->translate('Scénario & Primes'); ?></h2>
+            </div>
+            <div class="box-bd bd-grey">
+                <div class="line">
+                    <div class="unit size3of5">
+                        <div class="box">
+                            <div class="box-hd">
+                                <h2 class="box-title title-icon icon-reload"><?php echo $this->translate('Scénario'); ?></h2>
+                            </div>
+                            <div class="box-bd">
+                                <div id="id_list_scenarii"><?php echo $this->partial('rtypesdevis/scenarii.phtml', array('ost_tpl_id' => $this->ost_tpl_id, 'scenarii' => $this->scenarii)); ?></div>
+
+                                <form id="id_form_add_scenario" method="post" action="<?php echo $this->url(array('module' => 'administration', 'controller' => 'rtypesdevis', 'action' => 'addscenario')) ?>">
+                                    <div class="line">
+                                        <div class="unit">
+                                            <div class="col">
+                                                <label class="form-label unit" for="id_r_scenario_id"><?php echo $this->translate('Ref'); ?> :</label>
+                                                <!-- 32655 : Migration phoenix/migration des modules -->
+                                                <?php echo Phoenix_View_Helper_Html::selectFromTable('r_scenarios', array('name' => 'r_scenario_id', 'class' => 'form-select unit'), array('value' => 'r_scenario_id', 'name' => "CONCAT(COALESCE(r_scenario_id,'') , ' - ' , COALESCE(r_scenario_libelle,''))"), array('default_label' => $this->translate('choisir') . '...', 'clause_where' => 'r_scenario_actif=1')) ?>
+                                            </div>
+                                        </div>
+
+                                        <div class="unit size1of3 lastUnit">
+                                            <input type="hidden" name="ost_tpl_id" value="<?php echo $this->ost_tpl_id; ?>">
+                                            <input type="submit" value="<?php echo $this->translate('Ajouter'); ?>" class="btn btn-orange btn-small"/>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="unit size2of5 lastUnit">
+                        <div class="box">
+                            <div class="box-hd">
+                                <h2 class="box-title title-icon icon-cube"><?php echo $this->translate('Primes'); ?></h2>
+                            </div>
+                            <div class="box-bd">
+                                <div id="id_list_primes"><?php echo $this->partial('rtypesdevis/primes.phtml', array('ost_tpl_id' => $this->ost_tpl_id, 'primes' => $this->primes)); ?></div>
+
+                                <form id="id_form_add_prime" method="post" action="<?php echo $this->url(array('module' => 'administration', 'controller' => 'rtypesdevis', 'action' => 'addprime')); ?>">
+                                    <div class="line">
+                                        <div class="unit size2of5">
+                                            <div class="col">
+                                                <label class="form-label unit size2of5" for="id_ost_tpl_prime_libelle"><?php echo $this->translate('Nouvelle prime'); ?> :</label>
+                                                <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'ost_tpl_prime_libelle', 'class' => 'form-input unit size3of5')) ?>
+                                            </div>
+                                        </div>
+                                        <div class="unit size3of5">
+                                            <div class="unit size4of5">
+                                                <div class="col">
+                                                    <label class="form-label unit size1of5" for="id_ost_tpl_reward_type"><?php echo $this->translate('label_input_add_reward_type'); ?> :</label>
+                                                    <?php echo Phoenix_View_Helper_Html::selectFromTable('r_reward_types', array('name' => 'ost_tpl_reward_type', 'class' => 'form-select unit size4of5'), array('value' => 'r_reward_type_id', 'name' => 'r_reward_type_label'), array('clause_where' => 'r_reward_type_actif = 1', 'default_label' => $this->translate('choisir') . '...')); ?>
+                                                </div>
+                                            </div>
+                                            <div class="unit size1of5">
+                                                <input type="hidden" name="ost_tpl_id" value="<?php echo $this->ost_tpl_id; ?>">
+                                                <input type="submit" value="<?php echo $this->translate('Ajouter'); ?>" class="btn btn-orange btn-small" id="id_submit_add_prime" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="line">
+                    <div class="unit size1of5">
+                        <div class="box">
+                            <div class="box-hd">
+                                <h2 class="box-title title-icon icon-cube"><?php echo $this->translate('label_concerned_countries'); ?></h2>
+                            </div>
+                            <div class="box-bd">
+
+                                <div class="col">
+                                    <div id="id_block_template_countries" class="countries_bloc"></div>
+                                    <input type="button" class="btn" value="<?php echo $this->translate('label_button_update'); ?>" id="id_button_edit_template_countries" template_countries_edition_popup_title="<?php echo $this->translate('label_concerned_countries'); ?>">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="unit size1of5">
+                        <div class="box">
+                            <div class="box-hd">
+                                <h2 class="box-title title-icon icon-cube"><?php echo $this->translate('label_concerned_cultures'); ?></h2>
+                            </div>
+                            <div class="box-bd">
+
+                                <div class="col">
+                                    <div id="id_block_template_cultures" class="countries_bloc"></div>
+                                    <input type="button" class="btn" value="<?php echo $this->translate('label_button_update'); ?>" id="id_button_edit_template_cultures" template_cultures_edition_popup_title="<?php echo $this->translate('label_concerned_cultures'); ?>">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="unit size1of5">
+                        <div class="box">
+                            <div class="box-hd">
+                                <h2 class="box-title title-icon icon-cube"><?php echo $this->translate('label_concerned_languages'); ?></h2>
+                            </div>
+                            <div class="box-bd">
+
+                                <div class="col">
+                                    <div id="id_block_template_languages" class="countries_bloc"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="unit size1of5 lastUnit">
+                        <div class="box">
+                            <div class="box-hd">
+                                <h2 class="box-title title-icon icon-cube"><?php echo $this->translate('label_concerned_currencies'); ?></h2>
+                            </div>
+                            <div class="box-bd">
+                                <div class="col">
+                                    <div id="id_block_template_currencies" class="countries_bloc"></div>
+                                    <input type="button" class="btn" value="<?php echo $this->translate('label_button_update'); ?>" id="id_button_edit_template_currencies" template_currencies_edition_popup_title="<?php echo $this->translate('label_concerned_currencies'); ?>">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="line">
+                    <div class="unit size1of5">
+                        <div class="box">
+                            <div class="box-hd">
+                                <h2 class="box-title title-icon icon-cube"><?php echo $this->translate('label_concerned_universes_medias'); ?></h2>
+                            </div>
+                            <div class="box-bd">
+
+                                <div class="col">
+                                    <div id="id-block-template-medias-universes" class="countries_bloc">
+                                        <?php echo $this->partial('rtypesdevis/listtemplatemediasanduniverses.phtml', array('universesAndMedias' => $this->universesAndMedias)); ?>
+                                    </div>
+                                    <input type="button" class="btn" value="<?php echo $this->translate('label_button_update'); ?>" id="id-button-edit-template-medias-universes" template-medias-universes-edition-popup-title="<?php echo $this->translate('label_concerned_universes_medias'); ?>">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="line">
+    <div class="unit size1of1 lastUnit">
+        <div class="box box-blue">
+            <div class="box-hd">
+                <h2 class="box-title title-icon icon-layers"><?php echo $this->translate('Détails des prestations'); ?></h2>
+            </div>
+            <div class="box-bd bd-grey">
+                <div class="section">
+                    <input type="button" value="<?php echo $this->translate('Nouvelle rubrique'); ?>" onclick="javascript:addRubrique(<?php echo $this->ost_tpl_id; ?>)" id="id_btn_ajout_rubrique" class="btn btn-orange btn-big" />
+                    <input type="button" value="<?php echo $this->translate('Réduire tout'); ?>" class="btn btn-big" id="prestas-minus" />
+                </div>
+                <div class="boxes-sortable" id="id_list_rubriques" >
+                    <?php echo $this->partial('rtypesdevis/rubriques.phtml', array('ost_tpl_id' => $this->ost_tpl_id, 'rubriques' => $this->rubriques, 'scenarii' => $this->scenarii)); ?>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script language="javascript">
+
+    function hideBox(elem) {
+        $(elem).parents('.box').first().children('.box-bd').slideToggle();
+        $(elem).toggleClass('icon-minus icon-plus');
+    }
+
+    // suppression de prime
+    function deletePrime(ostTplPrimeId) {
+        Component.confirm('<?php echo $this->translate('Confirmez-vous la suppression de la prime'); ?>?',
+                function() {
+                    AjaxComponent.ajaxQuery(baseUrl + '/administration/rtypesdevis/deleteprime', 'ost_tpl_prime_id=' + ostTplPrimeId)
+                            .success(function(data) {
+                                if (data.action === 0 || data.action === false) {
+                                    refreshPrimes(data.msg.ostTplId);
+                                    refreshScenarii(data.msg.ostTplId);
+                                    refreshRubriques(data.msg.ostTplId);
+                                }
+                            });
+                }
+        );
+    }
+
+    //suppression d'un scenario
+    function deleteScenario(ostTplScenarioId) {
+        Component.confirm('<?php echo $this->translate('Confirmez-vous la suppression du scénario'); ?>?',
+                function() {
+                    AjaxComponent.ajaxQuery(baseUrl + '/administration/rtypesdevis/deletescenarii', 'ost_tpl_scenario_id=' + ostTplScenarioId)
+                            .success(function(data) {
+                                if (data.action === 0 || data.action === false) {
+                                    refreshScenarii(data.msg.ostTplId);
+                                    refreshRubriques(data.msg.ostTplId);
+                                }
+                            });
+                });
+    }
+
+    //suppression d'une rubrique
+    function deleteRubrique(ostTplRubriqueId) {
+        Component.confirm('<?php echo $this->translate('Confirmez-vous la suppression de la rubrique'); ?>?',
+                function() {
+                    AjaxComponent.ajaxQuery(baseUrl + '/administration/rtypesdevis/deleterubrique', {ost_tpl_rubrique_id: ostTplRubriqueId})
+                            .success(function(data) {
+                                if (data.action === 0 || data.action === false) {
+                                    $('#id_rubrique_' + ostTplRubriqueId).remove();
+                                }
+                            });
+                });
+    }
+
+    //supprimer une presttion
+    function deletePrestation(ostTplRubriqueId, ostTplPrestationId) {
+        Component.confirm('<?php echo $this->translate('Confirmez-vous la suppression de la prestation'); ?>?',
+                function() {
+                    AjaxComponent.ajaxDiv(baseUrl + '/administration/rtypesdevis/deleteprestation', {ost_tpl_prestation_id: ostTplPrestationId}, 'id_rubrique_' + ostTplRubriqueId);
+                });
+    }
+
+    //rafraichissement affichage des scénarii
+    function refreshScenarii(ostTplId) {
+        AjaxComponent.ajaxDiv(baseUrl + '/administration/rtypesdevis/scenarii', {ost_tpl_id: ostTplId}, 'id_list_scenarii');
+    }
+
+    //raffraichissement affichage des primes
+    function refreshPrimes(ostTplId) {
+        AjaxComponent.ajaxDiv(baseUrl + '/administration/rtypesdevis/primes', {ost_tpl_id: ostTplId}, 'id_list_primes');
+    }
+
+    //rafraichissement affichage des prestations
+    function refreshRubrique(ostTplRubriqueId) {
+        AjaxComponent.ajaxDiv(baseUrl + '/administration/rtypesdevis/rubrique', {ost_tpl_rubrique_id: ostTplRubriqueId}, 'id_rubrique_' + ostTplRubriqueId);
+    }
+
+    //raffraichissement de toutes les rubriques
+    function refreshRubriques(ostTplId) {
+        AjaxComponent.ajaxDiv(baseUrl + '/administration/rtypesdevis/rubriques', {ost_tpl_id: ostTplId}, 'id_list_rubriques');
+    }
+
+    $(document).ready(function() {
+        //formulaire ajax d'ajout de prime
+        $('#id_form_add_prime').submit(function() {
+            AjaxComponent.ajaxQuery(baseUrl + '/administration/rtypesdevis/addprime', $(this).serialize())
+                    .success(function(data) {
+                        if (data.action === 0 || data.action === false) {
+                            $('#id_ost_tpl_prime_libelle').val('');
+
+                            refreshPrimes(data.msg.ost_tpl_id);
+                            refreshScenarii(data.msg.ost_tpl_id);
+                            refreshRubriques(data.msg.ost_tpl_id);
+                        }
+                    });
+
+            return false;
+        });
+
+        //formulaire ajax d'ajout de scénario
+        $('#id_form_add_scenario').submit(function() {
+            AjaxComponent.ajaxQuery(baseUrl + '/administration/rtypesdevis/addscenario', $(this).serialize())
+                    .success(function(data) {
+                        if (data.action === 0 || data.action === false) {
+                            refreshScenarii(data.msg.ost_tpl_id);
+                            refreshRubriques(data.msg.ost_tpl_id);
+                        }
+                    });
+
+            return false;
+        });
+    });
+
+    //ajout de rubrique
+    function addRubrique(ostTplId) {
+        AjaxComponent.ajaxDialog(
+                baseUrl + '/administration/rtypesdevis/addrubrique',
+                {ost_tpl_id: ostTplId},
+        {
+            width: 750,
+            height: 550,
+            title: '<?php echo $this->translate('Ajouter des rubriques'); ?>',
+            id: 'add_rubrique',
+            close: function(e) {
+                refreshRubriques(ostTplId);
+            }
+        }
+        );
+    }
+
+    //ajout de prestations à une rubrique
+    function addPrestation(ostTplRubriqueId, ostTplId) {
+        AjaxComponent.ajaxDialog(
+                baseUrl + '/administration/rtypesdevis/addprestation',
+                {ost_tpl_rubrique_id: ostTplRubriqueId,
+                    ost_tpl_id: ostTplId},
+        {
+            width: 750,
+            height: 575,
+            title: '<?php echo $this->translate('Ajouter des prestations'); ?>',
+            id: 'add_prestation',
+            close: function(e) {
+                refreshRubrique(ostTplRubriqueId);
+            }
+        }
+        );
+    }
+
+</script>

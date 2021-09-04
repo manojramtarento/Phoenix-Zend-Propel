@@ -1,0 +1,157 @@
+<?php /* @var $this Zend_View */ ?>
+<?php
+$this->title = $this->translate('Listing des clients');
+$this->headTitle($this->title);
+?>
+<div id="actions-bar">
+    <div class="unit size2of5">
+        <h1 class="page-title"><?php echo $this->title; ?></h1>
+        <a href="<?php echo $this->url(array('module' => 'client', 'controller' => 'new', 'action' => 'index'), null, true) ?>" class="btn btn-orange btn-big"><?php echo $this->translate('Nouveau client'); ?></a>
+        <?php if(Phoenix_Auth_User::mvcActionIsAllowed('client','listing','import')){ ?>
+            <a href="<?php echo $this->url(array('module' => 'client', 'controller' => 'listing', 'action' => 'import'), null, true) ?>" class="btn btn-default btn-big"><?php echo $this->translate('import_clients'); ?></a>
+        <?php } ?>
+    </div>
+    <div class="unit size2of5">
+        <div class="search">
+            <form action="<?php echo $this->BaseUrl() ?>/client/listing/index" method="get">
+                <input type="text" name="findword" class="form-input" value="<?php if (isset($_REQUEST["findword"])) echo $_REQUEST["findword"]; ?>" placeholder="<?php echo $this->translate('Rechercher'); ?>" autocomplete="off" />
+                <input type="submit" value="<?php echo $this->translate('OK'); ?>" class="btn btn-orange" />
+                <input type="button" value="<?php echo $this->translate('Recherche avancée'); ?>" class="btn btn-big btn-adsearch" id="btn_adsearch" />
+            </form>
+        </div>
+    </div>
+</div> 
+<div id="site-content">
+    <div class="content-list">
+        <div class="list-actions">
+            <div class="unit col">
+                <a class="icon icon-32 icon-excel" href="<?php echo $this->url(array('format' => 'csv'), null, false) . '?' . $_SERVER['QUERY_STRING'] ?>" title="Exporter au format Excel"><?php echo $this->translate('Exporter au format Excel'); ?></a>
+            </div>
+            <div class="unit rightUnit">
+                <div class="unit col">
+                    <?php echo $this->NotifySearch()->link() ?>
+                </div>
+                <div class="unit">
+                    <?php echo $this->paginationControl($this->paginator, 'Sliding', '/partials/pagination.phtml'); ?>
+                </div>
+            </div>
+        </div>
+        <table class="list list-main">
+            <thead>
+                <tr>
+                    <th>
+                        <?php echo My_View_Helper_Html::UrlOrderBy('cl_libelle', $this->translate('Nom du client')) ?>
+                    </th>
+                    <th colspan="4" style="text-align:center;"><span class="notsortable"><?php echo $this->translate('Nombre d\'opérations'); ?></span></th>
+                    <th width="8%">
+                        <?php echo My_View_Helper_Html::UrlOrderBy('cl_type_libelle', $this->translate('Catégorie')) ?>
+                    </th>
+                    <th width="18%">
+                        <?php echo My_View_Helper_Html::UrlOrderBy('cl_dc_name', $this->translate('Directeur de clientèle')) ?>
+                    </th>
+                    <th width="170"><span class="notsortable"><?php echo $this->translate('Opérations relatives'); ?></span></th>
+                    <th width="130"><span class="notsortable"><?php echo $this->translate('Contacts relatifs'); ?></span></th>
+                    <th width="75">
+                        <?php echo My_View_Helper_Html::UrlOrderBy('nb_contrats', $this->translate('Contrat')) ?>
+                    </th>
+                </tr>
+                <tr class="sub-head">
+                    <td></td>
+                    <td width="65" align="center" class="column-border "><?php echo $this->translate('En cours'); ?></td>
+                    <td width="65" align="center" class="column-border "><?php echo $this->translate('Acceptées'); ?></td>
+                    <td width="65" align="center" class="column-border "><?php echo $this->translate('Refusées'); ?></td>
+                    <td width="65" align="center"><?php echo $this->translate('Clotûrées'); ?></td>
+                    <td colspan="5"></td>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($this->paginator as $client) { ?>
+                    <?php
+                    $sIconTpl = '<span class="icon-statut icon-{__ICON__}" title="{__TITLE__}"></span>';
+                    ?>
+                    <tr class="<?php echo $this->cycle(array('', 'alt'))->next() ?>" data-href="<?php echo $this->url(array('module' => 'client', 'controller' => 'fiche', 'action' => 'index', 'cl_id' => $client['cl_id']), null, true) ?>">
+                        <?php
+                        $sContrat = '';
+                        if ((int) $client['nb_contrats'] >= 1) {
+                            $sContrat = str_replace(array('{__ICON__}', '{__TITLE__}'), array('check', 'Client sous contrat'), $sIconTpl);
+                        }
+                        ?>
+                        <td>
+                            <div class="media">
+                                <div class="media-img">
+                                    <?php echo Phoenix_View_Helper_Html::getClientLogo($client['cl_id']) ?>
+                                </div>
+                                <div class="media-bd">
+                                    <?php echo $client['cl_libelle']; ?>
+                                </div>
+                            </div>
+                        </td>
+                        <td align="center" class="column-secondary"><?php echo $client['nb_devis_en_cours']; ?></td>
+                        <td align="center" class="column-secondary"><?php echo $client['nb_accepte']; ?></td>
+                        <td align="center" class="column-secondary"><?php echo $client['nb_refus']; ?></td>
+                        <td align="center" class="column-secondary"><?php echo $client['nb_cloture']; ?></td>
+                        <td class="column-secondary"><?php echo $client['cl_type_libelle']; ?></td>
+                        <td class="column-secondary"><?php echo $client['cl_dc_name']; ?></td>
+                        <td><a href="<?php echo $this->url(array('module' => 'operation', 'controller' => 'listing', 'findbyfields' => 'Rechercher', 'find_op_cl_id' => $client['cl_id']), null, true); ?>"><?php echo $this->translate('Toutes les opérations'); ?></a></td>
+                        <td><a href="<?php echo $this->url(array('module' => 'client', 'controller' => 'contact', 'action' => 'client', 'cl_id' => $client['cl_id']), null, true) ?>"><?php echo $this->translate('Liste des contacts'); ?></a></td>
+                        <td align="center" class="column-secondary"><?php echo $sContrat; ?></td>
+                    </tr>
+                <?php } ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div id="id_dialog_search" title="<?php echo $this->translate('Recherche avancée'); ?>" style="display:none;">
+    <form action="<?php echo $this->BaseUrl() ?>/client/listing/index" method="get" style="border:1px black">
+
+        <div class="section-bd">
+            <div class="line form-line">
+                <label class="unit size1of2 form-label" for="id_find_cl_libelle"><?php echo $this->translate('Nom du client'); ?> :</label>
+                <input class="unit size1of2 form-input lastUnit" type="text" name="find_cl_libelle" value="<?php echo $this->getParam('find_cl_libelle') ?>" />
+            </div>
+
+            <div class="line form-line">
+                <label class="unit size1of2 form-label" for="id_find_cl_type_id"><?php echo $this->translate('Catégorie'); ?> :</label>
+                <?php echo My_View_Helper_Html::selectFromTable('View_Rclient_Types_Listing', array('name' => 'find_cl_type_id', 'class' => 'unit size1of2 form-select'), array('value' => 'cl_type_id', 'name' => 'cl_type_libelle'), array('default_label' => $this->translate('Toutes catégories'),'clause_order'=>'ordre asc')) ?>
+            </div>
+			
+			<div class="line form-line">
+                <label class="unit size1of2 form-label" for="id_find_cl_type_id"><?php echo $this->translate('Secteur d\'activité'); ?> :</label>
+                <?php echo Phoenix_View_Helper_Html::selectFromTable('View_Rclient_Activites_Listing', array('name' => 'find_cl_activity_id', 'class' => 'unit size1of2 form-select'), array('name' => 'cl_activity_libelle', 'value' => 'cl_activity_id'), array('default_label' => $this->translate('Tous secteurs d\'activité'),'clause_order' => array('cl_type_id desc','parent_cl_activity_id asc','ordre asc')) ) ?>
+            </div>
+
+            <div class="line form-line">
+                <label class="unit size1of2 form-label" for="id_find_cl_dc_id"><?php echo $this->translate('Directeur de clientèle'); ?> :</label>
+                <?php echo Phoenix_View_Helper_Html_Select::selectUsersByuserType(RUserTypes::KEY_ACCOUNT_MANAGER_USER_TYPE, array('name' => 'find_cl_dc_id', 'class' => 'form-select unit size1of2 lastUnit'), array('default_label' => $this->translate('Choisir') . '...'), $this->oldCustomerDcs); ?>
+            </div>
+
+            <div class="line form-section">
+                <div class="unit col">
+                    <?php echo Phoenix_View_Helper_Html::checkbox(array('value' => '1', 'name' => 'find_nb_contrats', 'class' => '')); ?>
+                    <label for="id_find_nb_contrats"><?php echo $this->translate('Sous contrat'); ?></label>
+                </div>
+                <div class="unit">
+                    <?php echo Phoenix_View_Helper_Html::checkbox(array('value' => '1', 'name' => 'find_inactif', 'class' => '')); ?>
+                    <label for="id_find_inactif">Inactif (aucune OP depuis 12 mois)</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center">
+            <input type="submit" name="findbyfields" value="<?php echo $this->translate('Recherche'); ?>" class="btn btn-orange">
+        </div>
+    </form>
+</div>
+
+<script language="javascript">
+    $(document).ready(function() {
+        $('#btn_adsearch').click(function(e) {
+            $('#id_dialog_search').dialog({
+                width: 400,
+                modal: true,
+                resizable: false
+            });
+        });
+    })
+</script>

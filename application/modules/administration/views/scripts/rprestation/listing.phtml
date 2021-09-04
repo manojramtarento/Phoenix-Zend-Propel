@@ -1,0 +1,194 @@
+<?php
+$this->title = $this->translate('Listing des prestations');
+$this->headTitle($this->title);
+?>
+<div id="actions-bar">
+    <div class="unit size1of5">
+        <h1 class="page-title"><?php echo $this->title; ?></h1>
+        <input href="#" id="btn_new" type="button" class="btn btn-orange btn-big" value="<?php echo $this->translate('Nouvelle prestation'); ?>" />
+    </div>
+    <div class="unit size3of5">
+        <div class="search">
+            <form action="<?php echo $this->BaseUrl() ?>/administration/rprestation/listing" method="get">
+                <input type="text" name="findword" class="form-input" value="<?php if (isset($_REQUEST["findword"])) echo $_REQUEST["findword"]; ?>" placeholder="<?php echo $this->translate('Rechercher'); ?>" autocomplete="off" />
+                <input type="submit" value="<?php echo $this->translate('OK'); ?>" class="btn btn-orange" />
+                <input type="button" value="<?php echo $this->translate('Recherche avancée'); ?>" class="btn btn-big btn-adsearch" id="btn_adsearch" />
+            </form>
+        </div>
+    </div>
+</div>
+<div id="site-content">
+    <div class="content-list">
+        <div class="list-actions">
+            <div class="unit col">
+                <a class="icon icon-32 icon-excel" href="<?php echo $this->url(array('format' => 'csv'), null, false) . '?' . $_SERVER['QUERY_STRING'] ?>" title="<?php echo $this->translate('Exporter au format Excel'); ?>"><?php echo $this->translate('Exporter au format Excel'); ?></a>
+            </div>
+            <div class="unit rightUnit">
+                <div class="unit col">
+                    <?php echo $this->NotifySearch()->link() ?>
+                </div>
+                <div class="unit">
+                    <?php echo $this->paginationControl($this->paginator, 'Sliding', '/partials/pagination.phtml'); ?>
+                </div>
+            </div>
+        </div>
+        <form method='post'>
+            <table class="list list-main">
+                <thead>
+                    <tr>
+                        <th width="26" class="column-noborder"></th>
+                        <th>
+                            <?php echo My_View_Helper_Html::UrlOrderBy('r_prestation_id', 'ID') ?>
+                        </th>
+                        <th>
+                            <?php echo My_View_Helper_Html::UrlOrderBy('r_p_libelle', $this->translate('Libellé Prestation')) ?>
+                        </th>
+                        <th><?php echo My_View_Helper_Html::UrlOrderBy('r_p_couts_estimes_modifiables', $this->translate('Modif') . '?') ?></th>
+                        <th>
+                            <?php echo My_View_Helper_Html::UrlOrderBy('r_p_type_frais_libelle', $this->translate('Type de frais')) ?>
+                        </th>
+                        <th>
+                            <?php echo My_View_Helper_Html::UrlOrderBy('r_tva_libelle', $this->translate('TVA')) ?>
+                        </th>
+                        <th>
+                            <?php echo My_View_Helper_Html::UrlOrderBy('r_p_groupe_validation_libelle', $this->translate('Groupe validation')) ?>
+                        </th>
+                        <th>
+                            <?php echo My_View_Helper_Html::UrlOrderBy('r_p_type_validation_libelle', $this->translate('Type validation')) ?>
+                        </th>
+                        <th>
+                            <?php echo My_View_Helper_Html::UrlOrderBy('r_p_cout_total', $this->translate('Coût total')) ?>
+                        </th>
+                        <th>
+                            <?php echo My_View_Helper_Html::UrlOrderBy('r_p_prix_vente', $this->translate('PV conseillé')) ?>
+                        </th>
+                        <th>
+                            <?php echo My_View_Helper_Html::UrlOrderBy('r_p_taux_marge_min', $this->translate('Tx de marge')) ?>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($this->paginator as $prestation) { ?>
+                        <tr class="<?php echo $this->cycle(array('', 'alt'))->next() ?>">
+                            <td>
+                                <input type="checkbox" name="prestations[<?php echo $prestation['r_prestation_id']; ?>]" value="1" />
+                                <?php echo "<a href='#edit' class='icon-list icon-edit' r_prestation_id='" . $prestation['r_prestation_id'] . "' title='" . $this->translate('Éditer') . "'><?php echo $this->translate('Éditer');?></a>"; ?>
+                            </td>
+                            <td align="left"><?php echo $prestation['r_prestation_id']; ?></td>
+                            <td><?php echo $prestation['r_p_libelle']; ?></td>
+                            <td><?php echo $prestation['r_p_couts_estimes_modifiables']; ?></td>
+                            <td class="column-secondary"><?php echo $prestation['r_p_type_frais_libelle']; ?></td>
+                            <td class="column-secondary"><?php echo $prestation['r_tva_libelle']; ?></td>
+                            <td class="column-secondary"><?php echo $prestation['r_p_groupe_validation_libelle']; ?></td>
+                            <td class="column-secondary"><?php echo $prestation['r_p_type_validation_libelle']; ?></td>
+                            <td align="right" class="column-secondary"><?php echo Phoenix_Data_Convert::formatMoney($prestation['r_p_cout_total']); ?></td>
+                            <td align="right" class="column-secondary"><?php echo Phoenix_Data_Convert::formatMoney($prestation['r_p_prix_vente']); ?></td>
+                            <td align="right" class="column-secondary"><?php echo Phoenix_Data_Convert::formatMoney($prestation['r_p_taux_marge'], false, false, false); ?> %</td>
+                        </tr>
+                    <?php } ?>
+                </tbody>
+            </table>
+            <br />
+            <center>
+                <input type="submit" name="updateCoutsModif" value="<?php echo $this->translate('Activer l\'option \'Coûts estimés modifiables\' pour les prestations cochées'); ?>" class="btn btn-orange">
+            </center>
+        </form>
+    </div>
+</div>
+
+<div id="id_dialog_search" title="<?php echo $this->translate('Recherche avancée'); ?>" style="display:none;">
+    <form action="<?php echo $this->BaseUrl() ?>/administration/rprestation/listing" method="get" style="border:1px black">
+        <div class="section-hd">
+            <h2 class="section-title"><?php echo $this->translate('Références d\'opération'); ?></h2>
+        </div>
+
+        <div class="section-bd">
+            <div class="line form-line">
+                <label class="unit size1of2 form-label" for='id_find_r_prestation_id'><?php echo $this->translate('ID Prestation'); ?> :</label>
+                <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'find_r_prestation_id', 'class' => 'unit size1of2 form-input lastUnit')) ?>
+            </div>
+
+            <div class="line form-line">
+                <label class="unit size1of2 form-label" for='id_find_r_p_libelle'><?php echo $this->translate('Nom prestation'); ?> :</label>
+                <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'find_r_p_libelle', 'class' => 'unit size1of2 form-input lastUnit')) ?>
+            </div>
+
+            <div class="line form-line">
+                <?php echo Phoenix_View_Helper_Html::checkbox(array('name' => 'find_actif', 'value' => 1)) ?>
+                <label for='id_find_actif'><?php echo $this->translate('Prestation active'); ?></label>
+            </div>
+
+            <div class="line form-line">
+                <?php echo Phoenix_View_Helper_Html::checkbox(array('name' => 'find_r_p_adf', 'value' => 1)) ?>
+                <label for='id_find_r_p_adf'><?php echo $this->translate('ADF'); ?></label>
+            </div>
+
+            <div class="line form-line">
+                <?php echo Phoenix_View_Helper_Html::checkbox(array('name' => 'english_blank', 'value' => 1)) ?>
+                <label for='id_find_r_p_adf'><?php echo $this->translate('Pas d\'intitulé anglais'); ?></label>
+            </div>
+
+            <div class="line form-line">
+                <label class="unit size1of2 form-label" for='id_find_r_p_axe1_id'><?php echo $this->translate('Activité'); ?> :</label>
+                <?php echo Phoenix_View_Helper_Html::selectFromTable('r_p_axe1', array('name' => 'find_r_p_axe1_id', 'class' => 'unit size1of2 form-select lastUnit'), array('name' => 'r_p_axe1_libelle', 'value' => 'r_p_axe1_id'), array('default_label' => $this->translate('choisir') . '...')) ?>
+            </div>
+
+            <div class="line form-line">
+                <label class="unit size1of2 form-label" for='id_find_r_p_axe3_id'><?php echo $this->translate('Famille'); ?> :</label>
+                <?php echo Phoenix_View_Helper_Html::selectFromTable('r_p_axe3', array('name' => 'find_r_p_axe3_id', 'class' => 'unit size1of2 form-select lastUnit'), array('name' => 'r_p_axe3_libelle', 'value' => 'r_p_axe3_id'), array('default_label' => $this->translate('choisir') . '...')) ?>
+            </div>
+
+            <div class="line form-line">
+                <label class="unit size1of2 form-label" for='id_find_r_p_axe4_id'><?php echo $this->translate('Catégorie'); ?> :</label>
+                <?php echo Phoenix_View_Helper_Html::selectFromTable('r_p_axe4', array('name' => 'find_r_p_axe4_id', 'class' => 'unit size1of2 form-select lastUnit'), array('name' => 'r_p_axe4_libelle', 'value' => 'r_p_axe4_id'), array('default_label' => $this->translate('choisir') . '...')) ?>
+            </div>
+
+            <div class="line form-line">
+                <label class="unit size1of2 form-label" for='id_find_r_p_groupe_validation_id'><?php echo $this->translate('Groupe Validation'); ?> :</label>
+                <?php echo Phoenix_View_Helper_Html::selectFromTable('acl_groups', array('name' => 'find_r_p_groupe_validation_id', 'class' => 'unit size1of2 form-select lastUnit'), array('name' => 'group_name', 'value' => 'group_id'), array('default_label' => $this->translate('choisir') . '...')) ?>
+            </div>
+
+            <div class="line form-line">
+                <label class="unit size1of2 form-label" for='id_find_r_p_validation_id'><?php echo $this->translate('Type de validation'); ?> :</label>
+                <?php echo Phoenix_View_Helper_Html::selectFromTable('r_p_type_validation', array('name' => 'find_r_p_validation_id', 'class' => 'unit size1of2 form-select lastUnit'), array('name' => 'r_p_type_validation_libelle', 'value' => 'r_p_type_validation_id'), array('default_label' => $this->translate('choisir') . '...')) ?>
+            </div>
+
+            <div class="line form-line">
+                <label class="unit size1of2 form-label" for='id_find_r_p_code_comptable'><?php echo $this->translate('Code comptable'); ?> :</label>
+                <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'find_r_p_code_comptable', 'class' => 'unit size1of2 form-input lastUnit')) ?>
+            </div>
+        </div>
+
+        <div class="text-center">
+            <input type="submit" name="findbyfields" value="<?php echo $this->translate('Recherche'); ?>" class="btn btn-orange">
+        </div>
+    </form>
+</div>
+
+
+<script language="javascript">
+    $(document).ready(function () {
+        $('#btn_adsearch').click(function (e) {
+            $('#id_dialog_search').dialog({
+                width: 400,
+                modal: true,
+                resizable: false
+            });
+        });
+
+        //-- DIALOG / CREATION -->
+        $('#btn_new').live('click', function (e) {
+            AjaxComponent.ajaxDialog(baseUrl + '/administration/rprestation/update', {}, {width: '900', title: '<?php echo $this->translate('Créer une nouvelle prestation'); ?>', id: 'id_dialog_update_rprestation', close: function () {
+                    Component.refreshPage();
+                }});
+        });
+
+        //-- DIALOG / MODIFICATION -->
+        $('.list .icon-edit').live('click', function (e) {
+            r_prestation_id = $(this).attr("r_prestation_id");
+            AjaxComponent.ajaxDialog(baseUrl + '/administration/rprestation/update', {r_prestation_id: r_prestation_id}, {width: '900', title: '<?php echo $this->translate('Modifier la prestation N°'); ?>' + r_prestation_id, id: 'id_dialog_update_rprestation', close: function () {
+                    Component.refreshPage();
+                }});
+        });
+    })
+</script>

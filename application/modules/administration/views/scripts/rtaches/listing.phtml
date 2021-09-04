@@ -1,0 +1,147 @@
+<?php /* @var $this Zend_View */ ?>
+<?php
+$this->title = $this->translate('Listing des tâches');
+$this->headTitle($this->title);
+?>
+<div id="actions-bar">
+    <div class="unit size1of5">
+        <h1 class="page-title"><?php echo $this->title; ?></h1>
+        <input href="#" id="btn_new" type="button" class="btn btn-orange btn-big" value="<?php echo $this->translate('Nouvelle tâche'); ?>" />
+    </div>
+    <div class="unit size3of5">
+        <div class="search">
+            <form action="<?php echo $this->BaseUrl() ?>/administration/rtaches/listing" method="get">
+                <input type="text" name="findword" class="form-input" value="<?php if (isset($_REQUEST["findword"])) echo $_REQUEST["findword"]; ?>" placeholder="<?php echo $this->translate('Rechercher'); ?>" autocomplete="off" />
+                <input type="submit" value="<?php echo $this->translate('OK'); ?>" class="btn btn-orange" />
+                <input type="button" value="<?php echo $this->translate('Recherche avancée'); ?>" class="btn btn-big btn-adsearch" id="btn_adsearch" />
+            </form>
+        </div>
+    </div>
+</div>
+<div id="site-content">
+    <div class="content-list">
+        <div class="list-actions">
+            <div class="unit col">
+                <a class="icon icon-32 icon-excel" href="<?php echo $this->url(array('format' => 'csv'), null, false) . '?' . $_SERVER['QUERY_STRING'] ?>" title="<?php echo $this->translate('Exporter au format Excel'); ?>"><?php echo $this->translate('Exporter au format Excel'); ?></a>
+            </div>
+            <div class="unit rightUnit">
+                <div class="unit col">
+                    <?php echo $this->NotifySearch()->link() ?>
+                </div>
+                <div class="unit">
+                    <?php echo $this->paginationControl($this->paginator, 'Sliding', '/partials/pagination.phtml'); ?>
+                </div>
+            </div>
+        </div>
+        <table class="list list-main">
+            <thead>
+                <tr>
+                    <th width="26" class="column-noborder"></th>
+                    <th>
+                        <?php echo My_View_Helper_Html::UrlOrderBy('r_op_task_type_id', $this->translate('ID')) ?>
+                    </th>
+                    <th>
+                        <?php echo My_View_Helper_Html::UrlOrderBy('r_op_task_type_libelle', $this->translate('Libellé Tâche')) ?>
+                    </th>
+                    <th>
+                        <?php echo My_View_Helper_Html::UrlOrderBy('r_op_date_ref_libelle', $this->translate('Date de référence')) ?>
+                    </th>
+                    <th>
+                        <?php echo My_View_Helper_Html::UrlOrderBy('r_op_task_type_delta', $this->translate('Delta')) ?>
+                    </th>
+                    <th>
+                        <?php echo My_View_Helper_Html::UrlOrderBy('r_op_task_type_rappel', $this->translate('Rappel à J-X')) ?>
+                    </th>
+                    <th colspan="4">
+                        <?php echo My_View_Helper_Html::UrlOrderBy('r_op_task_type_assign_to_cp', $this->translate('Assignée à')) ?>
+                    </th>
+                    <th colspan="2">
+                        <?php echo My_View_Helper_Html::UrlOrderBy('assign_to_group', $this->translate('Notifié à')) ?>
+                    </th>
+                </tr>
+                <tr class="sub-head">
+                    <td colspan="6"></td>
+                    <td class="column-border" align="center"><?php echo $this->translate('DC'); ?></td>
+                    <td class="column-border" align="center"><?php echo $this->translate('CP'); ?></td>
+                    <td class="column-border" align="center"><?php echo $this->translate('utilisateur'); ?></td>
+                    <td class="column-border" align="center"><?php echo $this->translate('groupe'); ?></td>
+                    <td class="column-border" align="center"><?php echo $this->translate('utilisateur'); ?></td>
+                    <td class="column-border" align="center"><?php echo $this->translate('groupe'); ?></td>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($this->paginator as $prestation) { ?>
+                    <tr class="<?php echo $this->cycle(array('', 'alt'))->next() ?>">
+                        <td><?php echo "<a href='#edit' class='icon-list icon-edit' r_op_task_type_id='" . $prestation['r_op_task_type_id'] . "' title='" . $this->translate('Éditer') . "'><?php echo $this->translate('Éditer');?></a>"; ?></td>
+                        <td align="left"><?php echo $prestation['r_op_task_type_id']; ?></td>
+                        <td><?php echo $prestation['r_op_task_type_libelle']; ?></td>
+                        <td class="column-secondary"><?php echo $prestation['r_op_date_ref_libelle']; ?></td>
+                        <td class="column-secondary"><?php echo $prestation['r_op_task_type_delta']; ?></td>
+                        <td class="column-secondary"><?php echo $prestation['r_op_task_type_rappel']; ?></td>
+                        <td align="center" class="column-secondary"><?php echo ($prestation['r_op_task_type_assign_to_dc'] == 1 ? 'X' : ''); ?></td>
+                        <td align="center" class="column-secondary"><?php echo ($prestation['r_op_task_type_assign_to_cp'] == 1 ? 'X' : ''); ?></td>
+                        <td class="column-secondary"><?php echo $prestation['assign_to_user']; ?></td>
+                        <td class="column-secondary"><?php echo $prestation['assign_to_group']; ?></td>
+                        <td class="column-secondary"><?php echo $prestation['notify_to_user']; ?></td>
+                        <td class="column-secondary"><?php echo $prestation['notify_to_group']; ?></td>
+                    </tr>
+                <?php } ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div id="id_dialog_search" title="<?php echo $this->translate('Recherche avancée'); ?>" style="display:none;">
+    <form action="<?php echo $this->BaseUrl() ?>/administration/rtaches/listing" method="get" style="border:1px black">
+        <div class="section-hd">
+            <h2 class="section-title"><?php echo $this->translate('Références de tâche'); ?></h2>
+        </div>
+
+        <div class="section-bd">
+            <div class="line form-line">
+                <label class="unit size1of2 form-label" for='id_find_r_op_task_type_id'><?php echo $this->translate('ID Tâche'); ?> :</label>
+                <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'find_r_op_task_type_id', 'class' => 'unit size1of2 form-input lastUnit')) ?>
+            </div>
+
+            <div class="line form-line">
+                <label class="unit size1of2 form-label" for='id_find_r_op_task_type_libelle'><?php echo $this->translate('Nom tâche'); ?> :</label>
+                <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'find_r_op_task_type_libelle', 'class' => 'unit size1of2 form-input lastUnit')) ?>
+            </div>
+
+            <div class="line form-line">
+                <label class="unit size1of2 form-label" for='id_find_r_op_task_type_date_ref'><?php echo $this->translate('Date de réf'); ?>. :</label>
+                <?php echo Phoenix_View_Helper_Html::selectFromTable('r_operation_tasks_type_date_ref', array('name' => 'find_r_op_task_type_date_ref', 'class' => 'unit size1of2 form-select lastUnit'), array('name' => 'r_op_task_type_date_ref_libelle', 'value' => 'r_op_task_type_date_ref_id'), array('default_label' => $this->translate('choisir') . '...')) ?>
+            </div>
+        </div>
+
+        <div class="text-center">
+            <input type="submit" name="findbyfields" value="<?php echo $this->translate('Recherche'); ?>" class="btn btn-orange">
+        </div>
+    </form>
+</div>
+
+
+<script language="javascript">
+    $(document).ready(function() {
+        $('#btn_adsearch').click(function(e) {
+            $('#id_dialog_search').dialog({
+                width: 400,
+                modal: true,
+                resizable: false
+            });
+        });
+
+        //-- DIALOG / CREATION -->
+        $('#btn_new').live('click', function(e) {
+            AjaxComponent.ajaxDialog(baseUrl + '/administration/rtaches/update', {}, {width: '500', title: '<?php echo $this->translate('Créer une nouvelle tâche'); ?>', id: 'id_dialog_update_rtache', close: function() {
+                    Component.refreshPage();
+                }});
+        });
+
+        //-- DIALOG / MODIFICATION -->
+        $('.list .icon-edit').live('click', function(e) {
+            r_op_task_type_id = $(this).attr("r_op_task_type_id");
+            AjaxComponent.ajaxDialog(baseUrl + '/administration/rtaches/update', {r_op_task_type_id: r_op_task_type_id}, {width: '500', title: '<?php echo $this->translate('Modifier la tâche N°'); ?>' + r_op_task_type_id, id: 'id_dialog_update_rtache'});
+        });
+    })
+</script>

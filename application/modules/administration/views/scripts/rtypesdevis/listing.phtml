@@ -1,0 +1,86 @@
+<?php
+$this->title = $this->translate('Listing des types de devis');
+$this->headTitle($this->title);
+$this->headScript()->appendFile($this->baseUrl() . '/js/administration/rtypesdevis/UiManager.js');
+$this->headScript()->appendFile($this->baseUrl() . '/js/administration/rtypesdevis/listing.js');
+?>
+<div id="actions-bar">
+    <div class="unit size4of5">
+        <h1 class="page-title"><?php echo $this->translate('Configuration des types et des données liées'); ?></h1>
+        <p>
+            <strong><?php echo $this->translate('Aide'); ?></strong> : <?php echo $this->translate('Vous pouvez renommer le template en cliquant sur son intitulé'); ?>.
+        </p>
+    </div>
+</div>
+<div id="site-content">
+    <div id="content-bd">
+        <div class="line">
+            <div class="unit size1of3">
+                <div class="box">
+                    <div class="line box-hd">
+                        <h2 class="box-title title-icon icon-doc"><?php echo $this->translate('Choisir un type de devis'); ?></h2>
+                    </div>
+                    <div class="box-bd">
+                        <form method="post" id="id_form_identify_template">
+                            <div class="line form-line">
+                                <label class="form-label unit size1of3" for="id_op_act_id"><?php echo $this->translate('Métier'); ?> :</label>
+                                <div class="size2of3 unit lastUnit">
+                                    <?php
+                                    $sManageBusinessesLabel = $this->translate('Gérer les métiers');
+                                    $sManageCategoriesLabel = $this->translate('Gérer les catégories');
+                                    $sManageMechanicsLabel = $this->translate('Gérer les mécaniques');
+                                    $sManageUniversesLabel = $this->translate('Gérer les univers');
+                                    $sManageMediasLabel = $this->translate('Gérer les médias');
+
+                                    echo Phoenix_View_Helper_Html::selectFromTable('r_custom_activites', array('name' => 'op_act_id', 'class' => 'form-select size4of5'), array('value' => 'act_id', 'name' => 'act_libelle'), array('clause_where' => 'actif = 1', 'clause_order' => 'ord asc', 'default_label' => $this->translate('choisir') . '...'));
+                                    ?>
+                                    <a href="#" id="btn_manage_activites" class="icon-list icon-edit size1of5" title="<?php echo $sManageBusinessesLabel; ?>"><?php echo $sManageBusinessesLabel; ?></a>
+                                </div>
+                            </div>
+                            <div class="line form-line">
+                                <label class="form-label unit size1of3" for="id_op_type_id"><?php echo $this->translate('Catégorie'); ?> :</label>
+
+                                <div class="size2of3 unit lastUnit">
+                                    <?php echo Phoenix_View_Helper_Html::selectFromTable('r_operation_type', array('name' => 'op_type_id', 'class' => 'form-select size4of5'), array('value' => 'ot_id', 'name' => 'ot_libelle', 'class' => 'act_id'), array('clause_where' => 'actif = 1', 'clause_order' => 'ord asc', 'default_label' => $this->translate('choisir') . '...')); ?>
+                                    <a href="#" id="btn_manage_types" class="icon-list icon-edit col size1of5" title="<?php echo $sManageCategoriesLabel; ?>"><?php echo $sManageCategoriesLabel; ?></a>
+                                </div>
+                            </div>
+                            <div class="line form-line">
+                                <label class="form-label unit size1of3" for="id_op_subtype_id"><?php echo $this->translate('Mécanique'); ?> :</label>
+
+                                <div class="size2of3 unit lastUnit">
+                                    <?php echo Phoenix_View_Helper_Html::selectFromTable('r_operation_type_sub', array('name' => 'op_subtype_id', 'class' => 'form-select size4of5'), array('value' => 'ost_id', 'name' => 'ost_libelle', 'class' => 'ost_ot_id'), array('clause_where' => 'actif = 1', 'clause_order' => 'ord', 'default_label' => $this->translate('choisir') . '...')); ?>
+                                    <a href="#" id="btn_manage_subtypes" class="icon-list icon-edit col size1of5" title="<?php echo $sManageMechanicsLabel; ?>"><?php echo $sManageMechanicsLabel; ?></a>
+                                </div>
+                            </div>
+                            <div class="line form-line">
+                                <label class="form-label unit size1of3" for="universes"><?php echo $this->translate('Univers'); ?> :</label>
+                                <div class="size2of3 unit lastUnit">
+                                    <?php echo My_View_Helper_Html::selectFromTable('r_operation_universes', array('name' => 'template_universes[]', 'class' => 'unit size4of5', 'value' => ROperationUniverses::DEFAULT_R_OPERATION_UNIVERSE, 'id' => 'id_r_operation_universe_id', 'multiple' => 'multiple', 'size' => 5), array('value' => 'r_operation_universe_id', 'name' => 'r_operation_universe_label'), array('clause_where' => 'r_operation_universe_actif = 1', 'clause_order' => 'r_operation_universe_order')) ?>
+                                    <a href="#" id="btn_manage_universes" class="icon-list icon-edit col size1of5" title="<?php echo $sManageUniversesLabel; ?>"><?php echo $sManageUniversesLabel; ?></a>
+                                </div>
+                            </div>
+                            <div class="line form-line">
+                                <label class="form-label unit size1of3" for="medias"><?php echo $this->translate('label_participation_media'); ?> :</label>
+                                <div class="size2of3 unit lastUnit">
+                                    <?php echo My_View_Helper_Html::selectFromTable('r_operation_medias', array('name' => 'template_medias[]', 'class' => 'unit size4of5', 'value' => ROperationMedias::DEFAULT_R_OPERATION_MEDIA, 'id' => 'id_r_operation_media_id', 'multiple' => 'multiple', 'size' => 6), array('value' => 'r_operation_media_id', 'name' => 'r_operation_media_label'), array('clause_where' => 'r_operation_media_actif = 1', 'clause_order' => 'r_operation_media_order')) ?>
+                                    <a href="#" id="btn_manage_medias" class="icon-list icon-edit col size1of5" title="<?php echo $sManageMediasLabel; ?>"><?php echo $sManageMediasLabel; ?></a>
+                                </div>
+                            </div>
+                            <div class="line form-line" id='template_identification_button_container' disabled='disabled' hidden='hidden'>
+                                <label class="form-label unit size1of3"></label>
+                                <div class="size2of3 unit lastUnit">
+                                    <input id="btn_identify_template" type="submit" class="btn btn-orange size3of5" value="<?php echo $this->translate('identify_template_button'); ?>" />
+                                </div>
+                            </div>
+                            <div id='template_suggestion_container' disabled='disabled' hidden='hidden'>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="id_update_zone"></div>
+</div>
+</div>

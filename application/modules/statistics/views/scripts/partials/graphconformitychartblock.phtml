@@ -1,0 +1,28 @@
+<div class="block-graph noborder-block">
+    <div class="title-bloc title-bloc-full-width"><?php echo $this->sKpiTitle; ?>*</div>
+    <div class="content-bloc pie-chart-size">
+        <div class="content-bloc-graph" id="compliance-chart">
+        </div>
+        <div class="conformity-pie-legend"><?php echo ($this->sKpiLegend) ? $this->sKpiLegend : ''; ?></div>
+    </div>
+</div>
+
+<?php
+$aPieChartData = $this->aPieChartData['C3'];
+$aPieChartData['bindto'] = '#compliance-chart';
+$aPieChartData['legend']['show'] = true;
+$aPieChartData['legend']['position'] = 'right';
+$aColumns = array();
+foreach ($this->aPieChartData['dataList'] as $sKey => $iValue) {
+    if ($sKey != $this->translate('Dossiers en attente de traitement')) {
+        $aColumns[] = array(Phoenix_Data_Convert::formatNumber($iValue, false, false) . ' ' . $sKey, $iValue);
+    }
+}
+$aPieChartData['data']['columns'] = $aColumns
+?>
+<script language="javascript">
+    var chart = c3.generate(<?php echo json_encode($aPieChartData); ?>);
+    var firstLegend = d3.select('.c3-legend-item');
+    var legendCon = d3.select(firstLegend.node().parentNode).attr('transform', 'translate(480, -110)');
+
+</script>

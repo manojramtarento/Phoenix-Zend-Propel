@@ -1,0 +1,138 @@
+<?php
+$this->title = $this->translate('title_adminstration_users_listings');
+$this->headTitle($this->title);
+
+$this->headScript()->appendFile($this->baseUrl() . '/js/administration/users/UsersManager.js');
+$this->headScript()->appendFile($this->baseUrl() . '/js/administration/users/index.js');
+$bCreateNewUserIsAllowed = Phoenix_Auth_User::getAuthenticationEngine()->allowsUserCreation() && Phoenix_Auth_User::mvcActionIsAllowed('administration','users','create');
+?>
+
+<div id="actions-bar">
+    <div class="unit size1of5">
+        <h1 class="page-title"><?php echo $this->title; ?></h1>
+    </div>
+    <div class="unit size2of5">
+        <div class="search">
+            <form method="get" id="axes_selection_form" action ="<?php echo $this->url(array('module' => 'administration', 'controller' => 'users', 'action' => 'index'), null, true) ?>" >
+                <input type="text" name="findword" class="form-input" value="<?php echo isset($this->findword) ? $this->findword : ''; ?>" placeholder="<?php echo $this->translate('placeholder_search'); ?>" autocomplete="off" />
+                <input type="submit" value="<?php echo $this->translate('OK'); ?>" class="btn btn-orange" />
+                <input type="button" value="<?php echo $this->translate('Recherche avancée'); ?>" class="btn btn-big btn-adsearch" id="btn-adsearch" />
+            </form>
+        </div>
+    </div>
+    <?php if($bCreateNewUserIsAllowed) { ?>
+     <div class="unit size1of5">
+          <input type="button" value="<?php echo $this->translate('label_create_a_new_user'); ?>" class="btn " id="btn-new-user" data-user-title="<?php echo $this->translate('label_create_a_new_user'); ?>" />
+    </div>
+    <?php } ?>
+</div>
+<div id="site-content">
+    <div class="content-list">
+        <div class="list-actions">
+            <div class="unit rightUnit">
+                <div class="unit col">
+                    <?php echo $this->NotifySearch()->link() ?>
+                </div>
+                <div class="unit">
+                    <?php echo $this->paginationControl($this->paginator, 'Sliding', '/partials/pagination.phtml'); ?>
+                </div>
+            </div>
+        </div>
+        <table class="list list-main">
+            <thead>
+                <tr>
+                    <th width="26" class="column-noborder"></th>
+                    <th width="26" class="column-noborder"></th>
+                    <th>
+                        <?php echo My_View_Helper_Html::UrlOrderBy('user_id', $this->translate('label_id')); ?>
+                    </th>
+                    <th>
+                        <?php echo My_View_Helper_Html::UrlOrderBy('user_login', $this->translate('label_user_login')); ?>
+                    </th>
+                    <th>
+                        <?php echo My_View_Helper_Html::UrlOrderBy('user_nom', $this->translate('label_user_lastname')); ?>
+                    </th>
+                    <th>
+                        <?php echo My_View_Helper_Html::UrlOrderBy('user_prenom', $this->translate('label_user_firstname')); ?>
+                    </th>
+                    <th>
+                        <?php echo My_View_Helper_Html::UrlOrderBy('user_mail', $this->translate('label_user_email')); ?>
+                    </th>
+                    <th>
+                        <?php echo My_View_Helper_Html::UrlOrderBy('user_phone', $this->translate('label_user_phone')); ?>
+                    </th>
+                    <th>
+                        <?php echo My_View_Helper_Html::UrlOrderBy('user_mobile', $this->translate('label_user_mobile')); ?>
+                    </th>
+                    <th>
+                        <?php echo My_View_Helper_Html::UrlOrderBy('user_language', $this->translate('label_user_language')); ?>
+                    </th>
+                    <th>
+                        <?php echo My_View_Helper_Html::UrlOrderBy('r_user_type_short_name', $this->translate('label_user_type')); ?>
+                    </th>
+            </thead>
+            <tbody>
+                <?php foreach ($this->paginator as $aUser) { ?>
+                    <tr class="<?php echo $this->cycle(array('', 'alt'))->next() ?>">
+                        <td>
+                            <a href="#delete" class="icon-list icon-delete" data-user-id="<?php echo $aUser['user_id']; ?>" delete-user-record-confirmation-message ="<?php echo $this->translate('text_confirm_user_record_deletion') . ' : ' . $aUser['user_nom'] . ' ' . $aUser['user_prenom'] ?>" title="<?php echo $this->translate('link_delete_user'); ?>"><?php echo $this->translate('link_delete_user'); ?></a>
+                        </td>
+                        <td>
+                            <a href="#edit" class="icon-list icon-edit" data-user-title="<?php echo $this->translate('title_edition'); ?>" data-user-id="<?php echo $aUser['user_id']; ?>" title="<?php echo $this->translate('link_edit_user'); ?>"><?php echo $this->translate('link_edit_user'); ?></a>
+                        </td>
+                        <td align="left"><?php echo $aUser['user_id']; ?></td>
+                        <td align="left"><?php echo $aUser['user_login']; ?></td>
+                        <td align="left"><?php echo $aUser['user_nom']; ?></td>
+                        <td align="left"><?php echo $aUser['user_prenom']; ?></td>
+                        <td align="left"><?php echo $aUser['user_mail']; ?></td>
+                        <td align="left"><?php echo $aUser['user_phone']; ?></td>
+                        <td align="left"><?php echo $aUser['user_mobile']; ?></td>
+                        <td align="left"><?php echo $aUser['user_language']; ?></td>
+                        <td align="left"><?php echo $aUser['r_user_type_full_name']; ?></td>
+                    </tr>
+                <?php } ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<div id="id-dialog-search" title="<?php echo $this->translate('Recherche avancée'); ?>" style="display:none;">
+    <form action="<?php echo $this->BaseUrl() ?>/administration/users/index" method="GET">
+        <div class="section-bd">
+            <div class="line form-line">
+                <label class="unit size1of2 form-label" for="id-user-lastname"><?php echo $this->translate('label_user_lastname'); ?> :</label>
+                <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'find_user_nom', 'class' => 'unit size1of2 form-input lastUnit')) ?>
+            </div>
+
+            <div class="line form-line">
+                <label class="unit size1of2 form-label" for="id-user-firstname"><?php echo $this->translate('label_user_firstname'); ?> :</label>
+                <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'find_user_prenom', 'class' => 'unit size1of2 form-input lastUnit')) ?>
+            </div>
+
+            <div class="line form-line">
+                <label class="unit size1of2 form-label" for="id-user-email"><?php echo $this->translate('label_user_email'); ?> :</label>
+                <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'find_user_mail', 'class' => 'unit size1of2 form-input lastUnit')) ?>
+            </div>
+
+            <div class="line form-line">
+                <label class="unit size1of2 form-label" for="id-user-phone"><?php echo $this->translate('label_user_phone'); ?> :</label>
+                <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'find_user_phone', 'class' => 'unit size1of2 form-input lastUnit')) ?>
+            </div>
+
+            <div class="line form-line">
+                <label class="unit size1of2 form-label" for="id-user-mobile"><?php echo $this->translate('label_user_mobile'); ?> :</label>
+                <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'find_user_mobile', 'class' => 'unit size1of2 form-input lastUnit')) ?>
+            </div>
+
+            <div class="line form-line">
+                <label class="unit size1of2 form-label" for='id-user-r-user-type-id'><?php echo $this->translate('label_user_type'); ?> :</label>
+                <?php echo Phoenix_View_Helper_Html::selectFromTable('r_user_types', array('name' => 'find_r_user_type_id', 'class' => 'unit size1of2 form-select lastUnit'), array('name' => 'r_user_type_full_name', 'value' => 'r_user_type_id'), array('default_label' => $this->translate('choisir') . '...')) ?>
+            </div>
+        </div>
+
+        <div class="text-center">
+            <input type="submit" name="findbyfields" value="<?php echo $this->translate('Recherche'); ?>" class="btn btn-orange">
+        </div>
+    </form>
+</div>

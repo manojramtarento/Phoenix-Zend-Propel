@@ -1,0 +1,50 @@
+<table class="list">
+    <thead>
+        <tr>
+            <th width="15" class="column-noborder"></th>
+            <th width=""><span class="notsortable"><?php echo $this->translate('Libellé'); ?></span></th>
+            <th width="8%"><span class="notsortable"><?php echo $this->translate('Actif'); ?></span></th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($this->types as $type) { ?>
+            <tr class="class_form_type" action="<?php echo $this->url(array('module' => 'administration', 'controller' => 'rtypesdevis', 'action' => 'updatetype')) ?>" model_name="ROperationType" primary_value="<?php echo $type->getOtId(); ?>">
+                <td width="15"></td>
+                <td><?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'id' => 'id_ot_libelle_' . $type->getOtId(), 'name' => 'ot_libelle', 'class' => 'form-input input-editable size1of1', 'value' => $type->getOtLibelle())) ?></td>
+                <td><?php echo Phoenix_View_Helper_Html::checkbox(array('name' => 'actif', 'id' => 'id_actif_' . $type->getOtId(), 'value' => 1, 'class' => 'form-input input-editable size1of1', 'default_value' => $type->getActif())) ?></td>
+            </tr>
+        <?php } ?>
+    </tbody>
+</table>
+
+<div class="section">
+    <div class="section-hd">
+        <h2 class="section-title"><?php echo $this->translate('Ajouter une nouvelle catégorie'); ?></h2>
+    </div>
+
+    <div class="section-bd">
+        <form id="id_form_new_types" action="<?php echo $this->url(array('module' => 'administration', 'controller' => 'rtypesdevis', 'action' => 'managetypes')) ?>" method="post">
+            <input type="hidden" name="submit_new_type" value="1">
+            <input type="hidden" name="act_id" value="<?php echo $this->act_id; ?>">
+
+            <div class="line form-line">
+                <label class="unit size1of3 form-label" for='id_ot_libelle'><?php echo $this->translate('Libellé'); ?> :</label>
+                <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'ot_libelle', 'value' => '', 'class' => 'unit size2of3 form-input lastUnit')) ?>
+            </div>
+
+            <div class="text-center">
+                <input type="submit" value="<?php echo $this->translate('Ajouter'); ?>" class="btn btn-orange">
+            </div>
+        </form>
+    </div>
+</div>
+
+<script language="javascript">
+    $(document).ready(function() {
+        $('.class_form_type').formUpdate({});
+
+        $('#id_form_new_types').ajaxForm({
+            divId: 'id_dialog_manage_types'
+        });
+    });
+</script>

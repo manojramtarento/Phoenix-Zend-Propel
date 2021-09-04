@@ -1,0 +1,75 @@
+<div id="actions-bar">
+	<div class="unit size3of5">
+		<h1 class="page-title"><?php echo $this->operation->getOpNumber().' '.$this->operation->getOpLibelle() ?></h1>
+		<input id="id_autocomplete_operation" type="text" class="form-input input-switch" value="" placeholder="<?php echo $this->translate('Changer d\'opérations'); ?>" />
+	</div>
+	<div class="unit rightUnit">
+		<a href="<?php echo $this->url(array('module' => 'operation', 'controller' => 'new', 'action' => 'copy','op_id'=>$this->getParam('op_id')), null, true) ?>" class="unit col icon icon-24 icon-copy" title="<?php echo $this->translate('Copier l\'opération');?>"><?php echo $this->translate('Copier l\'opération');?></a>
+		<a href="#" class="unit col icon icon-24 icon-mail" title="<?php echo $this->translate('Envoyer le devis');?>" id="id_send_mail"><?php echo $this->translate('Envoyer le devis');?></a>
+		<a href="#" class="unit col icon icon-24 icon-mail-history" title="<?php echo $this->translate('Historique des envois');?>" id="id_histo_send_mail"><?php echo $this->translate('Historique des envois');?></a>
+		<a href="<?php echo $this->url(array('module' => 'operation', 'controller' => 'description', 'action' => 'downloadgenerateddevis')); ?>" class="unit col icon icon-24 icon-pdf" title="<?php echo $this->translate('Rapport PDF');?>"><?php echo $this->translate('Rapport PDF');?></a>
+		<a href="<?php echo $this->url(array('module' => 'operation', 'controller' => 'description', 'action' => 'devisexcel')); ?>" class="unit col icon icon-24 icon-excel" title="<?php echo $this->translate('Rapport Excel');?>"><?php echo $this->translate('Rapport Excel');?></a>
+        <a href="#" class="unit col icon icon-24 icon-save" title="<?php echo $this->translate('Enregistrer le devis');?>"><?php echo $this->translate('Enregistrer le devis');?></a>
+	</div>
+</div>
+
+
+<?php
+
+$controller=$this->getParam('controller');
+$action=$this->getParam('action');
+
+$params='';
+//paramêtres spécifiques à ajouter à ajouter
+if($controller=='flux' && $action=='listing' && $this->getParam('doc_type')!=null){
+    $params='/doc_type/'.$this->getParam('doc_type');
+}
+
+?>
+
+<script language="javascript">
+	$(document).ready(function(){
+		//changement du client basé sur recherche avec autocompletion
+		$('#id_autocomplete_operation').AjaxAutocomplete({
+			url: baseUrl+'/common/autocomplete/operation',
+			minLength: 3,
+			restrictive:true,
+			select:function(event, ui){
+				window.location.href=baseUrl+'/operation/<?php echo $this->getParam('controller') ?>/<?php echo $this->getParam('action') ?>/op_id/'+ui.item.id+'<?php echo $params ?>';
+			}
+		});
+		
+		$('#id_send_mail').click(function(){
+			AjaxComponent.ajaxDialog(
+			baseUrl+'/operation/description/senddevis', {
+				op_id : <?php echo $this->getParam('op_id'); ?>
+			}, 
+			{title:'<?php echo $this->translate('Envoyer le devis au client'); ?>',
+				width:800,
+				id:'id_dialog_send_devis'
+			});
+		})
+		
+		$('#id_histo_send_mail').click(function(){
+			AjaxComponent.ajaxDialog(
+			baseUrl+'/operation/description/histosenddevis', {
+				op_id : <?php echo $this->getParam('op_id'); ?>
+			}, 
+			{title:'<?php echo $this->translate('Historique des envois de devis'); ?>',
+				width:600,
+				id:'id_dialog_histo_send_devis'
+			});
+		})
+		
+		$('#actions-bar .icon-save').click(function(){
+			AjaxComponent.ajaxDialog(
+			baseUrl+'/operation/description/visualiserdevisversions', {
+				op_id : <?php echo $this->getParam('op_id'); ?>
+			}, 
+			{	title:'<?php echo $this->translate('Devis enregistrés'); ?>',
+				width:600,
+				id:'id_dialog_devis_versions'
+			});
+		})
+	})
+</script>

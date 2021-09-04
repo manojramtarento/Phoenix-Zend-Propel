@@ -1,0 +1,79 @@
+<?php
+$this->title = $this->translate('title_adminstration_roles_listings');
+$this->headTitle($this->title);
+
+echo $this->FlashMessenger('error');
+echo $this->FlashMessenger('success');
+
+$this->headScript()->appendFile($this->baseUrl() . '/js/administration/roles/RolesManager.js');
+$this->headScript()->appendFile($this->baseUrl() . '/js/administration/roles/index.js');
+$bCreateEditIsAllowed = Phoenix_Auth_User::mvcActionIsAllowed('administration','roles','loadrolemanagementpopup')  && Phoenix_Auth_User::mvcActionIsAllowed('administration','roles','saverole');
+$bDeleteIsAllowed = Phoenix_Auth_User::mvcActionIsAllowed('administration','roles','deleterole');
+
+?>
+
+<div id="actions-bar">
+    <div class="unit size1of5">
+        <h1 class="page-title"><?php echo $this->title; ?></h1>
+        <?php if($bCreateEditIsAllowed){ ?>
+        <input href="#" id="btn_add_new_role" type="button" data-role-title="<?php echo $this->translate('label_title_role_addition') ?>" class="btn btn-orange btn-big" value="<?php echo $this->translate('button_add_new_role_label'); ?>" />
+        <?php } ?>
+    </div>
+    <div class="unit size3of5">
+        <div class="search">
+            <form method="get" id="axes_selection_form" action ="<?php echo $this->url(array('module' => 'administration', 'controller' => 'roles', 'action' => 'index'), null, true) ?>" >
+                <input type="text" name="findword" class="form-input" value="<?php echo isset($this->findword) ? $this->findword : ''; ?>" placeholder="<?php echo $this->translate('placeholder_search'); ?>" autocomplete="off" />
+                <input type="submit" value="<?php echo $this->translate('OK'); ?>" class="btn btn-orange" />
+            </form>
+        </div>
+    </div>
+</div>
+<div id="site-content">
+    <div class="content-list">
+        <div class="list-actions">
+            <div class="unit rightUnit">
+                <div class="unit col">
+                    <?php echo $this->NotifySearch()->link() ?>
+                </div>
+                <div class="unit">
+                    <?php echo $this->paginationControl($this->paginator, 'Sliding', '/partials/pagination.phtml'); ?>
+                </div>
+            </div>
+        </div>
+        <table class="list list-main">
+            <thead>
+                <tr>
+                    <th width="26" class="column-noborder"></th>
+                    <th width="26" class="column-noborder"></th>
+                    <th>
+                        <?php echo My_View_Helper_Html::UrlOrderBy('role_id', $this->translate('label_listing_roles_id')); ?>
+                    </th>
+                    <th>
+                        <?php echo My_View_Helper_Html::UrlOrderBy('role_name', $this->translate('label_listing_roles_name')); ?>
+                    </th>
+                    <th>
+                        <?php echo My_View_Helper_Html::UrlOrderBy('number_of_members', $this->translate('label_listing_roles_number_of_members')); ?>
+                    </th>
+            </thead>
+            <tbody>
+                <?php foreach ($this->paginator as $aRoles) { ?>
+                    <tr class="<?php echo $this->cycle(array('', 'alt'))->next() ?>">
+                        <td>
+                            <?php if($bDeleteIsAllowed){ ?>
+                            <a href="#delete" class="icon-list icon-delete" data-role-id="<?php echo $aRoles['role_id']; ?>" delete-role-confirmation-message ="<?php echo $this->translate('text_confirm_role_deletion') . ' : ' . $aRoles['role_name'] ?>" title="<?php echo $this->translate('link_delete'); ?>"><?php echo $this->translate('link_delete'); ?></a>
+                            <?php } ?>
+                        </td>
+                        <td>
+                            <?php if($bCreateEditIsAllowed){ ?>
+                            <a href="#edit" class='icon-list icon-edit' data-role-title="<?php echo $this->translate('title_role_update') . ': ' . $aRoles['role_name']; ?>" data-role-id='<?php echo $aRoles['role_id']; ?>' data-role-name='<?php echo $aRoles['role_name']; ?>' title="<?php echo $this->translate('link_update'); ?>"><?php echo $this->translate('link_update'); ?></a>
+                            <?php } ?>
+                        </td>
+                        <td align="left"><?php echo $aRoles['role_id']; ?></td>
+                        <td align="left"><?php echo $aRoles['role_name']; ?></td>
+                        <td align="left"><?php echo $aRoles['number_of_members']; ?></td>
+                    </tr>
+                <?php } ?>
+            </tbody>
+        </table>
+    </div>
+</div>

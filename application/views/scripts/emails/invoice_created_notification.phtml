@@ -1,0 +1,31 @@
+Bonjour,
+<br/>
+<br/>
+Les factures suivantes ont été créées. Veuillez les contrôler avant leur validation.
+<br/>
+<br/>
+<table>
+<tr>
+<th>Opération n°</th>
+<th>Opération libelle </th>
+<th>Facture(s)</th>
+</tr>
+
+<?php foreach($this->operations as $iOpNumber => $aData){?>
+    <tr>
+        <td><?php echo $iOpNumber;?></td>
+        <td><?php echo $aData['op_libelle'];?></td>
+        <td><?php echo join(', ',$aData['invoice_references']);?></td>
+    </tr> 
+<?php } ?>
+</table>
+<br/>
+<br/>
+Cordialement,
+<br/>
+<br/>
+L\'équipe <?php echo $this->company_name;?> 
+
+
+
+ 

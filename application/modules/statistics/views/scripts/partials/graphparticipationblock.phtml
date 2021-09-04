@@ -1,0 +1,34 @@
+<?php
+$aBarChartGraphData = $this->aBarChartGraphData['C3'];
+$aBarChartGraphData['bindto'] = '#participation-bar-chart';
+$aBarChartGraphData['size']['width'] = 840;
+$aBarChartGraphData['padding']['top'] = 5;
+$aBarChartGraphData['bar']['width'] = 30;
+$aBarChartGraphData['data']['labels'] = array('format' => '{numberFormat}');
+$aBarChartGraphData['axis']['x']['max'] = 20;
+$aBarChartGraphData['axis']['x']['tick']['width'] = 50;
+$aBarChartGraphData['axis']['y']['tick']['format'] = '{numberFormat}';
+
+// 47819 Handelling the case of statistics version 1, where we manually format the x axis label
+// Starting of version 2, needless to format data
+if (isset($aBarChartGraphData['axis']['x']['categories'][0]) && strlen($aBarChartGraphData['axis']['x']['categories'][0]) > 3) {
+    foreach ($aBarChartGraphData['axis']['x']['categories'] as $iKey => $sWeekNumber) {
+        $aBarChartGraphData['axis']['x']['categories'] [$iKey] = trim(substr($sWeekNumber, strpos($sWeekNumber, '-') + 1));
+    }
+}
+
+$sBarChartGraphData = str_replace('"{numberFormat}"', 'd3.format(",")	', json_encode($aBarChartGraphData));
+?>
+<div class="block-graph noborder-block">
+    <div class="title-bloc title-bloc-full-width">
+        <?php echo isset($this->sKpiTitle) ? $this->sKpiTitle : $this->translate('label_participations_of_last_twenty_weeks'); ?>
+        <span class="graph-legend"><?php echo $this->translate('legend_participations_of_last_twenty_weeks'); ?></span>
+    </div>
+    <div class="participation-graph-content-bloc">
+        <div class="participations-bar-graph" id="participation-bar-chart">
+        </div>
+    </div>
+</div>
+<script language="javascript">
+    var chart = c3.generate(<?php echo $sBarChartGraphData; ?>);
+</script>

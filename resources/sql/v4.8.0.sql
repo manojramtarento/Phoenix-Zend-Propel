@@ -1,0 +1,2 @@
+INSERT INTO `acl_fonctionnalites` (`fonc_id`, `int_cont_id`, `fonc_name`) VALUES (329, '21', 'Importer des clients');
+INSERT INTO `acl_actions` (`int_cont_id`, `action_name`, `fonc_id`, `comment`) VALUES ('21', 'import', '329', 'Méthode pour l''import des clients');

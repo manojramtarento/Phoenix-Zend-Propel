@@ -1,0 +1,10 @@
+<div class="unit col">
+    <?php
+    if (!empty($this->cl_id) && file_exists($sClientLogoAbsolutePath = Zend_Registry::get('config')->path->img->logo->client . '/' . $this->cl_id . '.gif')) {
+        $sDisplayPath = str_replace(ROOT_PATH . '/public', '', $sClientLogoAbsolutePath);
+    } else {
+        $sDisplayPath = '/img/logo/client/logo_client.jpg';
+    }
+    ?>
+    <img width='55' height='55' src='<?php echo $sDisplayPath; ?>'>
+</div>

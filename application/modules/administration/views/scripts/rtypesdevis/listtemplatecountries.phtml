@@ -1,0 +1,15 @@
+<table class="list list-simple">
+    <tbody>
+        <tr>
+            <th><span class="notsortable"><?php echo $this->translate('Pays'); ?></span></th>
+        </tr>
+        <?php
+        foreach ($this->templateCountries as $oCountry):
+            ?>
+            <tr class="">
+                <td><?php echo $oCountry->getRCountryName() ?></td>
+            </tr>
+        <?php endforeach; ?>
+
+    </tbody>
+</table>

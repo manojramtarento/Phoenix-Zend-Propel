@@ -1,0 +1,107 @@
+<?php
+$this->title = $this->translate('Prestations de l\'opération');
+$this->headTitle($this->title);
+$this->headScript()->appendFile($this->baseUrl() . '/js/prestations.js');
+$this->headScript()->appendFile($this->baseUrl() . '/js/operation/prestations/UiManager.js');
+$this->headScript()->appendFile($this->baseUrl() . '/js/operation/prestations/index.js');
+?>
+<script language="javascript">
+    var op_id =<?php echo $this->operation->getOpId() ?>;
+</script>
+<?php echo $this->partial('partials/actionsbar.phtml', array('operation' => $this->operation)); ?>
+<?php echo $this->FlashMessenger('error', 'popup'); ?>
+<div id="site-content">
+    <?php echo $this->partial('partials/menu.phtml'); ?>
+    <div id="content-bd">
+        <div class="line">
+            <div class="unit size1of1 lastUnit">
+                <div class="box box-blue">
+                    <div class="line box-hd">
+                        <h2 class="unit box-title title-icon icon-reload"><?php echo $this->translate('Scénario & Primes'); ?></h2>
+                        <div class="unit rightUnit">
+                            <a href="javascript:void(0)" class="unit icon-list icon-minus" onclick="javascript:oUiManager.hideBox(this)" title="<?php echo $this->translate('Réduire la rubrique'); ?>"><?php echo $this->translate('Réduire la rubrique'); ?></a>
+                        </div>
+                    </div>
+                    <div class="box-bd bd-grey">
+                        <div class="line size1of1">
+                            <div class="size1of1">
+                                <div class="box">
+                                    <div class="box-hd">
+                                        <h2 class="box-title title-icon icon-reload"><?php echo $this->translate('Scénario'); ?></h2>
+                                    </div>
+                                    <div class="box-bd">
+                                        <div id="id_list_scenarii"><?php echo $this->partial('prestations/scenarii.phtml', array('scenarii' => $this->scenarii)); ?></div>
+                                        <form id="id_form_add_scenario" method="post" action="<?php echo $this->url(array('module' => 'operation', 'controller' => 'prestations', 'action' => 'addscenario')) ?>">
+                                            <div class="line">
+                                                <div class="unit size1of4">
+                                                    <div class="col">
+                                                        <label class="form-label unit size1of5" for="id_op_r_scenario_id"><?php echo $this->translate('Ref'); ?> :</label>
+                                                        <?php echo Phoenix_View_Helper_Html::selectFromTable('r_scenarios', array('name' => 'op_r_scenario_id', 'class' => 'form-select unit size4of5 lastUnit'), array('value' => 'r_scenario_id', 'name' => 'r_scenario_libelle'), array('clause_where' => 'r_scenario_actif = 1','default_label' => $this->translate('choisir') . '...')) ?>
+                                                    </div>
+                                                </div>
+                                                <div class="unit size3of4">
+                                                    <div class="line">
+                                                        <label class="form-label unit size1of4 text-right" for="id_op_scenario_libelle"><?php echo $this->translate('Nom du scénario'); ?> :</label>
+                                                        <div class="unit size1of2">
+                                                            <div class="col">
+                                                                <?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'op_scenario_libelle', 'class' => 'form-input unit size1of1')) ?>
+                                                            </div>
+                                                        </div>
+                                                        <div class="unit size1of4 lastUnit">
+                                                            <input type="hidden" name="op_id" value="<?php echo $this->operation->getOpId() ?>">
+                                                            <input type="submit" value="<?php echo $this->translate('Ajouter'); ?>" class="btn btn-orange btn-small"/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="line size1of1">
+                            <div class="size1of1">
+                                <div class="box">
+                                    <div class="box-hd">
+                                        <h2 class="box-title title-icon icon-cube"><?php echo $this->translate('Primes'); ?></h2>
+                                    </div>
+                                    <div class="box-bd">
+                                        <div id="id_list_primes"><?php echo $this->partial('prestations/primes.phtml', array('rewards' => $this->rewards, 'rewardCurrenciesList' => $this->rewardCurrenciesList)); ?></div>
+                                        <a href="javascript://" class="link-add" id="link_add_reward" related_operation_id='<?php echo $this->operation->getOpId() ?>' ><?php echo $this->translate('label_add_new_reward'); ?></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="line">
+            <div class="unit size1of1 lastUnit">
+                <div class="box box-blue">
+                    <div class="box-hd">
+                        <h2 class="box-title title-icon icon-layers"><?php echo $this->translate('Détails des prestations'); ?></h2>
+                    </div>
+                    <div class="box-bd bd-grey">
+                        <div class="section">
+                            <input type="button" <?php echo ($this->bDisabledRubricsAddition) ? 'disabled' : ''; ?> value="<?php echo $this->translate('Nouvelle rubrique'); ?>" onclick="javascript:oUiManager.addRubrique(<?php echo $this->operation->getOpId() ?>)" id="id_btn_ajout_rubrique" class="btn btn-orange btn-big" />
+                            <input type="button" value="<?php echo $this->translate('Réduire tout'); ?>" class="btn btn-big" id="prestas-minus" />
+                        </div>
+                        <div class="boxes-sortable" id="list-boxes-sortable" rubric_deletion_confirmation="<?php echo $this->translate('Confirmez-vous la suppression de la rubrique'); ?>" rubric_addition_title="<?php echo $this->translate('Ajouter des rubriques'); ?>" service_addition_title="<?php echo $this->translate('Ajouter des prestations'); ?>" service_qualification_title="<?php echo $this->translate('Qualifier la prestation'); ?>">
+                            <?php foreach ($this->operation->getOperationRubriquess() as $rubrique) { ?>
+                                <div class="class_div_rubrique box box-last box-prestas" rubrique_id="<?php echo $rubrique->getOpRubriqueId() ?>" id="id_rubrique_<?php echo $rubrique->getOpRubriqueId() ?>" >
+                                    <?php echo $this->partial('prestations/rubrique.phtml', array('rubrique' => $rubrique)); ?>
+                                </div>
+                            <?php } ?>
+                        </div>
+                        <div class="line">
+                            <div class=" unit rightUnit " id="id_div_total">
+                                <?php echo $this->partial('prestations/total.phtml', array('montants' => $this->montants)); ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,24 @@
+<table class="list list-main">
+    <thead>
+        <tr>
+            <th></th>
+            <?php foreach ($this->roles as $oRole) { ?>
+                <th><span class="notsortable text-center"   style="font-size: 9px"><?php echo $oRole->getGroupName() ?><br />
+                        <?php echo Phoenix_View_Helper_Html::checkbox(array('name' => 'check_all_' . $oRole->getGroupId(), 'class' => 'class_check_all', 'bind_checkbox' => 'class_check_all_' . str_replace('.', '', $oRole->getGroupId()))) ?></span></th>
+            <?php } ?>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($this->features as $oFeature) { ?>
+            <tr>
+                <td><?php echo $oFeature->getFoncName() ?></td>
+                <?php foreach ($this->roles as $oRole) { ?>
+                    <td class="text-center">
+                        <?php echo Phoenix_View_Helper_Html::checkbox(array('name' => 'acl_' . $oFeature->getFoncId() . '_' . $oRole->getGroupId(), 'fonc_id' => $oFeature->getFoncId(), 'group_id' => $oRole->getGroupId(), 'class' => 'class_checkbox_acl class_check_all_' . str_replace('.', '', $oRole->getGroupId())), array('checked' => (isset($this->acl[$oFeature->getFoncId()][$oRole->getGroupId()]) ? true : false)))
+                        ?>
+                    </td>
+                <?php } ?>
+            </tr>
+        <?php } ?>
+    </tbody>
+</table>

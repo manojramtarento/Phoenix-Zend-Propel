@@ -1,0 +1,45 @@
+<!-- DIALOG / AJOUT / MODIFICATION -->
+<form id="id_form_update_rrubrique" action="<?php echo $this->url(array('module' => 'administration', 'controller' => 'rrubrique', 'action' => 'update')) ?>" method="post">
+    <input type="hidden" name="submit_update_rrubrique" value="1">
+    <input type="hidden" name="r_rub_id" value="<?php echo $this->r_rub_id; ?>">
+
+    <div class="line form-line">
+        <label class="unit size1of3 form-label" for='id_r_rub_libelle'><?php echo $this->translate('Libellé');?> :</label>
+		<?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'r_rub_libelle', 'value' => $this->r_rub_libelle, 'class' => 'unit size2of3 form-input lastUnit')) ?>
+    </div>
+
+    <div class="line form-line">
+        <label class="unit size1of3 form-label" for='id_r_rub_libelle_en'><?php echo $this->translate('Libellé (anglais)');?>:</label>
+		<?php echo Phoenix_View_Helper_Html::input(array('type' => 'text', 'name' => 'r_rub_libelle_en', 'value' => $this->r_rub_libelle_en, 'class' => 'unit size2of3 form-input lastUnit')) ?>
+    </div>
+	
+	<div class="line form-line">
+		<label class="unit size1of3 form-label" for='id_r_rub_type_id'><?php echo $this->translate('Type de rubrique');?> :</label>
+                <!-- 32655 : Migration phoenix/migration des modules -->
+		<?php echo My_View_Helper_Html::selectFromTable('r_rubriques_type', array('name' => 'r_rub_type_id', 'value' => $this->r_rub_type_id, 'class' => 'unit size1of2 form-select '), array('value' => 'rubrique_type_id', 'name' => 'rubrique_type_libelle'), array('default_label' => $this->translate('Tout type'))) ?>
+	</div>
+
+	<div class="line form-line">
+		<label class="unit size1of3 form-label" for='id_r_tva_type_id'><?php echo $this->translate('TVA Applicable');?> :</label>
+                <!-- 32655 : Migration phoenix/migration des modules -->
+		<?php echo My_View_Helper_Html::selectFromTable('r_tva_type', array('name' => 'r_tva_type_id', 'value' => $this->r_tva_type_id, 'class' => 'unit size1of2 form-select '), array('value' => 'r_tva_id', 'name' => 'r_tva_libelle'), array('default_label' => $this->translate('Tout type'))) ?>
+	</div>
+
+	<div class="line form-line">
+		<label class="unit size1of3 form-label" for='id_actif'><?php echo $this->translate('Rubrique active');?></label>
+		<?php echo Phoenix_View_Helper_Html::checkbox(array('name' => 'actif', 'value' => 1, 'default_value' => $this->actif)) ?>
+	</div>
+	
+    <div class="text-center">
+        <input type="submit" value="<?php echo $this->translate('Valider'); ?>" class="btn btn-orange">
+    </div>
+</form>
+
+
+<script language="javascript">
+    $(document).ready(function() {
+        $('#id_form_update_rrubrique').ajaxForm({
+            divId:'id_dialog_update_rrubrique'
+        });
+    });
+</script>
